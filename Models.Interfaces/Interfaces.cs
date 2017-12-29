@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 namespace Models.Interfaces
 {
     public interface IFileHandler
@@ -14,6 +16,13 @@ namespace Models.Interfaces
     }
     public interface IDataProvider
     {
-
+        IEnumerable<IAccount> GetAccounts();
+    }
+    // TODO
+    public interface IAccount
+    {
+        string Name { get; }
+        decimal Balance { get; }
+        bool Closed { get; }
     }
 }

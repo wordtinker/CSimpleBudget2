@@ -1,6 +1,8 @@
 ﻿using Models.Interfaces;
 using Prism.Commands;
 using Prism.Mvvm;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using ViewModels.Interfaces;
 
@@ -44,6 +46,7 @@ namespace ViewModels
                 }
             }
         }
+        public ObservableCollection<IAccountItem> Accounts { get; }
         // Commands
         public ICommand CreateFile { get; }
         public ICommand OpenFile { get; }
@@ -55,15 +58,38 @@ namespace ViewModels
             this.windowService = windowService;
             this.fileHandler = fileHandler;
             this.dataProvider = dataProvider;
-            // TODO Test
+            Accounts = new ObservableCollection<IAccountItem>();
             CreateFile = new DelegateCommand(_CreateFile);
-            // TODO Test
             OpenFile = new DelegateCommand(_OpenFile);
-            // TODO Test
             CloseFile = new DelegateCommand(_CloseFile, () => !string.IsNullOrEmpty(OpenedFile))
                 .ObservesProperty(() => OpenedFile);
             Exit = new DelegateCommand(windowService.Shutdown);
             LoadLastOpenedFile();
+        }
+        // Methods
+        private void CleanUpData()
+        {
+            Accounts.Clear();
+        }
+        private void LoadUpData()
+        {
+            foreach(IAccount acc in dataProvider.GetAccounts())
+            {
+                if (!acc.Closed)
+                {
+                    Accounts.Add(new AccountItem(acc));
+                }
+            }
+            // show total
+            if (Accounts.Count > 0)
+            {
+                AccountAggregate total = new AccountAggregate
+                {
+                    Name = "Total",
+                    Balance = Accounts.Select(acc => acc.Balance).Sum(),
+                };
+                Accounts.Add(total);
+            }
         }
         private void _CreateFile()
         {
@@ -78,13 +104,7 @@ namespace ViewModels
                     fileHandler.LoadFile(fileName))
                 {
                     SaveLastOpenedFile(fileName);
-
-                    // TODO
-                    //if (!core.InitializeNewFileReader(fileHandler))
-                    //{
-                    //    windowService.ShowMessage("File is corrupted.");
-                    //    CloseFile.Execute(null);
-                    //}
+                    // Do nothing, file is empty
                 }
                 else
                 {
@@ -103,12 +123,8 @@ namespace ViewModels
                 if (fileHandler.LoadFile(fileName))
                 {
                     SaveLastOpenedFile(fileName);
-                    // TODO
-                    //if (!core.InitializeNewFileReader(fileHandler))
-                    //{
-                    //    windowService.ShowMessage("File is corrupted.");
-                    //    CloseFile.Execute(null);
-                    //}
+                    // Load new data
+                    LoadUpData();
                 }
                 else
                 {
@@ -118,10 +134,11 @@ namespace ViewModels
         }
         private void _CloseFile()
         {
-            // TODO
-            SaveLastOpenedFile(string.Empty);
+            // Release used fileHandler
             fileHandler.CloseFile();
-            //core.InitializeNewFileReader(null);
+            // Clean data
+            CleanUpData();
+            SaveLastOpenedFile(string.Empty);
         }
         private void SaveLastOpenedFile(string fileName)
         {
@@ -135,13 +152,8 @@ namespace ViewModels
             {
                 if (fileHandler.LoadFile(fileName))
                 {
-                    // TODO
-                    // TODO refactor similar code _OpenFile
-                    //if (!core.InitializeNewFileReader(fileHandler))
-                    //{
-                    //    windowService.ShowMessage("File is corrupted.");
-                    //    CloseFile.Execute(null);
-                    //}
+                    // Load new data
+                    LoadUpData();
                     OpenedFile = fileName;
                 }
             }

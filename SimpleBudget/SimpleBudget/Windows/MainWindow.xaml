@@ -41,8 +41,6 @@
                     <ColumnDefinition Width="300"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
-                
                 <DataGrid Grid.Column="0"
                           ItemsSource="{Binding Accounts}"
                           AutoGenerateColumns="False"
@@ -79,6 +77,8 @@
                             <Setter Property="Background" Value="Transparent"/>
                         </Style>
                     </chart:Chart.PlotAreaStyle>
+                    
+                    
                     <chart:Chart.Series>
                         <chart:Stacked100BarSeries>
                             <chart:SeriesDefinition ItemsSource="{Binding Bars}"

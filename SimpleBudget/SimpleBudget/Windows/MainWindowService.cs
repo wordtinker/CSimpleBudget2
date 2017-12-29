@@ -44,7 +44,6 @@ namespace SimpleBudget.Windows
         }
         public string LastSavedFileName
         {
-            // TODO test save and load
             // Fetch filename from config file, it could be empty.
             get => Properties.Settings.Default.FileName;
             set
