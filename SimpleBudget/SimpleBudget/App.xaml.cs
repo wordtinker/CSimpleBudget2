@@ -5,8 +5,8 @@ using System.Globalization;
 using System.Windows;
 using Unity;
 using Unity.Resolution;
-using ViewModels;
 using ViewModels.Interfaces;
+using ViewModels.Windows;
 
 namespace SimpleBudget
 {
@@ -31,7 +31,8 @@ namespace SimpleBudget
             Container = modelFactory.Container.CreateChildContainer();
             // Register event aggregator
             Container.RegisterInstance<IEventAggregator>(new EventAggregator());
-            
+            // Register base service provider
+            Container.RegisterInstance<IUIBaseService>(new BaseWindowService());
             // TODO
             // Register logging class
             // TODO

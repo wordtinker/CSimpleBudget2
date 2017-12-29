@@ -16,6 +16,9 @@ namespace Models.Interfaces
     }
     public interface IDataProvider
     {
+        IEnumerable<string> GetAccountTypes();
+        bool AddAccountType(string accountType);
+        bool DeleteAccountType(string accountType);
         IEnumerable<IAccount> GetAccounts();
     }
     // TODO

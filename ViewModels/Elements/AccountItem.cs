@@ -1,7 +1,20 @@
 ﻿using Models.Interfaces;
 
-namespace ViewModels
+namespace ViewModels.Elements
 {
+    /// <summary>
+    /// Simple container for storing Account type object(string).
+    /// </summary>
+    public class AccTypeItem
+    {
+        public string Name { get; }
+
+        public AccTypeItem(string name)
+        {
+            Name = name;
+        }
+    }
+
     public interface IAccountItem
     {
         string Name { get; }

@@ -1,15 +1,18 @@
 ﻿
 namespace ViewModels.Interfaces
 {
-    // TODO
-    public interface IUIMainWindowService
+    public interface IUIBaseService
     {
         void ShowMessage(string message);
+    }
+    // TODO
+    public interface IUIMainWindowService : IUIBaseService
+    {
         //void ShowBudgetReport();
         //void ShowBalanceReport();
         //void ShowCategoriesReport();
         ////void ShowTransactionRoll(AccountItem accItem);
-        //void ManageAccountTypes();
+        void ManageAccountTypes();
         //void ManageAccounts();
         //void ManageCategories();
         //void ManageBudget();
@@ -27,7 +30,6 @@ namespace ViewModels.Interfaces
     public interface IUIBudgetWindowService
     {
         //bool? ShowBudgetRecordEditor(BudgetRecordEditorViewModel vm);
-        //void ShowMessage(string message);
         //bool RequestMonthAndYear(out int monthToCopyFrom, out int yearToCopyFrom);
     }
 }

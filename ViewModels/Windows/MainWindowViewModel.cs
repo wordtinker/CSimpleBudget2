@@ -4,9 +4,10 @@ using Prism.Mvvm;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using ViewModels.Elements;
 using ViewModels.Interfaces;
 
-namespace ViewModels
+namespace ViewModels.Windows
 {
     public class MainWindowViewModel : BindableBase
     {
@@ -52,6 +53,7 @@ namespace ViewModels
         public ICommand OpenFile { get; }
         public ICommand CloseFile { get; }
         public ICommand Exit { get; }
+        public ICommand ManageAccTypes { get; }
         // ctor
         public MainWindowViewModel(IUIMainWindowService windowService, IFileHandler fileHandler, IDataProvider dataProvider)
         {
@@ -61,9 +63,13 @@ namespace ViewModels
             Accounts = new ObservableCollection<IAccountItem>();
             CreateFile = new DelegateCommand(_CreateFile);
             OpenFile = new DelegateCommand(_OpenFile);
+            // TODO IsFileOpened
             CloseFile = new DelegateCommand(_CloseFile, () => !string.IsNullOrEmpty(OpenedFile))
                 .ObservesProperty(() => OpenedFile);
             Exit = new DelegateCommand(windowService.Shutdown);
+            ManageAccTypes = new DelegateCommand(windowService.ManageAccountTypes, () => !string.IsNullOrEmpty(OpenedFile))
+                .ObservesProperty(() => OpenedFile);
+
             LoadLastOpenedFile();
         }
         // Methods

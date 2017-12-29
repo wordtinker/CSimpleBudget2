@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Elements\AccountItem.cs" />
+    <Compile Include="Windows\AccTypeManagerViewModel.cs" />
     <Compile Include="Windows\MainWindowViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

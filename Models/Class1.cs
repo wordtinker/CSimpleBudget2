@@ -36,6 +36,16 @@ namespace Models
 
         }
 
+        public bool AddAccountType(string accountType)
+        {
+            return true;
+        }
+
+        public bool DeleteAccountType(string accountType)
+        {
+            return true;
+        }
+
         public IEnumerable<IAccount> GetAccounts()
         {
             yield return new StubAccount
@@ -56,6 +66,12 @@ namespace Models
                 Closed = false,
                 Name = "8745"
             };
+        }
+
+        public IEnumerable<string> GetAccountTypes()
+        {
+            yield return "one";
+            yield return "two";
         }
     }
 }

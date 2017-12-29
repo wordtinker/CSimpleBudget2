@@ -1,10 +1,19 @@
 ﻿using Microsoft.Win32;
 using System.Windows;
 using ViewModels.Interfaces;
+using ViewModels.Windows;
+using Unity;
 
 namespace SimpleBudget.Windows
 {
-    class MainWindowService : IUIMainWindowService
+    class BaseWindowService : IUIBaseService
+    {
+        public void ShowMessage(string message)
+        {
+            MessageBox.Show(message);
+        }
+    }
+    class MainWindowService : BaseWindowService, IUIMainWindowService
     {
         private Window mainWindow;
 
@@ -52,13 +61,18 @@ namespace SimpleBudget.Windows
                 Properties.Settings.Default.Save();
             }
         }
-        public void ShowMessage(string message)
-        {
-            MessageBox.Show(message);
-        }
         public void Shutdown()
         {
             App.Current.Shutdown();
+        }
+        public void ManageAccountTypes()
+        {
+            AccTypeManager window = new AccTypeManager
+            {
+                Owner = mainWindow,
+                DataContext = App.Container.Resolve<AccTypeManagerViewModel>()
+            };
+            window.ShowDialog();
         }
     }
 }
