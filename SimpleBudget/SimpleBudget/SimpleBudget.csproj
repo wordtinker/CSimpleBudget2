@@ -129,6 +129,10 @@
     <Folder Include="Reports\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ModelFactory\ModelFactory.csproj">
+      <Project>{d768c676-5aaf-4409-9ac0-4f2b6062d260}</Project>
+      <Name>ModelFactory</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ViewModels.Interfaces\ViewModels.Interfaces.csproj">
       <Project>{c1a9e50b-b6ec-4f92-a10d-2ed7cdca21a0}</Project>
       <Name>ViewModels.Interfaces</Name>

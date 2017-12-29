@@ -23,7 +23,28 @@ namespace SimpleBudget
         /// <param name="e"></param>
         private void ApplicationStartup(object sender, StartupEventArgs e)
         {
-            // TODO separate method
+            SetupCulture();
+
+            // Configure and start model
+            var modelFactory = new ModelFactory.Factory();
+            // Make unity container out of model container
+            Container = modelFactory.Container.CreateChildContainer();
+            // Register event aggregator
+            Container.RegisterInstance<IEventAggregator>(new EventAggregator());
+            
+            // TODO
+            // Register logging class
+            // TODO
+            //Container.RegisterInstance<ILoggerFacade>(new SimpleLogger(appDir));
+            // Start main window
+            MainWindow = new MainWindow();
+            // Inject dependencies and properties
+            IUIMainWindowService service = new MainWindowService(MainWindow);
+            MainWindow.DataContext = Container.Resolve<MainWindowViewModel>(new ParameterOverride("windowService", service));
+            MainWindow.Show();
+        }
+        private void SetupCulture()
+        {
             // Creating a Global culture specific to our application.
             CultureInfo cultureInfo = new CultureInfo("en-US");
             // Creating the DateTime Information specific to our application.
@@ -38,27 +59,6 @@ namespace SimpleBudget
             cultureInfo.DateTimeFormat = dateTimeInfo;
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-
-            // TODO
-            // Configure and start model
-            // TODO var modelFactory = new ModelFactory.ModelFactory();
-            // Make unity container out of model container
-            // TODO Container = modelFactory.Container.CreateChildContainer();
-
-            // TODO
-            Container = new UnityContainer();
-            
-            // Register event aggregator
-            Container.RegisterInstance<IEventAggregator>(new EventAggregator());
-            // Register logging class
-            // TODO
-            //Container.RegisterInstance<ILoggerFacade>(new SimpleLogger(appDir));
-            // Start main window
-            MainWindow = new MainWindow();
-            // Inject dependencies and properties
-            IUIMainWindowService service = new MainWindowService(MainWindow);
-            MainWindow.DataContext = Container.Resolve<MainWindowViewModel>(new ParameterOverride("windowService", service));
-            MainWindow.Show();
         }
         /// <summary>
         /// General exception cather. Logs exceptions.

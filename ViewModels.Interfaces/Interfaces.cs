@@ -4,7 +4,7 @@ namespace ViewModels.Interfaces
     // TODO
     public interface IUIMainWindowService
     {
-        //void ShowMessage(string message);
+        void ShowMessage(string message);
         //void ShowBudgetReport();
         //void ShowBalanceReport();
         //void ShowCategoriesReport();
@@ -13,10 +13,10 @@ namespace ViewModels.Interfaces
         //void ManageAccounts();
         //void ManageCategories();
         //void ManageBudget();
-        //void Shutdown();
-        //string LastSavedFileName { get; set; }
-        //string SaveFileDialog(string fileExtension);
-        //string OpenFileDialog(string fileExtension);
+        void Shutdown();
+        string LastSavedFileName { get; set; }
+        string SaveFileDialog(string fileExtension);
+        string OpenFileDialog(string fileExtension);
     }
     // TODO
     public interface IUITransactionRollService

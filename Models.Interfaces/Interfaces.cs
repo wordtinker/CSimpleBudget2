@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Models.Interfaces
 {
-    public class Interfaces
+    public interface IFileHandler
     {
+        string Extension { get; }
+        bool InitializeFile(string fileName);
+        bool LoadFile(string fileName);
+        void CloseFile();
+    }
+    public interface IStorageProvider
+    {
+        // TODO IStorage
+    }
+    public interface IDataProvider
+    {
+
     }
 }
