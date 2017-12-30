@@ -85,6 +85,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Windows\AccountsManager.xaml.cs">
+      <DependentUpon>AccountsManager.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\AccTypeManager.xaml.cs">
       <DependentUpon>AccTypeManager.xaml</DependentUpon>
     </Compile>
@@ -96,6 +99,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Windows\MainWindowService.cs" />
+    <Page Include="Windows\AccountsManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\AccTypeManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

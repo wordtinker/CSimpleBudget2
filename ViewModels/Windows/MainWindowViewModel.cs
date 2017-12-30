@@ -49,18 +49,28 @@ namespace ViewModels.Windows
         }
         public ObservableCollection<IAccountItem> Accounts { get; }
         // Commands
-        public ICommand CreateFile { get; }
-        public ICommand OpenFile { get; }
-        public ICommand CloseFile { get; }
-        public ICommand Exit { get; }
-        public ICommand ManageAccTypes { get; }
+        public ICommand CreateFile { get; private set; }
+        public ICommand OpenFile { get; private set; }
+        public ICommand CloseFile { get; private set; }
+        public ICommand Exit { get; private set; }
+        public ICommand ManageAccTypes { get; private set; }
+        public ICommand ManageAccounts { get; private set; }
         // ctor
         public MainWindowViewModel(IUIMainWindowService windowService, IFileHandler fileHandler, IDataProvider dataProvider)
         {
             this.windowService = windowService;
             this.fileHandler = fileHandler;
             this.dataProvider = dataProvider;
+
             Accounts = new ObservableCollection<IAccountItem>();
+
+            CreateCommands();
+
+            LoadLastOpenedFile();
+        }
+        // Methods
+        private void CreateCommands()
+        {
             CreateFile = new DelegateCommand(_CreateFile);
             OpenFile = new DelegateCommand(_OpenFile);
             // TODO IsFileOpened
@@ -69,10 +79,13 @@ namespace ViewModels.Windows
             Exit = new DelegateCommand(windowService.Shutdown);
             ManageAccTypes = new DelegateCommand(windowService.ManageAccountTypes, () => !string.IsNullOrEmpty(OpenedFile))
                 .ObservesProperty(() => OpenedFile);
-
-            LoadLastOpenedFile();
+            ManageAccounts = new DelegateCommand(windowService.ManageAccounts, () =>
+            {
+                // TODO Core.Instance.AccountTypes.Count != 0 && !string.IsNullOrEmpty(OpenedFile)
+                // TODO observes
+                return true;
+            });
         }
-        // Methods
         private void CleanUpData()
         {
             Accounts.Clear();
@@ -83,7 +96,7 @@ namespace ViewModels.Windows
             {
                 if (!acc.Closed)
                 {
-                    Accounts.Add(new AccountItem(acc));
+                    Accounts.Add(new AccountItem(acc, dataProvider));
                 }
             }
             // show total

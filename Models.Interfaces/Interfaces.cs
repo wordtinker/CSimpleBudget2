@@ -20,12 +20,16 @@ namespace Models.Interfaces
         bool AddAccountType(string accountType);
         bool DeleteAccountType(string accountType);
         IEnumerable<IAccount> GetAccounts();
+        bool AddAccount(string accTyp, string accName, out IAccount newAccount);
+        bool DeleteAccount(IAccount account);
+        void UpdateAccount(IAccount account);
     }
-    // TODO
     public interface IAccount
     {
-        string Name { get; }
-        decimal Balance { get; }
-        bool Closed { get; }
+        string Name { get; set; }
+        string Type { get; set; }
+        decimal Balance { get; set; }
+        bool Closed { get; set; }
+        bool Excluded { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace ViewModels.Interfaces
         //void ShowCategoriesReport();
         ////void ShowTransactionRoll(AccountItem accItem);
         void ManageAccountTypes();
-        //void ManageAccounts();
+        void ManageAccounts();
         //void ManageCategories();
         //void ManageBudget();
         void Shutdown();

@@ -8,6 +8,8 @@ namespace Models
         public string Name { get; set; }
         public decimal Balance { get; set; }
         public bool Closed { get; set; }
+        public string Type { get; set; }
+        public bool Excluded { get; set; }
     }
 
     public class StubFileHandler : IFileHandler, IStorageProvider
@@ -36,7 +38,18 @@ namespace Models
 
         }
 
+        public bool AddAccount(string accType, string accName, out IAccount newAccount)
+        {
+            newAccount = new StubAccount { Balance = 0, Closed = false, Name = accName, Type = accType };
+            return true;
+        }
+
         public bool AddAccountType(string accountType)
+        {
+            return true;
+        }
+
+        public bool DeleteAccount(IAccount account)
         {
             return true;
         }
@@ -52,19 +65,25 @@ namespace Models
             {
                 Balance = 1254m,
                 Closed = false,
-                Name = "1254"
+                Name = "1254",
+                Excluded = false,
+                Type = "one"
             };
             yield return new StubAccount
             {
                 Balance = 1254m,
                 Closed = true,
-                Name = "1254"
+                Name = "1254",
+                Excluded = true,
+                Type = "two"
             };
             yield return new StubAccount
             {
                 Balance = 8745m,
                 Closed = false,
-                Name = "8745"
+                Name = "8745",
+                Excluded = false,
+                Type ="one"
             };
         }
 
@@ -72,6 +91,11 @@ namespace Models
         {
             yield return "one";
             yield return "two";
+        }
+
+        public void UpdateAccount(IAccount account)
+        {
+            // do nothing
         }
     }
 }

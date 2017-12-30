@@ -74,5 +74,14 @@ namespace SimpleBudget.Windows
             };
             window.ShowDialog();
         }
+        public void ManageAccounts()
+        {
+            AccountsManager window = new AccountsManager
+            {
+                Owner = mainWindow,
+                DataContext = App.Container.Resolve<AccountsManagerViewModel>()
+            };
+            window.ShowDialog();
+        }
     }
 }
