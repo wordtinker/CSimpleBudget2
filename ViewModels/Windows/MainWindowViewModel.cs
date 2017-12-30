@@ -87,7 +87,7 @@ namespace ViewModels.Windows
         }
         private bool IsFileOpened()
         {
-            return !string.IsNullOrEmpty(OpenedFile)
+            return !string.IsNullOrEmpty(OpenedFile);
         }
         private void CleanUpData()
         {
