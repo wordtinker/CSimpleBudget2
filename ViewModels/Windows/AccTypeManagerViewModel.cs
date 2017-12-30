@@ -2,6 +2,7 @@
 using Prism.Events;
 using System.Collections.ObjectModel;
 using ViewModels.Elements;
+using ViewModels.Events;
 using ViewModels.Interfaces;
 
 namespace ViewModels.Windows
@@ -34,8 +35,9 @@ namespace ViewModels.Windows
             }
             else
             {
-                AccTypes.Add(new AccTypeItem(accTypeName));
-                // TODO event
+                AccTypeItem newAccType = new AccTypeItem(accTypeName);
+                AccTypes.Add(newAccType);
+                eventAggregator.GetEvent<AccountTypeAdded>().Publish(newAccType);
             }
         }
         public void DeleteAccType(AccTypeItem item)
@@ -47,7 +49,7 @@ namespace ViewModels.Windows
             else
             {
                 AccTypes.Remove(item);
-                // TODO event
+                eventAggregator.GetEvent<AccountTypeDeleted>().Publish(item);
             }
         }
     }

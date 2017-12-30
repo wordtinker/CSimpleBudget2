@@ -1,10 +1,12 @@
 ﻿using Models.Interfaces;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using ViewModels.Elements;
+using ViewModels.Events;
 using ViewModels.Interfaces;
 
 namespace ViewModels.Windows
@@ -16,6 +18,7 @@ namespace ViewModels.Windows
         private IUIMainWindowService windowService;
         private IFileHandler fileHandler;
         private IDataProvider dataProvider;
+        private IEventAggregator eventAggregator;
 
         // Properties
 
@@ -43,11 +46,17 @@ namespace ViewModels.Windows
             {
                 if (SetProperty(ref openedFile, value))
                 {
+                    // TODO ???
                     RaisePropertyChanged(nameof(CanShowReport));
                 }
             }
         }
+        public bool IsReadyToSetAccounts
+        {
+            get => AccTypes.Count > 0;
+        }
         public ObservableCollection<IAccountItem> Accounts { get; }
+        public ObservableCollection<AccTypeItem> AccTypes { get; }
         // Commands
         public ICommand CreateFile { get; private set; }
         public ICommand OpenFile { get; private set; }
@@ -56,16 +65,19 @@ namespace ViewModels.Windows
         public ICommand ManageAccTypes { get; private set; }
         public ICommand ManageAccounts { get; private set; }
         // ctor
-        public MainWindowViewModel(IUIMainWindowService windowService, IFileHandler fileHandler, IDataProvider dataProvider)
+        public MainWindowViewModel(IUIMainWindowService windowService, IFileHandler fileHandler, IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
             this.windowService = windowService;
             this.fileHandler = fileHandler;
             this.dataProvider = dataProvider;
+            this.eventAggregator = eventAggregator;
 
             Accounts = new ObservableCollection<IAccountItem>();
+            AccTypes = new ObservableCollection<AccTypeItem>();
+            AccTypes.CollectionChanged += (sender, e) => RaisePropertyChanged(nameof(IsReadyToSetAccounts));
 
             CreateCommands();
-
+            ConnectEvents();
             LoadLastOpenedFile();
         }
         // Methods
@@ -78,12 +90,13 @@ namespace ViewModels.Windows
             Exit = new DelegateCommand(windowService.Shutdown);
             ManageAccTypes = new DelegateCommand(windowService.ManageAccountTypes, IsFileOpened)
                 .ObservesProperty(() => OpenedFile);
-            ManageAccounts = new DelegateCommand(windowService.ManageAccounts, () =>
-            {
-                // TODO Core.Instance.AccountTypes.Count != 0 && !string.IsNullOrEmpty(OpenedFile)
-                // TODO observes
-                return true;
-            });
+            ManageAccounts = new DelegateCommand(windowService.ManageAccounts)
+                .ObservesCanExecute(() => IsReadyToSetAccounts);
+        }
+        private void ConnectEvents()
+        {
+            eventAggregator.GetEvent<AccountTypeAdded>().Subscribe(ati => AccTypes.Add(ati));
+            eventAggregator.GetEvent<AccountTypeDeleted>().Subscribe(ati => AccTypes.Remove(ati));
         }
         private bool IsFileOpened()
         {
@@ -91,10 +104,15 @@ namespace ViewModels.Windows
         }
         private void CleanUpData()
         {
+            AccTypes.Clear();
             Accounts.Clear();
         }
         private void LoadUpData()
         {
+            foreach (var item in dataProvider.GetAccountTypes())
+            {
+                AccTypes.Add(new AccTypeItem(item));
+            }
             foreach(IAccount acc in dataProvider.GetAccounts())
             {
                 if (!acc.Closed)

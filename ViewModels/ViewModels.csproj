@@ -45,6 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Elements\AccountItem.cs" />
+    <Compile Include="Elements\AccTypeItem.cs" />
+    <Compile Include="Events\Events.cs" />
     <Compile Include="Windows\AccountsManagerViewModel.cs" />
     <Compile Include="Windows\AccTypeManagerViewModel.cs" />
     <Compile Include="Windows\MainWindowViewModel.cs" />
