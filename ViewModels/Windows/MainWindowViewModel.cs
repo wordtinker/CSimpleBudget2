@@ -73,11 +73,10 @@ namespace ViewModels.Windows
         {
             CreateFile = new DelegateCommand(_CreateFile);
             OpenFile = new DelegateCommand(_OpenFile);
-            // TODO IsFileOpened
-            CloseFile = new DelegateCommand(_CloseFile, () => !string.IsNullOrEmpty(OpenedFile))
+            CloseFile = new DelegateCommand(_CloseFile, IsFileOpened)
                 .ObservesProperty(() => OpenedFile);
             Exit = new DelegateCommand(windowService.Shutdown);
-            ManageAccTypes = new DelegateCommand(windowService.ManageAccountTypes, () => !string.IsNullOrEmpty(OpenedFile))
+            ManageAccTypes = new DelegateCommand(windowService.ManageAccountTypes, IsFileOpened)
                 .ObservesProperty(() => OpenedFile);
             ManageAccounts = new DelegateCommand(windowService.ManageAccounts, () =>
             {
@@ -85,6 +84,10 @@ namespace ViewModels.Windows
                 // TODO observes
                 return true;
             });
+        }
+        private bool IsFileOpened()
+        {
+            return !string.IsNullOrEmpty(OpenedFile)
         }
         private void CleanUpData()
         {
@@ -141,9 +144,9 @@ namespace ViewModels.Windows
                 // Open file
                 if (fileHandler.LoadFile(fileName))
                 {
-                    SaveLastOpenedFile(fileName);
                     // Load new data
                     LoadUpData();
+                    SaveLastOpenedFile(fileName);
                 }
                 else
                 {
