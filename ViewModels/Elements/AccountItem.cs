@@ -1,4 +1,6 @@
 ﻿using Models.Interfaces;
+using Prism.Events;
+using ViewModels.Events;
 
 namespace ViewModels.Elements
 {
@@ -11,10 +13,10 @@ namespace ViewModels.Elements
         bool Excluded { get; set; }
 
     }
-    // TODO bindable base?
     public class AccountItem : IAccountItem
     {
         private IDataProvider dataProvider;
+        private IEventAggregator eventAggregator;
         internal IAccount account;
 
         public string Name => account.Name;
@@ -26,7 +28,7 @@ namespace ViewModels.Elements
             {
                 account.Type = value;
                 dataProvider.UpdateAccount(account);
-                // TODO event?
+                eventAggregator.GetEvent<AccountChanged>().Publish(this);
             }
         }
         public bool Closed
@@ -36,7 +38,7 @@ namespace ViewModels.Elements
             {
                 account.Closed = value;
                 dataProvider.UpdateAccount(account);
-                // TODO event?
+                eventAggregator.GetEvent<AccountChanged>().Publish(this);
             }
         }
         public bool Excluded
@@ -46,14 +48,29 @@ namespace ViewModels.Elements
             {
                 account.Excluded = value;
                 dataProvider.UpdateAccount(account);
-                // TODO event
+                eventAggregator.GetEvent<AccountChanged>().Publish(this);
             }
         }
-
-        public AccountItem(IAccount acc, IDataProvider dataProvider)
+        public AccountItem(IAccount acc, IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
             this.account = acc;
             this.dataProvider = dataProvider;
+            this.eventAggregator = eventAggregator;
+        }
+        // Equals implementation
+        public override bool Equals(object obj)
+        {
+            if (obj is AccountItem other)
+            {
+                // TODO Later see model-DB restrictions Name or Name-Type
+                return this.Name.Equals(other.Name);
+            }
+            return false;
+        }
+        public override int GetHashCode()
+        {
+            // TODO Later see model-DB restrictions Name or Name-Type
+            return this.Name.GetHashCode();
         }
     }
     /// <summary>

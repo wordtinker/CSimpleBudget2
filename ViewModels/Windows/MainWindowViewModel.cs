@@ -97,27 +97,38 @@ namespace ViewModels.Windows
         {
             eventAggregator.GetEvent<AccountTypeAdded>().Subscribe(ati => AccTypes.Add(ati));
             eventAggregator.GetEvent<AccountTypeDeleted>().Subscribe(ati => AccTypes.Remove(ati));
+            // Those events are rare, it's easier to refresh whole collection
+            eventAggregator.GetEvent<AccountAdded>().Subscribe(a => RefreshAccounts());
+            eventAggregator.GetEvent<AccountDeleted>().Subscribe(a => RefreshAccounts());
+            eventAggregator.GetEvent<AccountChanged>().Subscribe(a => RefreshAccounts());
         }
         private bool IsFileOpened()
         {
             return !string.IsNullOrEmpty(OpenedFile);
         }
+        // TODO
         private void CleanUpData()
         {
             AccTypes.Clear();
             Accounts.Clear();
         }
+        // TODO
         private void LoadUpData()
         {
             foreach (var item in dataProvider.GetAccountTypes())
             {
                 AccTypes.Add(new AccTypeItem(item));
             }
-            foreach(IAccount acc in dataProvider.GetAccounts())
+            RefreshAccounts();
+        }
+        private void RefreshAccounts()
+        {
+            Accounts.Clear();
+            foreach (IAccount acc in dataProvider.GetAccounts())
             {
                 if (!acc.Closed)
                 {
-                    Accounts.Add(new AccountItem(acc, dataProvider));
+                    Accounts.Add(new AccountItem(acc, dataProvider, eventAggregator));
                 }
             }
             // show total

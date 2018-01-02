@@ -2,6 +2,7 @@
 using Prism.Events;
 using System.Collections.ObjectModel;
 using ViewModels.Elements;
+using ViewModels.Events;
 using ViewModels.Interfaces;
 
 namespace ViewModels.Windows
@@ -25,7 +26,7 @@ namespace ViewModels.Windows
             AccTypes = new ObservableCollection<string>();
             foreach (var item in dataProvider.GetAccounts())
             {
-                Accounts.Add(new AccountItem(item, dataProvider));
+                Accounts.Add(new AccountItem(item, dataProvider, eventAggregator));
             }
             foreach (var item in dataProvider.GetAccountTypes())
             {
@@ -34,27 +35,28 @@ namespace ViewModels.Windows
         }
         public void AddAccount(string accName)
         {
-            if (!dataProvider.AddAccount(AccTypes[0], accName, out IAccount newAccount))
+            if (dataProvider.AddAccount(AccTypes[0], accName, out IAccount newAccount))
             {
-                serviceProvider.ShowMessage("Can't add account.");
+                AccountItem newAccVM = new AccountItem(newAccount, dataProvider, eventAggregator);
+                Accounts.Add(newAccVM);
+                eventAggregator.GetEvent<AccountAdded>().Publish(newAccVM);
             }
             else
             {
-                Accounts.Add(new AccountItem(newAccount, dataProvider));
-                // TODO event
+                serviceProvider.ShowMessage("Can't add account.");
             }
         }
 
         public void DeleteAccount(AccountItem item)
         {
-            if (!dataProvider.DeleteAccount(item.account))
+            if (dataProvider.DeleteAccount(item.account))
             {
-                serviceProvider.ShowMessage("Can't delete account.");
+                Accounts.Remove(item);
+                eventAggregator.GetEvent<AccountDeleted>().Publish(item);
             }
             else
             {
-                Accounts.Remove(item);
-                // TODO event
+                serviceProvider.ShowMessage("Can't delete account.");
             }
         }
     }
