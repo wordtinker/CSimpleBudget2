@@ -29,27 +29,27 @@ namespace ViewModels.Windows
         }
         public void AddAccType(string accTypeName)
         {
-            if (!dataProvider.AddAccountType(accTypeName))
-            {
-                serviceProvider.ShowMessage("Can't add account type.");
-            }
-            else
+            if (dataProvider.AddAccountType(accTypeName))
             {
                 AccTypeItem newAccType = new AccTypeItem(accTypeName);
                 AccTypes.Add(newAccType);
                 eventAggregator.GetEvent<AccountTypeAdded>().Publish(newAccType);
             }
+            else
+            {
+                serviceProvider.ShowMessage("Can't add account type.");
+            }
         }
         public void DeleteAccType(AccTypeItem item)
         {
-            if (!dataProvider.DeleteAccountType(item.Name))
-            {
-                serviceProvider.ShowMessage("Can't delete account type.");
-            }
-            else
+            if (dataProvider.DeleteAccountType(item.Name))
             {
                 AccTypes.Remove(item);
                 eventAggregator.GetEvent<AccountTypeDeleted>().Publish(item);
+            }
+            else
+            {
+                serviceProvider.ShowMessage("Can't delete account type.");
             }
         }
     }
