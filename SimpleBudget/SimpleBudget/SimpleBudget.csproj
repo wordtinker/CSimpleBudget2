@@ -91,6 +91,9 @@
     <Compile Include="Windows\AccTypeManager.xaml.cs">
       <DependentUpon>AccTypeManager.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\CategoriesManager.xaml.cs">
+      <DependentUpon>CategoriesManager.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -104,6 +107,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\AccTypeManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\CategoriesManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

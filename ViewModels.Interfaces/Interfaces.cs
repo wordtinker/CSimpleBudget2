@@ -14,7 +14,7 @@ namespace ViewModels.Interfaces
         ////void ShowTransactionRoll(AccountItem accItem);
         void ManageAccountTypes();
         void ManageAccounts();
-        //void ManageCategories();
+        void ManageCategories();
         //void ManageBudget();
         void Shutdown();
         string LastSavedFileName { get; set; }

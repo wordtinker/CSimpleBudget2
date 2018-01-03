@@ -11,6 +11,12 @@ namespace Models
         public string Type { get; set; }
         public bool Excluded { get; set; }
     }
+    public class StubCategory : ICategory
+    {
+        public string Name { get; set; }
+        public ICategory Parent { get; set; }
+        public IEnumerable<ICategory> Children { get; set; }
+    }
 
     public class StubFileHandler : IFileHandler, IStorageProvider
     {
@@ -49,12 +55,23 @@ namespace Models
             return true;
         }
 
+        public bool AddCategory(string name, ICategory parent, out ICategory newCategory)
+        {
+            newCategory = new StubCategory { Name = name, Parent = parent, Children = new List<ICategory>() };
+            return true;
+        }
+
         public bool DeleteAccount(IAccount account)
         {
             return true;
         }
 
         public bool DeleteAccountType(string accountType)
+        {
+            return true;
+        }
+
+        public bool DeleteCategory(ICategory category)
         {
             return true;
         }
@@ -91,6 +108,15 @@ namespace Models
         {
             yield return "one";
             yield return "two";
+        }
+
+        public IEnumerable<ICategory> GetCategories()
+        {
+            StubCategory one = new StubCategory { Name = "one", Parent = null, Children = new List<ICategory>() };
+            StubCategory topOne = new StubCategory { Name = "Top one", Parent = null,
+                Children = new List<ICategory>() { one } };
+            one.Parent = topOne;
+            yield return topOne;
         }
 
         public void UpdateAccount(IAccount account)

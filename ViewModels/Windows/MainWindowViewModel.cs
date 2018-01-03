@@ -64,6 +64,7 @@ namespace ViewModels.Windows
         public ICommand Exit { get; private set; }
         public ICommand ManageAccTypes { get; private set; }
         public ICommand ManageAccounts { get; private set; }
+        public ICommand ManageCategories { get; private set; }
         // ctor
         public MainWindowViewModel(IUIMainWindowService windowService, IFileHandler fileHandler, IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
@@ -92,6 +93,8 @@ namespace ViewModels.Windows
                 .ObservesProperty(() => OpenedFile);
             ManageAccounts = new DelegateCommand(windowService.ManageAccounts)
                 .ObservesCanExecute(() => IsReadyToSetAccounts);
+            ManageCategories = new DelegateCommand(windowService.ManageCategories, IsFileOpened)
+                .ObservesProperty(() => OpenedFile);
         }
         private void ConnectEvents()
         {

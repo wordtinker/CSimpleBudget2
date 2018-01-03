@@ -83,5 +83,15 @@ namespace SimpleBudget.Windows
             };
             window.ShowDialog();
         }
+
+        public void ManageCategories()
+        {
+            CategoriesManager window = new CategoriesManager
+            {
+                Owner = mainWindow,
+                DataContext = App.Container.Resolve<CategoriesManagerViewModel>()
+            };
+            window.ShowDialog();
+        }
     }
 }

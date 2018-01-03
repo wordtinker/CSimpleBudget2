@@ -23,6 +23,9 @@ namespace Models.Interfaces
         bool AddAccount(string accTyp, string accName, out IAccount newAccount);
         bool DeleteAccount(IAccount account);
         void UpdateAccount(IAccount account);
+        IEnumerable<ICategory> GetCategories();
+        bool AddCategory(string name, ICategory parent, out ICategory newCategory);
+        bool DeleteCategory(ICategory category);
     }
     public interface IAccount
     {
@@ -31,5 +34,11 @@ namespace Models.Interfaces
         decimal Balance { get; set; }
         bool Closed { get; set; }
         bool Excluded { get; set; }
+    }
+    public interface ICategory
+    {
+        string Name { get; }
+        ICategory Parent { get; }
+        IEnumerable<ICategory> Children { get; }
     }
 }
