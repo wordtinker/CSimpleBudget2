@@ -15,7 +15,7 @@ namespace ViewModels.Interfaces
         void ManageAccountTypes();
         void ManageAccounts();
         void ManageCategories();
-        //void ManageBudget();
+        void ManageBudget();
         void Shutdown();
         string LastSavedFileName { get; set; }
         string SaveFileDialog(string fileExtension);

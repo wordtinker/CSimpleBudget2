@@ -93,5 +93,10 @@ namespace SimpleBudget.Windows
             };
             window.ShowDialog();
         }
+
+        public void ManageBudget()
+        {
+            // TODO !!!
+        }
     }
 }

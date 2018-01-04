@@ -24,39 +24,21 @@ namespace ViewModels.Windows
 
         /// <summary>
         /// Property showing that we have enough
-        /// info for reports.
+        /// info for reports and budgeting.
         /// </summary>
-        // TODO why do we need that?
-        public bool CanShowReport
-        {
-            get
-            {
-                return false;
-                // TODO stub
-                //bool catExists = (from c in core.Categories
-                //                  where c.Parent != null
-                //                  select c).Any();
-                //return !string.IsNullOrEmpty(OpenedFile) && catExists;
-            }
-        }
+        public bool IsFullyReady => (from c in Categories where c.Parent != null select c).Any();
         public string OpenedFile
         {
             get { return openedFile; }
             set
             {
-                if (SetProperty(ref openedFile, value))
-                {
-                    // TODO ???
-                    RaisePropertyChanged(nameof(CanShowReport));
-                }
+                SetProperty(ref openedFile, value);
             }
         }
-        public bool IsReadyToSetAccounts
-        {
-            get => AccTypes.Count > 0;
-        }
+        public bool IsReadyToSetAccounts => AccTypes.Count > 0;
         public ObservableCollection<IAccountItem> Accounts { get; }
         public ObservableCollection<AccTypeItem> AccTypes { get; }
+        public ObservableCollection<CategoryNode> Categories { get; }
         // Commands
         public ICommand CreateFile { get; private set; }
         public ICommand OpenFile { get; private set; }
@@ -65,6 +47,7 @@ namespace ViewModels.Windows
         public ICommand ManageAccTypes { get; private set; }
         public ICommand ManageAccounts { get; private set; }
         public ICommand ManageCategories { get; private set; }
+        public ICommand ManageBudget { get; private set; }
         // ctor
         public MainWindowViewModel(IUIMainWindowService windowService, IFileHandler fileHandler, IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
@@ -76,6 +59,8 @@ namespace ViewModels.Windows
             Accounts = new ObservableCollection<IAccountItem>();
             AccTypes = new ObservableCollection<AccTypeItem>();
             AccTypes.CollectionChanged += (sender, e) => RaisePropertyChanged(nameof(IsReadyToSetAccounts));
+            Categories = new ObservableCollection<CategoryNode>();
+            Categories.CollectionChanged += (sender, e) => RaisePropertyChanged(nameof(IsFullyReady));
 
             CreateCommands();
             ConnectEvents();
@@ -95,6 +80,8 @@ namespace ViewModels.Windows
                 .ObservesCanExecute(() => IsReadyToSetAccounts);
             ManageCategories = new DelegateCommand(windowService.ManageCategories, IsFileOpened)
                 .ObservesProperty(() => OpenedFile);
+            ManageBudget = new DelegateCommand(windowService.ManageBudget)
+                .ObservesCanExecute(() => IsFullyReady);
         }
         private void ConnectEvents()
         {
@@ -123,6 +110,11 @@ namespace ViewModels.Windows
                 AccTypes.Add(new AccTypeItem(item));
             }
             RefreshAccounts();
+            foreach (var item in dataProvider.GetCategories())
+            {
+                // TODO !!! stabilize dp interface
+                Categories.Add(new CategoryNode(item));
+            }
         }
         private void RefreshAccounts()
         {
