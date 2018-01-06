@@ -23,8 +23,7 @@ namespace ViewModels.Windows
             this.eventAggregator = eventAggregator;
 
             Categories = new ObservableCollection<CategoryNode>();
-            // TODO Later stabilize dp interface
-            foreach (ICategory item in dataProvider.GetCategories().Where(c => c.Parent == null))
+            foreach (ICategory item in dataProvider.GetCategories())
             {
                 Categories.Add(new CategoryNode(item));
             }

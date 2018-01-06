@@ -38,7 +38,7 @@ namespace ViewModels.Windows
         /// Property showing that we have enough
         /// info for reports and budgeting.
         /// </summary>
-        public bool IsFullyReady => (from c in Categories where c.Parent != null select c).Any();
+        public bool IsFullyReady => (from c in Categories where c.Items.Count >0 select c).Any();
         public ObservableCollection<IAccountItem> Accounts { get; }
         public ObservableCollection<AccTypeItem> AccTypes { get; }
         public ObservableCollection<CategoryNode> Categories { get; }
@@ -111,6 +111,7 @@ namespace ViewModels.Windows
         {
             AccTypes.Clear();
             Accounts.Clear();
+            Categories.Clear();
         }
         // TODO
         private void LoadUpData()
@@ -122,7 +123,6 @@ namespace ViewModels.Windows
             RefreshAccounts();
             foreach (var item in dataProvider.GetCategories())
             {
-                // TODO !!! stabilize dp interface
                 Categories.Add(new CategoryNode(item));
             }
         }

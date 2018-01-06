@@ -110,6 +110,7 @@ namespace Models
             yield return "two";
         }
 
+        // Top tier with structure
         public IEnumerable<ICategory> GetCategories()
         {
             StubCategory one = new StubCategory { Name = "one", Parent = null, Children = new List<ICategory>() };
