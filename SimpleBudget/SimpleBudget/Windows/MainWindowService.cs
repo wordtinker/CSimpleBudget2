@@ -98,5 +98,25 @@ namespace SimpleBudget.Windows
         {
             // TODO !!!
         }
+
+        public void ShowBudgetReport()
+        {
+            // TODO
+        }
+
+        public void ShowBalanceReport()
+        {
+            // TODO
+        }
+
+        public void ShowCategoriesReport()
+        {
+            // TODO
+        }
+
+        public void ShowHelp()
+        {
+            // TODO
+        }
     }
 }

@@ -21,21 +21,24 @@ namespace ViewModels.Windows
         private IEventAggregator eventAggregator;
 
         // Properties
-
-        /// <summary>
-        /// Property showing that we have enough
-        /// info for reports and budgeting.
-        /// </summary>
-        public bool IsFullyReady => (from c in Categories where c.Parent != null select c).Any();
         public string OpenedFile
         {
             get { return openedFile; }
             set
             {
-                SetProperty(ref openedFile, value);
+                if(SetProperty(ref openedFile, value))
+                {
+                    RaisePropertyChanged(nameof(IsFileOpened));
+                }
             }
         }
+        public bool IsFileOpened => !string.IsNullOrEmpty(OpenedFile);
         public bool IsReadyToSetAccounts => AccTypes.Count > 0;
+        /// <summary>
+        /// Property showing that we have enough
+        /// info for reports and budgeting.
+        /// </summary>
+        public bool IsFullyReady => (from c in Categories where c.Parent != null select c).Any();
         public ObservableCollection<IAccountItem> Accounts { get; }
         public ObservableCollection<AccTypeItem> AccTypes { get; }
         public ObservableCollection<CategoryNode> Categories { get; }
@@ -48,6 +51,10 @@ namespace ViewModels.Windows
         public ICommand ManageAccounts { get; private set; }
         public ICommand ManageCategories { get; private set; }
         public ICommand ManageBudget { get; private set; }
+        public ICommand ShowBudgetReport { get; private set; }
+        public ICommand ShowBalanceReport { get; private set; }
+        public ICommand ShowCategoriesReport { get; private set; }
+        public ICommand ShowHelp { get; private set; }
         // ctor
         public MainWindowViewModel(IUIMainWindowService windowService, IFileHandler fileHandler, IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
@@ -71,17 +78,24 @@ namespace ViewModels.Windows
         {
             CreateFile = new DelegateCommand(_CreateFile);
             OpenFile = new DelegateCommand(_OpenFile);
-            CloseFile = new DelegateCommand(_CloseFile, IsFileOpened)
-                .ObservesProperty(() => OpenedFile);
+            CloseFile = new DelegateCommand(_CloseFile)
+                .ObservesCanExecute(() => IsFileOpened);
             Exit = new DelegateCommand(windowService.Shutdown);
-            ManageAccTypes = new DelegateCommand(windowService.ManageAccountTypes, IsFileOpened)
-                .ObservesProperty(() => OpenedFile);
+            ManageAccTypes = new DelegateCommand(windowService.ManageAccountTypes)
+                .ObservesCanExecute(() => IsFileOpened);
             ManageAccounts = new DelegateCommand(windowService.ManageAccounts)
                 .ObservesCanExecute(() => IsReadyToSetAccounts);
-            ManageCategories = new DelegateCommand(windowService.ManageCategories, IsFileOpened)
-                .ObservesProperty(() => OpenedFile);
+            ManageCategories = new DelegateCommand(windowService.ManageCategories)
+                .ObservesCanExecute(() => IsFileOpened);
             ManageBudget = new DelegateCommand(windowService.ManageBudget)
                 .ObservesCanExecute(() => IsFullyReady);
+            ShowBudgetReport = new DelegateCommand(windowService.ShowBudgetReport)
+                .ObservesCanExecute(() => IsFullyReady);
+            ShowBalanceReport = new DelegateCommand(windowService.ShowBalanceReport)
+                .ObservesCanExecute(() => IsFullyReady);
+            ShowCategoriesReport = new DelegateCommand(windowService.ShowCategoriesReport)
+                .ObservesCanExecute(() => IsFullyReady);
+            ShowHelp = new DelegateCommand(windowService.ShowHelp);
         }
         private void ConnectEvents()
         {
@@ -91,10 +105,6 @@ namespace ViewModels.Windows
             eventAggregator.GetEvent<AccountAdded>().Subscribe(a => RefreshAccounts());
             eventAggregator.GetEvent<AccountDeleted>().Subscribe(a => RefreshAccounts());
             eventAggregator.GetEvent<AccountChanged>().Subscribe(a => RefreshAccounts());
-        }
-        private bool IsFileOpened()
-        {
-            return !string.IsNullOrEmpty(OpenedFile);
         }
         // TODO
         private void CleanUpData()

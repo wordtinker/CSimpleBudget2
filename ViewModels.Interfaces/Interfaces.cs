@@ -8,15 +8,16 @@ namespace ViewModels.Interfaces
     // TODO
     public interface IUIMainWindowService : IUIBaseService
     {
-        //void ShowBudgetReport();
-        //void ShowBalanceReport();
-        //void ShowCategoriesReport();
+        void ShowBudgetReport();
+        void ShowBalanceReport();
+        void ShowCategoriesReport();
         ////void ShowTransactionRoll(AccountItem accItem);
         void ManageAccountTypes();
         void ManageAccounts();
         void ManageCategories();
         void ManageBudget();
         void Shutdown();
+        void ShowHelp();
         string LastSavedFileName { get; set; }
         string SaveFileDialog(string fileExtension);
         string OpenFileDialog(string fileExtension);
