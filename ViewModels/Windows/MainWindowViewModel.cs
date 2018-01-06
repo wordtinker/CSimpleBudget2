@@ -105,6 +105,8 @@ namespace ViewModels.Windows
             eventAggregator.GetEvent<AccountAdded>().Subscribe(a => RefreshAccounts());
             eventAggregator.GetEvent<AccountDeleted>().Subscribe(a => RefreshAccounts());
             eventAggregator.GetEvent<AccountChanged>().Subscribe(a => RefreshAccounts());
+            eventAggregator.GetEvent<CategoryAdded>().Subscribe(cn => RefreshCategories());
+            eventAggregator.GetEvent<CategoryDeleted>().Subscribe(cn => RefreshCategories());
         }
         // TODO
         private void CleanUpData()
@@ -121,10 +123,7 @@ namespace ViewModels.Windows
                 AccTypes.Add(new AccTypeItem(item));
             }
             RefreshAccounts();
-            foreach (var item in dataProvider.GetCategories())
-            {
-                Categories.Add(new CategoryNode(item));
-            }
+            RefreshCategories();
         }
         private void RefreshAccounts()
         {
@@ -145,6 +144,14 @@ namespace ViewModels.Windows
                     Balance = Accounts.Select(acc => acc.Balance).Sum(),
                 };
                 Accounts.Add(total);
+            }
+        }
+        private void RefreshCategories()
+        {
+            Categories.Clear();
+            foreach (var item in dataProvider.GetCategories())
+            {
+                Categories.Add(new CategoryNode(item));
             }
         }
         private void _CreateFile()
