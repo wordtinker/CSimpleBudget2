@@ -54,6 +54,7 @@
     <Compile Include="Windows\CategoriesManagerViewModel.cs" />
     <Compile Include="Windows\MainWindowViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Windows\TransactionRollViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Models.Interfaces\Models.Interfaces.csproj">

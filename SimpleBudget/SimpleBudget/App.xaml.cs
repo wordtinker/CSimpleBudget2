@@ -1,5 +1,6 @@
 ﻿using Prism.Events;
 using Prism.Logging;
+using SimpleBudget.Services;
 using SimpleBudget.Windows;
 using System.Globalization;
 using System.Windows;

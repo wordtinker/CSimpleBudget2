@@ -4,8 +4,10 @@ using ViewModels.Interfaces;
 using ViewModels.Windows;
 using Unity;
 using ViewModels.Elements;
+using Unity.Resolution;
+using SimpleBudget.Windows;
 
-namespace SimpleBudget.Windows
+namespace SimpleBudget.Services
 {
     class BaseWindowService : IUIBaseService
     {
@@ -94,6 +96,20 @@ namespace SimpleBudget.Windows
             };
             window.ShowDialog();
         }
+        public void ShowTransactionRoll(AccountItem accItem)
+        {
+            TransactionRoll window = new TransactionRoll()
+            {
+                Owner = mainWindow
+            };
+            IUITransactionRollService service = new TransactionRollService(window);
+            window.DataContext = App.Container.Resolve<TransactionRollViewModel>(new ResolverOverride[]
+            {
+                new ParameterOverride("accItem", accItem),
+                new ParameterOverride("service", service)
+            });
+            window.ShowDialog();
+        }
 
         public void ManageBudget()
         {
@@ -118,11 +134,6 @@ namespace SimpleBudget.Windows
         public void ShowHelp()
         {
             // TODO
-        }
-
-        public void ShowTransactionRoll(AccountItem accItem)
-        {
-            // TODO !!!
         }
     }
 }

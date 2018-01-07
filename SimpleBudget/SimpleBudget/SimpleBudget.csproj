@@ -85,6 +85,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Services\TransactionRollService.cs" />
     <Compile Include="Windows\AccountsManager.xaml.cs">
       <DependentUpon>AccountsManager.xaml</DependentUpon>
     </Compile>
@@ -101,7 +102,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Windows\MainWindowService.cs" />
+    <Compile Include="Services\MainWindowService.cs" />
+    <Compile Include="Windows\TransactionRoll.xaml.cs">
+      <DependentUpon>TransactionRoll.xaml</DependentUpon>
+    </Compile>
     <Page Include="Windows\AccountsManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -115,6 +119,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\TransactionRoll.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
