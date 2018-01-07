@@ -86,6 +86,11 @@ namespace Models
             return true;
         }
 
+        public bool DeleteTransaction(ITransaction transaction)
+        {
+            return true;
+        }
+
         public IEnumerable<IAccount> GetAccounts()
         {
             yield return new StubAccount

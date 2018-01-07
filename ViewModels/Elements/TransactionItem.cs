@@ -8,28 +8,28 @@ namespace ViewModels.Elements
     /// </summary>
     public class TransactionItem
     {
-        internal ITransaction tr;
+        internal ITransaction transaction;
 
         public DateTime Date
         {
-            get { return tr.Date; }
+            get { return transaction.Date; }
         }
 
         public string Value
         {
-            get { return string.Format("{0:0.00}", tr.Amount); }
+            get { return string.Format("{0:0.00}", transaction.Amount); }
         }
 
         public string Info
         {
-            get { return tr.Info; }
+            get { return transaction.Info; }
         }
 
         public string Category
         {
             get
             {
-                ICategory category = tr.Category;
+                ICategory category = transaction.Category;
                 return string.Format("{0}--{1}", category.Parent.Name, category.Name);
             }
         }
@@ -38,13 +38,13 @@ namespace ViewModels.Elements
         {
             get
             {
-                return tr.Account.Name;
+                return transaction.Account.Name;
             }
         }
 
         public TransactionItem(ITransaction tr)
         {
-            this.tr = tr;
+            this.transaction = tr;
         }
     }
 }

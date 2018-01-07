@@ -28,6 +28,7 @@ namespace Models.Interfaces
         bool AddCategory(string name, ICategory parent, out ICategory newCategory);
         bool DeleteCategory(ICategory category);
         IEnumerable<ITransaction> GetTransactions(IAccount account);
+        bool DeleteTransaction(ITransaction transaction);
     }
     public interface IAccount
     {

@@ -3,7 +3,7 @@ using ViewModels.Interfaces;
 
 namespace SimpleBudget.Services
 {
-    class TransactionRollService : IUITransactionRollService
+    class TransactionRollService : BaseWindowService, IUITransactionRollService
     {
         private Window rollWindow;
 

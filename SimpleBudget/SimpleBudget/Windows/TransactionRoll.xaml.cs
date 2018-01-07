@@ -1,5 +1,8 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using ViewModels.Elements;
+using ViewModels.Windows;
 
 namespace SimpleBudget.Windows
 {
@@ -25,16 +28,12 @@ namespace SimpleBudget.Windows
             //TransactionItem item = (TransactionItem)dgr.DataContext;
             //((TransactionRollViewModel)DataContext).ShowTransactionEditor(item);
         }
-
+        // TODO Later command
         private void DeleteTransaction_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
-            //MenuItem mi = (MenuItem)sender;
-            //TransactionItem item = (TransactionItem)mi.DataContext;
-            //if (!((TransactionRollViewModel)this.DataContext).DeleteTransaction(item))
-            //{
-            //    MessageBox.Show("Can't delete transaction.");
-            //}
+            MenuItem mi = (MenuItem)sender;
+            TransactionItem item = (TransactionItem)mi.DataContext;
+            ((TransactionRollViewModel)this.DataContext).DeleteTransaction(item);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace ViewModels.Interfaces
         string OpenFileDialog(string fileExtension);
     }
     // TODO
-    public interface IUITransactionRollService
+    public interface IUITransactionRollService : IUIBaseService
     {
         //bool? ShowTransactionEditor(TransactionEditorViewModel vm);
     }
