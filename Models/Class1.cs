@@ -1,8 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Models.Interfaces;
 
 namespace Models
 {
+    public class StubTransaction : ITransaction
+    {
+        public DateTime Date { get; set; }
+        public decimal Amount { get; set; }
+        public string Info { get; set; }
+        public ICategory Category { get; set; }
+        public IAccount Account { get; set; }
+    }
+
     public class StubAccount : IAccount
     {
         public string Name { get; set; }
@@ -118,6 +128,26 @@ namespace Models
                 Children = new List<ICategory>() { one } };
             one.Parent = topOne;
             yield return topOne;
+        }
+
+        public IEnumerable<ITransaction> GetTransactions(IAccount account)
+        {
+            StubCategory one = new StubCategory { Name = "one", Parent = null, Children = new List<ICategory>() };
+            StubCategory topOne = new StubCategory
+            {
+                Name = "Top one",
+                Parent = null,
+                Children = new List<ICategory>() { one }
+            };
+            one.Parent = topOne;
+            yield return new StubTransaction
+            {
+                Account = new StubAccount { Name = "One" },
+                Amount = 25.14m,
+                Category = one,
+                Date = DateTime.Now,
+                Info = "Test"
+            };
         }
 
         public void UpdateAccount(IAccount account)

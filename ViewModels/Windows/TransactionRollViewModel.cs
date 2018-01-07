@@ -1,4 +1,5 @@
 ﻿using Models.Interfaces;
+using System.Collections.ObjectModel;
 using ViewModels.Elements;
 using ViewModels.Interfaces;
 
@@ -8,16 +9,19 @@ namespace ViewModels.Windows
     {
         private IUITransactionRollService service;
         private IAccount account;
-        
-        public TransactionRollViewModel(AccountItem accItem, IUITransactionRollService service)
+
+        public ObservableCollection<TransactionItem> Transactions { get; }
+
+        public TransactionRollViewModel(AccountItem accItem, IDataProvider dataProvider, IUITransactionRollService service)
         {
             this.service = service;
             this.account = accItem.account;
-            // TODO !!!
-            //Core.Instance.GetTransactions(account).ForEach((tr) =>
-            //{
-            //    Transactions.Add(new TransactionItem(tr));
-            //});
+            Transactions = new ObservableCollection<TransactionItem>();
+
+            foreach (var item in dataProvider.GetTransactions(account))
+            {
+                Transactions.Add(new TransactionItem(item));
+            }
         }
     }
 }

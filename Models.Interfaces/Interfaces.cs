@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 
 namespace Models.Interfaces
@@ -26,6 +27,7 @@ namespace Models.Interfaces
         IEnumerable<ICategory> GetCategories();
         bool AddCategory(string name, ICategory parent, out ICategory newCategory);
         bool DeleteCategory(ICategory category);
+        IEnumerable<ITransaction> GetTransactions(IAccount account);
     }
     public interface IAccount
     {
@@ -40,5 +42,13 @@ namespace Models.Interfaces
         string Name { get; }
         ICategory Parent { get; }
         IEnumerable<ICategory> Children { get; }
+    }
+    public interface ITransaction
+    {
+        DateTime Date { get; }
+        decimal Amount { get; }
+        string Info { get; }
+        ICategory Category { get; }
+        IAccount Account { get; }
     }
 }
