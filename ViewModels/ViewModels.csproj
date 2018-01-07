@@ -48,6 +48,7 @@
     <Compile Include="Elements\AccTypeItem.cs" />
     <Compile Include="Elements\CategoryNode.cs" />
     <Compile Include="Events\Events.cs" />
+    <Compile Include="Interfaces\Interfaces.cs" />
     <Compile Include="Windows\AccountsManagerViewModel.cs" />
     <Compile Include="Windows\AccTypeManagerViewModel.cs" />
     <Compile Include="Windows\CategoriesManagerViewModel.cs" />
@@ -58,10 +59,6 @@
     <ProjectReference Include="..\Models.Interfaces\Models.Interfaces.csproj">
       <Project>{fb260354-0219-499d-ba91-7911e3cae1f1}</Project>
       <Name>Models.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ViewModels.Interfaces\ViewModels.Interfaces.csproj">
-      <Project>{c1a9e50b-b6ec-4f92-a10d-2ed7cdca21a0}</Project>
-      <Name>ViewModels.Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

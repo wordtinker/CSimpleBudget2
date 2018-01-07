@@ -1,17 +1,17 @@
-﻿
+﻿using ViewModels.Elements;
+
 namespace ViewModels.Interfaces
 {
     public interface IUIBaseService
     {
         void ShowMessage(string message);
     }
-    // TODO
     public interface IUIMainWindowService : IUIBaseService
     {
         void ShowBudgetReport();
         void ShowBalanceReport();
         void ShowCategoriesReport();
-        ////void ShowTransactionRoll(AccountItem accItem);
+        void ShowTransactionRoll(AccountItem accItem);
         void ManageAccountTypes();
         void ManageAccounts();
         void ManageCategories();

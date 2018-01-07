@@ -2,6 +2,7 @@
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -218,6 +219,20 @@ namespace ViewModels.Windows
                     // Load new data
                     LoadUpData();
                     OpenedFile = fileName;
+                }
+            }
+        }
+        public void ShowTransactionRoll(IAccountItem item)
+        {
+            if (item is AccountItem account)
+            {
+                if (IsFullyReady)
+                {
+                    windowService.ShowTransactionRoll(account);
+                }
+                else
+                {
+                    windowService.ShowMessage("Set categories first!");
                 }
             }
         }

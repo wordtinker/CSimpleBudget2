@@ -154,10 +154,6 @@
       <Project>{d768c676-5aaf-4409-9ac0-4f2b6062d260}</Project>
       <Name>ModelFactory</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ViewModels.Interfaces\ViewModels.Interfaces.csproj">
-      <Project>{c1a9e50b-b6ec-4f92-a10d-2ed7cdca21a0}</Project>
-      <Name>ViewModels.Interfaces</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\ViewModels\ViewModels.csproj">
       <Project>{f5cc967c-60fc-43bc-80f2-9067f9f1a798}</Project>
       <Name>ViewModels</Name>

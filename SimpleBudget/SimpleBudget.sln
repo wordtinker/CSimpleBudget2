@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleBudget", "SimpleBudge
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewModels", "..\ViewModels\ViewModels.csproj", "{F5CC967C-60FC-43BC-80F2-9067F9F1A798}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewModels.Interfaces", "..\ViewModels.Interfaces\ViewModels.Interfaces.csproj", "{C1A9E50B-B6EC-4F92-A10D-2ED7CDCA21A0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "..\Models\Models.csproj", "{CF743264-DF61-4953-BC97-DDD172765097}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Interfaces", "..\Models.Interfaces\Models.Interfaces.csproj", "{FB260354-0219-499D-BA91-7911E3CAE1F1}"
@@ -29,10 +27,6 @@ Global
 		{F5CC967C-60FC-43BC-80F2-9067F9F1A798}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5CC967C-60FC-43BC-80F2-9067F9F1A798}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5CC967C-60FC-43BC-80F2-9067F9F1A798}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C1A9E50B-B6EC-4F92-A10D-2ED7CDCA21A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C1A9E50B-B6EC-4F92-A10D-2ED7CDCA21A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C1A9E50B-B6EC-4F92-A10D-2ED7CDCA21A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C1A9E50B-B6EC-4F92-A10D-2ED7CDCA21A0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CF743264-DF61-4953-BC97-DDD172765097}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CF743264-DF61-4953-BC97-DDD172765097}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF743264-DF61-4953-BC97-DDD172765097}.Release|Any CPU.ActiveCfg = Release|Any CPU

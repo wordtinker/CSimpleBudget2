@@ -1,5 +1,8 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using ViewModels.Elements;
+using ViewModels.Windows;
 
 namespace SimpleBudget.Windows
 {
@@ -12,13 +15,13 @@ namespace SimpleBudget.Windows
         {
             InitializeComponent();
         }
-        // TODO
+        // TODO Later command
         public void Account_DoubleClick(object sender, MouseButtonEventArgs e)
         {
-            //DataGridRow dgr = (DataGridRow)sender;
-            //AccountItem item = (AccountItem)dgr.DataContext;
-            //MainWindowViewModel vm = (MainWindowViewModel)this.DataContext;
-            //vm.ShowTransactionRoll(item);
+            DataGridRow dgr = (DataGridRow)sender;
+            IAccountItem item = (IAccountItem)dgr.DataContext;
+            MainWindowViewModel vm = (MainWindowViewModel)this.DataContext;
+            vm.ShowTransactionRoll(item);
         }
     }
 }

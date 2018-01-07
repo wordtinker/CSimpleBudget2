@@ -3,6 +3,7 @@ using System.Windows;
 using ViewModels.Interfaces;
 using ViewModels.Windows;
 using Unity;
+using ViewModels.Elements;
 
 namespace SimpleBudget.Windows
 {
@@ -96,7 +97,7 @@ namespace SimpleBudget.Windows
 
         public void ManageBudget()
         {
-            // TODO !!!
+            // TODO
         }
 
         public void ShowBudgetReport()
@@ -117,6 +118,11 @@ namespace SimpleBudget.Windows
         public void ShowHelp()
         {
             // TODO
+        }
+
+        public void ShowTransactionRoll(AccountItem accItem)
+        {
+            // TODO !!!
         }
     }
 }
