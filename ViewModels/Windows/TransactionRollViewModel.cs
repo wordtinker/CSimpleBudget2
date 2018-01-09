@@ -1,5 +1,4 @@
 ﻿using Models.Interfaces;
-using System;
 using System.Collections.ObjectModel;
 using ViewModels.Elements;
 using ViewModels.Interfaces;
@@ -10,7 +9,7 @@ namespace ViewModels.Windows
     {
         private IDataProvider dataProvider;
         private IUITransactionRollService service;
-        private IAccount account;
+        private AccountItem accountItem;
 
         public ObservableCollection<TransactionItem> Transactions { get; }
 
@@ -18,10 +17,10 @@ namespace ViewModels.Windows
         {
             this.dataProvider = dataProvider;
             this.service = service;
-            this.account = accItem.account;
+            this.accountItem = accItem;
             Transactions = new ObservableCollection<TransactionItem>();
 
-            foreach (var item in dataProvider.GetTransactions(account))
+            foreach (var item in dataProvider.GetTransactions(accountItem.account))
             {
                 Transactions.Add(new TransactionItem(item));
             }
@@ -38,6 +37,14 @@ namespace ViewModels.Windows
             {
                 service.ShowMessage("Can't delete transaction.");
             }
+        }
+        public void ShowTransactionEditor()
+        {
+            service.ShowTransactionEditor(accountItem);
+        }
+        public void ShowTransactionEditor(TransactionItem item)
+        {
+            service.ShowTransactionEditor(item);
         }
     }
 }

@@ -55,6 +55,7 @@
     <Compile Include="Windows\CategoriesManagerViewModel.cs" />
     <Compile Include="Windows\MainWindowViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Windows\TransactionEditorViewModel.cs" />
     <Compile Include="Windows\TransactionRollViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -15,18 +15,17 @@ namespace SimpleBudget.Windows
         {
             InitializeComponent();
         }
+        // TODO Later command
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO 
-            //((TransactionRollViewModel)DataContext).ShowTransactionEditor();
+            ((TransactionRollViewModel)DataContext).ShowTransactionEditor();
         }
-
+        // TODO Later command
         private void Transaction_DoubleClick(object sender, MouseButtonEventArgs e)
         {
-            // TODO
-            //DataGridRow dgr = (DataGridRow)sender;
-            //TransactionItem item = (TransactionItem)dgr.DataContext;
-            //((TransactionRollViewModel)DataContext).ShowTransactionEditor(item);
+            DataGridRow dgr = (DataGridRow)sender;
+            TransactionItem item = (TransactionItem)dgr.DataContext;
+            ((TransactionRollViewModel)DataContext).ShowTransactionEditor(item);
         }
         // TODO Later command
         private void DeleteTransaction_Click(object sender, RoutedEventArgs e)
