@@ -46,6 +46,7 @@ namespace Models.Interfaces
         ICategory Parent { get; }
         IEnumerable<ICategory> Children { get; }
     }
+    // TODO allow set?
     public interface ITransaction
     {
         DateTime Date { get; }

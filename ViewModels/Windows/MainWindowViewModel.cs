@@ -107,7 +107,7 @@ namespace ViewModels.Windows
             eventAggregator.GetEvent<AccountChanged>().Subscribe(a => RefreshAccounts());
             eventAggregator.GetEvent<CategoryAdded>().Subscribe(cn => RefreshCategories());
             eventAggregator.GetEvent<CategoryDeleted>().Subscribe(cn => RefreshCategories());
-            // TODO connect transaction creation, deletion
+            // TODO connect transaction creation, deletion, change
         }
         // TODO
         private void CleanUpData()

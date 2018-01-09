@@ -1,4 +1,5 @@
 ﻿using Models.Interfaces;
+using Prism.Mvvm;
 using System;
 
 namespace ViewModels.Elements
@@ -6,45 +7,45 @@ namespace ViewModels.Elements
     /// <summary>
     /// Container for Transaction item.
     /// </summary>
-    public class TransactionItem
+    public class TransactionItem : BindableBase
     {
         internal ITransaction transaction;
+        private DateTime date;
+        private decimal amount;
+        private string info;
+        private CategoryNode catNode;
 
-        public DateTime Date
+        public DateTime Date { get => date; set => SetProperty(ref date, value); }
+        public decimal Amount { get => amount; set => SetProperty(ref amount, value); }
+        public string Info { get => info; set => SetProperty(ref info, value); }
+        public CategoryNode Category
         {
-            get { return transaction.Date; }
-        }
-
-        public string Value
-        {
-            get { return string.Format("{0:0.00}", transaction.Amount); }
-        }
-
-        public string Info
-        {
-            get { return transaction.Info; }
-        }
-
-        public string Category
-        {
-            get
-            {
-                ICategory category = transaction.Category;
-                return string.Format("{0}--{1}", category.Parent.Name, category.Name);
+            get => catNode;
+            set
+            { if (SetProperty(ref catNode, value))
+                {
+                    RaisePropertyChanged(nameof(CategoryFullName));
+                }
             }
         }
+        public string CategoryFullName => Category.FullName;
 
-        public string Account
-        {
-            get
-            {
-                return transaction.Account.Name;
-            }
-        }
+        // TODO for reports
+        //public string Account
+        //{
+        //    get
+        //    {
+        //        return transaction.Account.Name;
+        //    }
+        //}
 
-        public TransactionItem(ITransaction tr)
+        public TransactionItem(ITransaction transaction)
         {
-            this.transaction = tr;
+            Date = transaction.Date;
+            Amount = transaction.Amount;
+            Info = transaction.Info;
+            Category = new CategoryNode(transaction.Category);
+            this.transaction = transaction;
         }
     }
 }

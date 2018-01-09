@@ -60,19 +60,23 @@ namespace ViewModels.Windows
         public OldTransactionEditorViewModel(TransactionItem transactionItem, IDataProvider dataProvider, IEventAggregator eventAggregator)
             : base(dataProvider, eventAggregator)
         {
-            // TODO !!!
             this.transactionItem = transactionItem;
             Date = transactionItem.Date;
-            //Amount = transactionItem.Amount;
+            Amount = transactionItem.Amount;
             Info = transactionItem.Info;
-            //Category = transactionItem.Category;
+            Category = transactionItem.Category;
         }
 
         public override void Save()
         {
-            // Update transaction.
+            // Update transaction in the model
             dataProvider.UpdateTransaction(transactionItem.transaction, Date, Amount, Info, Category.category);
-            // TODO event to main window and direct update of trItem
+            // And in the viewModel
+            transactionItem.Date = Date;
+            transactionItem.Amount = Amount;
+            transactionItem.Info = Info;
+            transactionItem.Category = Category;
+            eventAggregator.GetEvent<TransactionChanged>().Publish(transactionItem);
         }
     }
 }

@@ -134,27 +134,23 @@ namespace Models
         public IEnumerable<ICategory> GetCategories()
         {
             StubCategory one = new StubCategory { Name = "one", Parent = null, Children = new List<ICategory>() };
+            StubCategory two = new StubCategory { Name = "two", Parent = null, Children = new List<ICategory>() };
             StubCategory topOne = new StubCategory { Name = "Top one", Parent = null,
-                Children = new List<ICategory>() { one } };
+                Children = new List<ICategory>() { one, two } };
             one.Parent = topOne;
+            two.Parent = topOne;
             yield return topOne;
         }
 
         public IEnumerable<ITransaction> GetTransactions(IAccount account)
         {
-            StubCategory one = new StubCategory { Name = "one", Parent = null, Children = new List<ICategory>() };
-            StubCategory topOne = new StubCategory
-            {
-                Name = "Top one",
-                Parent = null,
-                Children = new List<ICategory>() { one }
-            };
-            one.Parent = topOne;
+            List<ICategory> categories = new List<ICategory>(GetCategories());
+            var subCats = new List<ICategory>(categories[0].Children);
             yield return new StubTransaction
             {
                 Account = new StubAccount { Name = "One" },
                 Amount = 25.14m,
-                Category = one,
+                Category = subCats[1],
                 Date = DateTime.Now,
                 Info = "Test"
             };
