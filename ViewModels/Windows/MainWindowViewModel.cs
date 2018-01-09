@@ -2,7 +2,6 @@
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -108,6 +107,7 @@ namespace ViewModels.Windows
             eventAggregator.GetEvent<AccountChanged>().Subscribe(a => RefreshAccounts());
             eventAggregator.GetEvent<CategoryAdded>().Subscribe(cn => RefreshCategories());
             eventAggregator.GetEvent<CategoryDeleted>().Subscribe(cn => RefreshCategories());
+            // TODO connect transaction creation, deletion
         }
         // TODO
         private void CleanUpData()

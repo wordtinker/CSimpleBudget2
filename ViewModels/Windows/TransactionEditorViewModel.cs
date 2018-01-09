@@ -1,12 +1,15 @@
 ﻿using Models.Interfaces;
+using Prism.Events;
 using System;
 using System.Collections.ObjectModel;
 using ViewModels.Elements;
+using ViewModels.Events;
 
 namespace ViewModels.Windows
 {
     public abstract class AbstractTransactionEditor
     {
+        protected IEventAggregator eventAggregator;
         protected IDataProvider dataProvider;
 
         public ObservableCollection<CategoryNode> Categories { get; private set; }
@@ -15,8 +18,9 @@ namespace ViewModels.Windows
         public string Info { get; set; }
         public CategoryNode Category { get; set; }
 
-        public AbstractTransactionEditor(IDataProvider dataProvider)
+        public AbstractTransactionEditor(IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
+            this.eventAggregator = eventAggregator;
             this.dataProvider = dataProvider;
             Categories = new ObservableCollection<CategoryNode>();
             foreach (ICategory item in dataProvider.GetCategories())
@@ -35,7 +39,8 @@ namespace ViewModels.Windows
     {
         private AccountItem accountItem;
 
-        public NewTransactionEditorViewModel(AccountItem accountItem, IDataProvider dataProvider) : base(dataProvider)
+        public NewTransactionEditorViewModel(AccountItem accountItem, IDataProvider dataProvider, IEventAggregator eventAggregator)
+            : base(dataProvider, eventAggregator)
         {
             this.accountItem = accountItem;
             Date = DateTime.Now;
@@ -45,14 +50,15 @@ namespace ViewModels.Windows
         {
             // Create new transaction.
             dataProvider.AddTransaction(accountItem.account, Date, Amount, Info, Category.category, out ITransaction newTr);
-            // TODO event to transaction roll and main window
+            eventAggregator.GetEvent<TransactionAdded>().Publish(new TransactionItem(newTr));
         }
     }
     public class OldTransactionEditorViewModel : AbstractTransactionEditor
     {
         private TransactionItem transactionItem;
 
-        public OldTransactionEditorViewModel(TransactionItem transactionItem, IDataProvider dataProvider) : base(dataProvider)
+        public OldTransactionEditorViewModel(TransactionItem transactionItem, IDataProvider dataProvider, IEventAggregator eventAggregator)
+            : base(dataProvider, eventAggregator)
         {
             // TODO !!!
             this.transactionItem = transactionItem;
