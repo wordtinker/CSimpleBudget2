@@ -71,6 +71,11 @@ namespace Models
             return true;
         }
 
+        public void AddTransaction(IAccount account, DateTime date, decimal amount, string info, ICategory category, out ITransaction transaction)
+        {
+            transaction = new StubTransaction {Account = account, Date = date, Amount = amount, Info = info, Category = category };
+        }
+
         public bool DeleteAccount(IAccount account)
         {
             return true;
@@ -86,9 +91,9 @@ namespace Models
             return true;
         }
 
-        public bool DeleteTransaction(ITransaction transaction)
+        public void DeleteTransaction(ITransaction transaction)
         {
-            return true;
+            // do nothing
         }
 
         public IEnumerable<IAccount> GetAccounts()
@@ -156,6 +161,11 @@ namespace Models
         }
 
         public void UpdateAccount(IAccount account)
+        {
+            // do nothing
+        }
+
+        public void UpdateTransaction(ITransaction transaction, DateTime date, decimal amount, string info, ICategory category)
         {
             // do nothing
         }

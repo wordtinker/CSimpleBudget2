@@ -28,15 +28,9 @@ namespace ViewModels.Windows
 
         public void DeleteTransaction(TransactionItem item)
         {
-            if (dataProvider.DeleteTransaction(item.transaction))
-            {
-                Transactions.Remove(item);
+            dataProvider.DeleteTransaction(item.transaction);
+            Transactions.Remove(item);
                 // TODO event ?
-            }
-            else
-            {
-                service.ShowMessage("Can't delete transaction.");
-            }
         }
         public void ShowTransactionEditor()
         {

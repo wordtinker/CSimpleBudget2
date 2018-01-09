@@ -28,7 +28,9 @@ namespace Models.Interfaces
         bool AddCategory(string name, ICategory parent, out ICategory newCategory);
         bool DeleteCategory(ICategory category);
         IEnumerable<ITransaction> GetTransactions(IAccount account);
-        bool DeleteTransaction(ITransaction transaction);
+        void DeleteTransaction(ITransaction transaction);
+        void AddTransaction(IAccount account, DateTime date, decimal amount, string info, ICategory category, out ITransaction transaction);
+        void UpdateTransaction(ITransaction transaction, DateTime date, decimal amount, string info, ICategory category);
     }
     public interface IAccount
     {

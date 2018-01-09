@@ -5,7 +5,6 @@ using ViewModels.Elements;
 
 namespace ViewModels.Windows
 {
-    // TODO Later Validation
     public abstract class AbstractTransactionEditor
     {
         protected IDataProvider dataProvider;
@@ -45,7 +44,7 @@ namespace ViewModels.Windows
         public override void Save()
         {
             // Create new transaction.
-            // TODO !!! dataProvider.AddTransaction(accountItem.account, Date, Amount, Info, Category.category, out ITransaction newTr);
+            dataProvider.AddTransaction(accountItem.account, Date, Amount, Info, Category.category, out ITransaction newTr);
             // TODO event to transaction roll and main window
         }
     }
@@ -65,9 +64,8 @@ namespace ViewModels.Windows
 
         public override void Save()
         {
-            // TODO !!!
             // Update transaction.
-            //dataProvider.UpdateTransaction(transactionItem.transaction, Date, Amount, Info, Category.category);
+            dataProvider.UpdateTransaction(transactionItem.transaction, Date, Amount, Info, Category.category);
             // TODO event to main window and direct update of trItem
         }
     }
