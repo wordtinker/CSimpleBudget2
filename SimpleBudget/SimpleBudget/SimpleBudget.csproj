@@ -103,12 +103,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Services\BudgetManagerService.cs" />
     <Compile Include="Services\TransactionRollService.cs" />
     <Compile Include="Windows\AccountsManager.xaml.cs">
       <DependentUpon>AccountsManager.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\AccTypeManager.xaml.cs">
       <DependentUpon>AccTypeManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\BudgetManager.xaml.cs">
+      <DependentUpon>BudgetManager.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\CategoriesManager.xaml.cs">
       <DependentUpon>CategoriesManager.xaml</DependentUpon>
@@ -132,6 +136,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\AccTypeManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\BudgetManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

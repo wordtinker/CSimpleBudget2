@@ -6,6 +6,8 @@ using Unity;
 using ViewModels.Elements;
 using Unity.Resolution;
 using SimpleBudget.Windows;
+using System;
+using System.Reflection;
 
 namespace SimpleBudget.Services
 {
@@ -113,7 +115,14 @@ namespace SimpleBudget.Services
 
         public void ManageBudget()
         {
-            // TODO
+            BudgetManager window = new BudgetManager
+            {
+                Owner = mainWindow
+            };
+            IUIBudgetWindowService service = new BudgetManagerService(window);
+            window.DataContext = App.Container.Resolve<BudgetManagerViewModel>(
+                new ParameterOverride("service", service));
+            window.ShowDialog();
         }
 
         public void ShowBudgetReport()
@@ -133,7 +142,8 @@ namespace SimpleBudget.Services
 
         public void ShowHelp()
         {
-            // TODO
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            MessageBox.Show($"Simple Budget 2: {version.ToString()}");
         }
     }
 }
