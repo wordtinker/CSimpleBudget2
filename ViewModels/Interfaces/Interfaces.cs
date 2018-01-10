@@ -31,6 +31,6 @@ namespace ViewModels.Interfaces
     public interface IUIBudgetWindowService
     {
         //bool? ShowBudgetRecordEditor(BudgetRecordEditorViewModel vm);
-        //bool RequestMonthAndYear(out int monthToCopyFrom, out int yearToCopyFrom);
+        bool RequestMonthAndYear(out int monthToCopyFrom, out int yearToCopyFrom);
     }
 }

@@ -85,13 +85,14 @@ namespace ViewModels.Windows
         }
         private void _RequestCopyFrom()
         {
-            // TODO !!!
-            //int monthToCopyFrom, yearToCopyFrom;
-            //if (windowService.RequestMonthAndYear(out monthToCopyFrom, out yearToCopyFrom))
-            //{
-            //    Core.Instance.CopyRecords(monthToCopyFrom, yearToCopyFrom, SelectedMonth, SelectedYear);
-            //    UpdateRecords();
-            //}
+            if (service.RequestMonthAndYear(out int monthToCopyFrom, out int yearToCopyFrom))
+            {
+                foreach (IBudgetRecord rec in dataProvider.CopyRecords(monthToCopyFrom, yearToCopyFrom, SelectedMonth, SelectedYear))
+                {
+                    Records.Add(new RecordItem(rec));
+                    // TODO event
+                }
+            }
         }
     }
 }

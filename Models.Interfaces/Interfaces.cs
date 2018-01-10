@@ -32,6 +32,7 @@ namespace Models.Interfaces
         void AddTransaction(IAccount account, DateTime date, decimal amount, string info, ICategory category, out ITransaction transaction);
         void UpdateTransaction(ITransaction transaction, DateTime date, decimal amount, string info, ICategory category);
         (int minYear, int maxYear) GetActiveBudgetYears();
+        IEnumerable<IBudgetRecord> CopyRecords(int fromMonth, int fromYear, int toMonth, int toYear);
         IEnumerable<IBudgetRecord> GetRecords(int year, int month);
     }
     public interface IAccount

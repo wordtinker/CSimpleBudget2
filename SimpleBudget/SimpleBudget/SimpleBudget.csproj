@@ -114,6 +114,9 @@
     <Compile Include="Windows\BudgetManager.xaml.cs">
       <DependentUpon>BudgetManager.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\BudgetManagerCopyRequest.xaml.cs">
+      <DependentUpon>BudgetManagerCopyRequest.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\CategoriesManager.xaml.cs">
       <DependentUpon>CategoriesManager.xaml</DependentUpon>
     </Compile>
@@ -140,6 +143,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\BudgetManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\BudgetManagerCopyRequest.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

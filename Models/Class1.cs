@@ -76,6 +76,11 @@ namespace Models
             transaction = new StubTransaction {Account = account, Date = date, Amount = amount, Info = info, Category = category };
         }
 
+        public IEnumerable<IBudgetRecord> CopyRecords(int fromMonth, int fromYear, int toMonth, int toYear)
+        {
+            yield break;
+        }
+
         public bool DeleteAccount(IAccount account)
         {
             return true;
