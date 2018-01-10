@@ -31,6 +31,8 @@ namespace Models.Interfaces
         void DeleteTransaction(ITransaction transaction);
         void AddTransaction(IAccount account, DateTime date, decimal amount, string info, ICategory category, out ITransaction transaction);
         void UpdateTransaction(ITransaction transaction, DateTime date, decimal amount, string info, ICategory category);
+        (int minYear, int maxYear) GetActiveBudgetYears();
+        IEnumerable<IBudgetRecord> GetRecords(int year, int month);
     }
     public interface IAccount
     {
@@ -54,5 +56,23 @@ namespace Models.Interfaces
         string Info { get; }
         ICategory Category { get; }
         IAccount Account { get; }
+    }
+    public interface IBudgetRecord
+    {
+        decimal Amount { get; }
+        ICategory Category { get; }
+        BudgetType Type { get; }
+        int OnDay { get; }
+    }
+    /// <summary>
+    /// Every budget record has a type that defines
+    /// its behaviour in the budget forecasts.
+    /// </summary>
+    public enum BudgetType
+    {
+        Monthly, // One time spending, forecast spending is on the last day of the month
+        Point, // One time spending on the specified day of the month
+        Daily, // Spending is evenly divided among days of the month
+        Weekly // Wekly spending on the specified day of the week
     }
 }

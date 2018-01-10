@@ -130,6 +130,11 @@ namespace Models
             yield return "two";
         }
 
+        public (int minYear, int maxYear) GetActiveBudgetYears()
+        {
+            return (2013, 2018);
+        }
+
         // Top tier with structure
         public IEnumerable<ICategory> GetCategories()
         {
@@ -140,6 +145,11 @@ namespace Models
             one.Parent = topOne;
             two.Parent = topOne;
             yield return topOne;
+        }
+
+        public IEnumerable<IBudgetRecord> GetRecords(int year, int month)
+        {
+            yield break;
         }
 
         public IEnumerable<ITransaction> GetTransactions(IAccount account)

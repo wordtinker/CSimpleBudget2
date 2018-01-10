@@ -47,6 +47,7 @@
     <Compile Include="Elements\AccountItem.cs" />
     <Compile Include="Elements\AccTypeItem.cs" />
     <Compile Include="Elements\CategoryNode.cs" />
+    <Compile Include="Elements\RecordItem.cs" />
     <Compile Include="Elements\TransactionItem.cs" />
     <Compile Include="Events\Events.cs" />
     <Compile Include="Interfaces\Interfaces.cs" />
