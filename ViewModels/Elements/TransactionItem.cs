@@ -21,14 +21,8 @@ namespace ViewModels.Elements
         public CategoryNode Category
         {
             get => catNode;
-            set
-            { if (SetProperty(ref catNode, value))
-                {
-                    RaisePropertyChanged(nameof(CategoryFullName));
-                }
-            }
+            set => SetProperty(ref catNode, value);
         }
-        public string CategoryFullName => Category.FullName;
 
         // TODO for reports
         //public string Account

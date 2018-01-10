@@ -40,7 +40,7 @@
                 <DataGridTextColumn Header="Date" Width="Auto" Binding="{Binding Date, StringFormat=dd/MM/yyyy}"/>
                 <DataGridTextColumn Header="Amount" Width="Auto" Binding="{Binding Amount, StringFormat=N2}"/>
                 <DataGridTextColumn Header="Info" Width="*" Binding="{Binding Info}"/>
-                <DataGridTextColumn Header="Category" Width="Auto" Binding="{Binding CategoryFullName}"/>
+                <DataGridTextColumn Header="Category" Width="Auto" Binding="{Binding Category.FullName}"/>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>
