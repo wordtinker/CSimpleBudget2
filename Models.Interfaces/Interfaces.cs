@@ -34,6 +34,7 @@ namespace Models.Interfaces
         (int minYear, int maxYear) GetActiveBudgetYears();
         IEnumerable<IBudgetRecord> CopyRecords(int fromMonth, int fromYear, int toMonth, int toYear);
         IEnumerable<IBudgetRecord> GetRecords(int year, int month);
+        bool DeleteRecord(IBudgetRecord record);
     }
     public interface IAccount
     {

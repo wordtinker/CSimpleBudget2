@@ -5,7 +5,7 @@ namespace ViewModels.Elements
 {
     public class RecordItem
     {
-        private IBudgetRecord record;
+        internal IBudgetRecord record;
 
         public decimal Amount { get { return record.Amount; } }
         public CategoryNode Category { get { return new CategoryNode(record.Category); } }

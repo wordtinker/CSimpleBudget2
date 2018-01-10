@@ -28,7 +28,7 @@ namespace ViewModels.Interfaces
         void ShowTransactionEditor(TransactionItem transactionItem);
     }
     // TODO
-    public interface IUIBudgetWindowService
+    public interface IUIBudgetWindowService :IUIBaseService
     {
         //bool? ShowBudgetRecordEditor(BudgetRecordEditorViewModel vm);
         bool RequestMonthAndYear(out int monthToCopyFrom, out int yearToCopyFrom);

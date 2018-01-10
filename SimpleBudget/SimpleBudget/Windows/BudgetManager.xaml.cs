@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ViewModels.Elements;
+using ViewModels.Windows;
 
 namespace SimpleBudget.Windows
 {
@@ -20,16 +22,12 @@ namespace SimpleBudget.Windows
             //RecordItem item = (RecordItem)dgr.DataContext;
             //((BudgetManagerViewModel)DataContext).ShowRecordEditor(item);
         }
-
+        // TODO Later command
         private void DeleteRecord_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
-            //MenuItem mi = (MenuItem)sender;
-            //RecordItem item = (RecordItem)mi.DataContext;
-            //if (!((BudgetManagerViewModel)this.DataContext).DeleteRecord(item))
-            //{
-            //    MessageBox.Show("Can't delete budget record.");
-            //}
+            MenuItem mi = (MenuItem)sender;
+            RecordItem item = (RecordItem)mi.DataContext;
+            ((BudgetManagerViewModel)this.DataContext).DeleteRecord(item);
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)

@@ -4,6 +4,13 @@ using Models.Interfaces;
 
 namespace Models
 {
+    public class StubBudgetRecord : IBudgetRecord
+    {
+        public decimal Amount { get; set; }
+        public ICategory Category { get; set; }
+        public BudgetType Type { get; set; }
+        public int OnDay { get; set; }
+    }
     public class StubTransaction : ITransaction
     {
         public DateTime Date { get; set; }
@@ -78,7 +85,7 @@ namespace Models
 
         public IEnumerable<IBudgetRecord> CopyRecords(int fromMonth, int fromYear, int toMonth, int toYear)
         {
-            yield break;
+            return GetRecords(fromMonth, fromYear);
         }
 
         public bool DeleteAccount(IAccount account)
@@ -92,6 +99,11 @@ namespace Models
         }
 
         public bool DeleteCategory(ICategory category)
+        {
+            return true;
+        }
+
+        public bool DeleteRecord(IBudgetRecord record)
         {
             return true;
         }
@@ -154,7 +166,16 @@ namespace Models
 
         public IEnumerable<IBudgetRecord> GetRecords(int year, int month)
         {
-            yield break;
+            List<ICategory> categories = new List<ICategory>(GetCategories());
+            var subCats = new List<ICategory>(categories[0].Children);
+            var br = new StubBudgetRecord
+            {
+                Amount = 100,
+                Category = subCats[0],
+                OnDay = 1,
+                Type = BudgetType.Point
+            };
+            yield return br;
         }
 
         public IEnumerable<ITransaction> GetTransactions(IAccount account)
