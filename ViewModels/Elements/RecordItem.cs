@@ -16,8 +16,29 @@ namespace ViewModels.Elements
 
         public decimal Amount { get => amount; set => SetProperty(ref amount, value); }
         public CategoryNode Category { get => catNode; set => SetProperty(ref catNode, value); }
-        public BudgetType Type { get => type; set => SetProperty(ref type, value); }
-        public int OnDay { get => onDay; set => SetProperty(ref onDay, value); }
+        public BudgetType Type
+        {
+            get => type;
+            set
+            {
+                if (SetProperty(ref type, value))
+                {
+                    RaisePropertyChanged(nameof(TypeName));
+                    RaisePropertyChanged(nameof(OnDayText));
+                }
+            }
+        }
+        public int OnDay
+        {
+            get => onDay;
+            set
+            {
+                if (SetProperty(ref onDay, value))
+                {
+                    RaisePropertyChanged(nameof(OnDayText));
+                }
+            }
+        }
         public int Year { get => year; set => SetProperty(ref year, value); }
         public int Month { get => month; set => SetProperty(ref month, value); }
         
@@ -32,9 +53,9 @@ namespace ViewModels.Elements
                 }
                 if (Type == BudgetType.Weekly)
                 {
-                    return ((DayOfWeek)record.OnDay).ToString();
+                    return ((DayOfWeek)OnDay).ToString();
                 }
-                return record.OnDay.ToString();
+                return OnDay.ToString();
             }
         }
         public RecordItem(IBudgetRecord record)

@@ -1,5 +1,6 @@
 ﻿using Models.Interfaces;
 using Prism.Events;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,7 +10,7 @@ using ViewModels.Elements;
 
 namespace ViewModels.Windows
 {
-    public abstract class AbstractBudgetRecordEditorViewModel
+    public abstract class AbstractBudgetRecordEditorViewModel : BindableBase
     {
         protected IEventAggregator eventAggregator;
         protected IDataProvider dataProvider;
@@ -19,6 +20,9 @@ namespace ViewModels.Windows
         private bool point;
         private bool daily;
         private bool weekly;
+        private int year;
+        private string monthName;
+        private int onDay;
 
         public IEnumerable<int> Years
         {
@@ -28,14 +32,35 @@ namespace ViewModels.Windows
                 return Enumerable.Range(minYear - 1, 5 + maxYear - minYear);
             }
         }
-        public int Year { get; set; }
+        public int Year
+        {
+            get => year;
+            set
+            {
+                if (SetProperty(ref year, value))
+                {
+                    RaisePropertyChanged(nameof(Days));
+                }
+            }
+        }
         public List<string> Months { get; }
-        public string MonthName { get; set; }
+        public string MonthName
+        {
+            get => monthName;
+            set
+            {
+                if (SetProperty(ref monthName, value))
+                {
+                    RaisePropertyChanged(nameof(Month));
+                    RaisePropertyChanged(nameof(Days));
+                }
+            }
+        }
         public int Month => DateTime.ParseExact(MonthName, "MMMM", CultureInfo.CurrentCulture).Month;
         public decimal Amount { get; set; }
         public ObservableCollection<CategoryNode> Categories { get; private set; }
         public CategoryNode Category { get; set; }
-        public int OnDay { get; set; }
+        public int OnDay { get => onDay; set => SetProperty(ref onDay, value); }
         public bool Monthly
         {
             get { return monthly; }
@@ -89,8 +114,7 @@ namespace ViewModels.Windows
             }
         }
         public IEnumerable<string> DaysOfWeek => Enum.GetNames(typeof(DayOfWeek));
-        // TODO days of the selected month
-        public IEnumerable<int> Days => Enumerable.Range(1, 30);
+        public IEnumerable<int> Days => Enumerable.Range(1, DateTime.DaysInMonth(Year, Month));
         public AbstractBudgetRecordEditorViewModel(IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
             this.eventAggregator = eventAggregator;
@@ -174,7 +198,6 @@ namespace ViewModels.Windows
             // and in the view model
             recordItem.Amount = Amount;
             recordItem.Category = Category;
-            // TODO BUG OnDay and BType not updated 
             recordItem.Type = BudgetType;
             recordItem.OnDay = OnDay;
             recordItem.Month = Month;
