@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using ViewModels.Windows;
 
 namespace SimpleBudget.Windows
 {
@@ -13,7 +14,7 @@ namespace SimpleBudget.Windows
         }
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
+            ((BudgetManagerCopyRequestViewModel)this.DataContext).Copy();
             this.Close();
         }
     }

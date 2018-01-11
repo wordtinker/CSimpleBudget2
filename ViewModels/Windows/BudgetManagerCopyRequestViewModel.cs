@@ -1,14 +1,20 @@
 ﻿using Models.Interfaces;
+using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using ViewModels.Elements;
+using ViewModels.Events;
 
 namespace ViewModels.Windows
 {
     public class BudgetManagerCopyRequestViewModel
     {
         private IDataProvider dataProvider;
+        private IEventAggregator eventAggregator;
+        private int toMonth;
+        private int toYear;
 
         public List<string> Months { get; } = DateTimeFormatInfo.CurrentInfo.MonthNames.Take(12).ToList();
         /// <summary>
@@ -29,9 +35,19 @@ namespace ViewModels.Windows
         /// </summary>
         public int SelectedYear { get; set; } = DateTime.Now.Year;
         // ctor
-        public BudgetManagerCopyRequestViewModel(IDataProvider dataProvider)
+        public BudgetManagerCopyRequestViewModel(int toMonth, int toYear, IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
+            this.toMonth = toMonth;
+            this.toYear = toYear;
             this.dataProvider = dataProvider;
+            this.eventAggregator = eventAggregator;
+        }
+        public void Copy()
+        {
+            foreach (IBudgetRecord rec in dataProvider.CopyRecords(SelectedMonth, SelectedYear, toMonth, toYear))
+            {
+                eventAggregator.GetEvent<BudgetRecordAdded>().Publish(new RecordItem(rec));
+            }
         }
     }
 }

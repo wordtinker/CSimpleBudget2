@@ -17,27 +17,18 @@ namespace SimpleBudget.Services
             this.managerWindow = window;
         }
 
-        public bool RequestMonthAndYear(out int month, out int year)
+        public void RequestMonthAndYear(int toMonth, int toYear)
         {
             BudgetManagerCopyRequest requestWindow = new BudgetManagerCopyRequest
             {
-                Owner = managerWindow
+                Owner = managerWindow,
+                DataContext = App.Container.Resolve<BudgetManagerCopyRequestViewModel>(new ResolverOverride[]
+                {
+                    new ParameterOverride("toMonth", toMonth),
+                    new ParameterOverride("toYear", toYear)
+                })
             };
-            BudgetManagerCopyRequestViewModel context = App.Container.Resolve<BudgetManagerCopyRequestViewModel>();
-            requestWindow.DataContext = context;
-
-            if (requestWindow.ShowDialog() == true)
-            {
-                month = context.SelectedMonth;
-                year = context.SelectedYear;
-                return true;
-            }
-            else
-            {
-                month = 0;
-                year = 0;
-                return false;
-            }
+            requestWindow.ShowDialog();
         }
         public void ShowBudgetRecordEditor()
         {

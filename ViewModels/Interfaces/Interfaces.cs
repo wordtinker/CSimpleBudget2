@@ -31,6 +31,6 @@ namespace ViewModels.Interfaces
     {
         void ShowBudgetRecordEditor();
         void ShowBudgetRecordEditor(RecordItem recordItem);
-        bool RequestMonthAndYear(out int monthToCopyFrom, out int yearToCopyFrom);
+        void RequestMonthAndYear(int toMonth, int toYear);
     }
 }

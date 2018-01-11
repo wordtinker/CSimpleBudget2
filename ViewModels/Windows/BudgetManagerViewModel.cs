@@ -72,7 +72,7 @@ namespace ViewModels.Windows
             selectedYear = DateTime.Now.Year;
             Records = new ObservableCollection<RecordItem>();
 
-            RequestCopyFrom = new DelegateCommand(_RequestCopyFrom);
+            RequestCopyFrom = new DelegateCommand(() => service.RequestMonthAndYear(SelectedMonth, SelectedYear));
 
             UpdateRecords();
             eventAggregator.GetEvent<BudgetRecordAdded>().Subscribe(
@@ -88,18 +88,6 @@ namespace ViewModels.Windows
             foreach (IBudgetRecord rec in dataProvider.GetRecords(SelectedYear, SelectedMonth))
             {
                 Records.Add(new RecordItem(rec));
-            }
-        }
-        // TODO Move to CopyRequest?
-        private void _RequestCopyFrom()
-        {
-            if (service.RequestMonthAndYear(out int monthToCopyFrom, out int yearToCopyFrom))
-            {
-                foreach (IBudgetRecord rec in dataProvider.CopyRecords(monthToCopyFrom, yearToCopyFrom, SelectedMonth, SelectedYear))
-                {
-                    Records.Add(new RecordItem(rec));
-                    eventAggregator.GetEvent<BudgetRecordAdded>().Publish(new RecordItem(rec));
-                }
             }
         }
         public void DeleteRecord(RecordItem recordItem)
