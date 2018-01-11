@@ -169,11 +169,16 @@ namespace ViewModels.Windows
 
         public override void Save()
         {
-            // TODO !!!
-            //if (Core.Instance.UpdateRecord(
-            //        item.record, vm.Amount, vm.Category.category,
-            //        vm.BudgetType, vm.OnDay,
-            //        vm.Month, vm.Year))
+            // update budget record in the model
+            dataProvider.UpdateRecord(recordItem.record, Amount, Category.category, BudgetType, OnDay, Month, Year);
+            // and in the view model
+            recordItem.Amount = Amount;
+            recordItem.Category = Category;
+            // TODO BUG OnDay and BType not updated 
+            recordItem.Type = BudgetType;
+            recordItem.OnDay = OnDay;
+            recordItem.Month = Month;
+            recordItem.Year = Year;
             // TODO event and filter
             //if (vm.Month != SelectedMonth || vm.Year != selectedYear)
             //    {

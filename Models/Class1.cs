@@ -214,6 +214,11 @@ namespace Models
             // do nothing
         }
 
+        public void UpdateRecord(IBudgetRecord record, decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year)
+        {
+            // do nothing
+        }
+
         public void UpdateTransaction(ITransaction transaction, DateTime date, decimal amount, string info, ICategory category)
         {
             // do nothing

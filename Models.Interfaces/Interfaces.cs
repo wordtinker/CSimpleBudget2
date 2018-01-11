@@ -40,6 +40,7 @@ namespace Models.Interfaces
         IEnumerable<IBudgetRecord> GetRecords(int year, int month);
         void DeleteRecord(IBudgetRecord record);
         IBudgetRecord AddBudgetRecord(decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year);
+        void UpdateRecord(IBudgetRecord record, decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year);
     }
     public interface IAccount
     {
@@ -55,7 +56,6 @@ namespace Models.Interfaces
         ICategory Parent { get; }
         IEnumerable<ICategory> Children { get; }
     }
-    // TODO allow set?
     public interface ITransaction
     {
         DateTime Date { get; }

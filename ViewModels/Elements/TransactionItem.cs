@@ -18,11 +18,7 @@ namespace ViewModels.Elements
         public DateTime Date { get => date; set => SetProperty(ref date, value); }
         public decimal Amount { get => amount; set => SetProperty(ref amount, value); }
         public string Info { get => info; set => SetProperty(ref info, value); }
-        public CategoryNode Category
-        {
-            get => catNode;
-            set => SetProperty(ref catNode, value);
-        }
+        public CategoryNode Category { get => catNode; set => SetProperty(ref catNode, value); }
 
         // TODO for reports
         //public string Account
