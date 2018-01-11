@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using ViewModels.Elements;
+using ViewModels.Events;
 
 namespace ViewModels.Windows
 {
@@ -148,11 +149,7 @@ namespace ViewModels.Windows
         {
             IBudgetRecord newRecord =
                 dataProvider.AddBudgetRecord(Amount, Category.category, BudgetType, OnDay, Month, Year);
-            // TODO event and filter
-            //if (newRecord.Month == SelectedMonth && newRecord.Year == SelectedYear)
-            //{
-            //    Records.Add(new RecordItem(newRecord));
-            //}
+            eventAggregator.GetEvent<BudgetRecordAdded>().Publish(new RecordItem(newRecord));
         }
     }
 

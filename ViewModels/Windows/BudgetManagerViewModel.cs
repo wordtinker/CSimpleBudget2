@@ -1,5 +1,6 @@
 ﻿using Models.Interfaces;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Input;
 using ViewModels.Elements;
+using ViewModels.Events;
 using ViewModels.Interfaces;
 
 namespace ViewModels.Windows
@@ -59,7 +61,7 @@ namespace ViewModels.Windows
         public ICommand RequestCopyFrom { get; }
 
         //ctor
-        public BudgetManagerViewModel(IUIBudgetWindowService service, IDataProvider dataProvider)
+        public BudgetManagerViewModel(IUIBudgetWindowService service, IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
             this.service = service;
             this.dataProvider = dataProvider;
@@ -71,6 +73,9 @@ namespace ViewModels.Windows
             RequestCopyFrom = new DelegateCommand(_RequestCopyFrom);
 
             UpdateRecords();
+            eventAggregator.GetEvent<BudgetRecordAdded>().Subscribe(
+                ri => Records.Add(ri), ThreadOption.PublisherThread, false,
+                ri => ri.Month == SelectedMonth && ri.Year == SelectedYear);
         }
         /// <summary>
         /// Clears list of records and loads new list for selected month and year.
