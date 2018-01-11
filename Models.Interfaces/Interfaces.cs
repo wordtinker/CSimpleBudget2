@@ -20,21 +20,27 @@ namespace Models.Interfaces
         IEnumerable<string> GetAccountTypes();
         bool AddAccountType(string accountType);
         bool DeleteAccountType(string accountType);
+
         IEnumerable<IAccount> GetAccounts();
         bool AddAccount(string accTyp, string accName, out IAccount newAccount);
         bool DeleteAccount(IAccount account);
         void UpdateAccount(IAccount account);
+
         IEnumerable<ICategory> GetCategories();
         bool AddCategory(string name, ICategory parent, out ICategory newCategory);
         bool DeleteCategory(ICategory category);
+
         IEnumerable<ITransaction> GetTransactions(IAccount account);
         void DeleteTransaction(ITransaction transaction);
+        // TODO Redo
         void AddTransaction(IAccount account, DateTime date, decimal amount, string info, ICategory category, out ITransaction transaction);
         void UpdateTransaction(ITransaction transaction, DateTime date, decimal amount, string info, ICategory category);
+
         (int minYear, int maxYear) GetActiveBudgetYears();
         IEnumerable<IBudgetRecord> CopyRecords(int fromMonth, int fromYear, int toMonth, int toYear);
         IEnumerable<IBudgetRecord> GetRecords(int year, int month);
-        bool DeleteRecord(IBudgetRecord record);
+        void DeleteRecord(IBudgetRecord record);
+        IBudgetRecord AddBudgetRecord(decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year);
     }
     public interface IAccount
     {

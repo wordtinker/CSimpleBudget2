@@ -13,8 +13,8 @@ namespace ViewModels.Windows
     {
         protected IEventAggregator eventAggregator;
         protected IDataProvider dataProvider;
+        protected BudgetType BudgetType;
 
-        private BudgetType BudgetType;
         private bool monthly;
         private bool point;
         private bool daily;
@@ -31,8 +31,7 @@ namespace ViewModels.Windows
         public int Year { get; set; }
         public List<string> Months { get; }
         public string MonthName { get; set; }
-        // TODO
-        //public int Month => DateTime.ParseExact(SelectedMonthName, "MMMM", CultureInfo.CurrentCulture).Month;
+        public int Month => DateTime.ParseExact(MonthName, "MMMM", CultureInfo.CurrentCulture).Month;
         public decimal Amount { get; set; }
         public ObservableCollection<CategoryNode> Categories { get; private set; }
         public CategoryNode Category { get; set; }
@@ -123,19 +122,13 @@ namespace ViewModels.Windows
 
         public override void Save()
         {
-            // TODO !!!
-            //BudgetRecord newRecord;
-            //if (Core.Instance.AddRecord(
-            //    vm.Amount, vm.Category.category,
-            //    vm.BudgetType, vm.OnDay,
-            //    vm.Month, vm.Year, out newRecord))
-            //{
-            //    if (newRecord.Month == SelectedMonth && newRecord.Year == SelectedYear)
-            //    {
-            //        Records.Add(new RecordItem(newRecord));
-            //    }
-            //}
+            IBudgetRecord newRecord =
+                dataProvider.AddBudgetRecord(Amount, Category.category, BudgetType, OnDay, Month, Year);
             // TODO event and filter
+            //if (newRecord.Month == SelectedMonth && newRecord.Year == SelectedYear)
+            //{
+            //    Records.Add(new RecordItem(newRecord));
+            //}
         }
     }
 
@@ -181,13 +174,11 @@ namespace ViewModels.Windows
             //        item.record, vm.Amount, vm.Category.category,
             //        vm.BudgetType, vm.OnDay,
             //        vm.Month, vm.Year))
-            //{
-            //    if (vm.Month != SelectedMonth || vm.Year != selectedYear)
+            // TODO event and filter
+            //if (vm.Month != SelectedMonth || vm.Year != selectedYear)
             //    {
             //        Records.Remove(item);
             //    }
-            //}
-            // TODO event and filter
         }
     }
 }

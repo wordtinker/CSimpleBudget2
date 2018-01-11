@@ -74,6 +74,19 @@ namespace Models
             return true;
         }
 
+        public IBudgetRecord AddBudgetRecord(decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year)
+        {
+            return new StubBudgetRecord
+            {
+                Amount = amount,
+                Category = category,
+                Month = month,
+                OnDay = onDay,
+                Type = budgetType,
+                Year = year
+            };
+        }
+
         public bool AddCategory(string name, ICategory parent, out ICategory newCategory)
         {
             newCategory = new StubCategory { Name = name, Parent = parent, Children = new List<ICategory>() };
@@ -105,9 +118,9 @@ namespace Models
             return true;
         }
 
-        public bool DeleteRecord(IBudgetRecord record)
+        public void DeleteRecord(IBudgetRecord record)
         {
-            return true;
+            // Do nothing
         }
 
         public void DeleteTransaction(ITransaction transaction)

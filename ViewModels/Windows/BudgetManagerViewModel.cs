@@ -96,15 +96,9 @@ namespace ViewModels.Windows
         }
         public void DeleteRecord(RecordItem recordItem)
         {
-            if (dataProvider.DeleteRecord(recordItem.record))
-            {
-                Records.Remove(recordItem);
-                // TODO event
-            }
-            else
-            {
-                service.ShowMessage("Can't delete budget record.");
-            }
+            dataProvider.DeleteRecord(recordItem.record);
+            Records.Remove(recordItem);
+            // TODO event
         }
         public void ShowRecordEditor()
         {
