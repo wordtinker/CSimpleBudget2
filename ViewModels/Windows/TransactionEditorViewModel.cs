@@ -49,7 +49,7 @@ namespace ViewModels.Windows
         public override void Save()
         {
             // Create new transaction.
-            dataProvider.AddTransaction(accountItem.account, Date, Amount, Info, Category.category, out ITransaction newTr);
+            ITransaction newTr = dataProvider.AddTransaction(accountItem.account, Date, Amount, Info, Category.category);
             eventAggregator.GetEvent<TransactionAdded>().Publish(new TransactionItem(newTr));
         }
     }

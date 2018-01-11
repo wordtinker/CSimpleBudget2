@@ -93,9 +93,9 @@ namespace Models
             return true;
         }
 
-        public void AddTransaction(IAccount account, DateTime date, decimal amount, string info, ICategory category, out ITransaction transaction)
+        public ITransaction AddTransaction(IAccount account, DateTime date, decimal amount, string info, ICategory category)
         {
-            transaction = new StubTransaction {Account = account, Date = date, Amount = amount, Info = info, Category = category };
+            return new StubTransaction {Account = account, Date = date, Amount = amount, Info = info, Category = category };
         }
 
         public IEnumerable<IBudgetRecord> CopyRecords(int fromMonth, int fromYear, int toMonth, int toYear)
