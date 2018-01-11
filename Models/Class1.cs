@@ -10,6 +10,8 @@ namespace Models
         public ICategory Category { get; set; }
         public BudgetType Type { get; set; }
         public int OnDay { get; set; }
+        public int Year { get; set; }
+        public int Month { get; set; }
     }
     public class StubTransaction : ITransaction
     {
@@ -173,7 +175,9 @@ namespace Models
                 Amount = 100,
                 Category = subCats[0],
                 OnDay = 1,
-                Type = BudgetType.Point
+                Type = BudgetType.Point,
+                Month = 1,
+                Year = 2017
             };
             yield return br;
         }

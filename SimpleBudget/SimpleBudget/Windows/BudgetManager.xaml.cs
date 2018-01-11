@@ -15,12 +15,12 @@ namespace SimpleBudget.Windows
         {
             InitializeComponent();
         }
+        // TODO Later command
         private void Record_DoubleClick(object sender, MouseButtonEventArgs e)
         {
-            // TODO
-            //DataGridRow dgr = (DataGridRow)sender;
-            //RecordItem item = (RecordItem)dgr.DataContext;
-            //((BudgetManagerViewModel)DataContext).ShowRecordEditor(item);
+            DataGridRow dgr = (DataGridRow)sender;
+            RecordItem item = (RecordItem)dgr.DataContext;
+            ((BudgetManagerViewModel)DataContext).ShowRecordEditor(item);
         }
         // TODO Later command
         private void DeleteRecord_Click(object sender, RoutedEventArgs e)
@@ -29,11 +29,10 @@ namespace SimpleBudget.Windows
             RecordItem item = (RecordItem)mi.DataContext;
             ((BudgetManagerViewModel)this.DataContext).DeleteRecord(item);
         }
-
+        // TODO Later command
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
-            //((BudgetManagerViewModel)DataContext).ShowRecordEditor();
+            ((BudgetManagerViewModel)DataContext).ShowRecordEditor();
         }
     }
 }

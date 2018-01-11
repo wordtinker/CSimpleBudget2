@@ -106,5 +106,13 @@ namespace ViewModels.Windows
                 service.ShowMessage("Can't delete budget record.");
             }
         }
+        public void ShowRecordEditor()
+        {
+            service.ShowBudgetRecordEditor();
+        }
+        public void ShowRecordEditor(RecordItem recordItem)
+        {
+            service.ShowBudgetRecordEditor(recordItem);
+        }
     }
 }

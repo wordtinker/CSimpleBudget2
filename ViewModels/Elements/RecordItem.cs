@@ -7,6 +7,10 @@ namespace ViewModels.Elements
     {
         internal IBudgetRecord record;
 
+        public int Year { get { return record.Year; } }
+        public int Month { get { return record.Month; } }
+        public BudgetType Type { get { return record.Type; } }
+        public int OnDay { get { return record.OnDay; } }
         public decimal Amount { get { return record.Amount; } }
         public CategoryNode Category { get { return new CategoryNode(record.Category); } }
         public string TypeName { get { return record.Type.ToString(); } }

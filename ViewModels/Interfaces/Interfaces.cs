@@ -27,10 +27,10 @@ namespace ViewModels.Interfaces
         void ShowTransactionEditor(AccountItem accountItem);
         void ShowTransactionEditor(TransactionItem transactionItem);
     }
-    // TODO
     public interface IUIBudgetWindowService :IUIBaseService
     {
-        //bool? ShowBudgetRecordEditor(BudgetRecordEditorViewModel vm);
+        void ShowBudgetRecordEditor();
+        void ShowBudgetRecordEditor(RecordItem recordItem);
         bool RequestMonthAndYear(out int monthToCopyFrom, out int yearToCopyFrom);
     }
 }

@@ -64,6 +64,9 @@ namespace Models.Interfaces
         decimal Amount { get; }
         ICategory Category { get; }
         BudgetType Type { get; }
+        int Year { get; }
+        // TODO model, month must be natural based
+        int Month { get; }
         int OnDay { get; }
     }
     /// <summary>

@@ -55,6 +55,7 @@
     <Compile Include="Windows\AccTypeManagerViewModel.cs" />
     <Compile Include="Windows\BudgetManagerCopyRequestViewModel.cs" />
     <Compile Include="Windows\BudgetManagerViewModel.cs" />
+    <Compile Include="Windows\BudgetRecordEditorViewModel.cs" />
     <Compile Include="Windows\CategoriesManagerViewModel.cs" />
     <Compile Include="Windows\MainWindowViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
