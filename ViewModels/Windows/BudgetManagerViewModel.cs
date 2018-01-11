@@ -18,6 +18,7 @@ namespace ViewModels.Windows
     {
         private IUIBudgetWindowService service;
         private IDataProvider dataProvider;
+        private IEventAggregator eventAggregator;
         private string selectedMonthName;
         private int selectedYear;
 
@@ -65,6 +66,7 @@ namespace ViewModels.Windows
         {
             this.service = service;
             this.dataProvider = dataProvider;
+            this.eventAggregator = eventAggregator;
             Months = DateTimeFormatInfo.CurrentInfo.MonthNames.Take(12).ToList();
             selectedMonthName = DateTime.Now.ToString("MMMM");
             selectedYear = DateTime.Now.Year;
@@ -88,6 +90,7 @@ namespace ViewModels.Windows
                 Records.Add(new RecordItem(rec));
             }
         }
+        // TODO Move to CopyRequest?
         private void _RequestCopyFrom()
         {
             if (service.RequestMonthAndYear(out int monthToCopyFrom, out int yearToCopyFrom))
@@ -95,7 +98,7 @@ namespace ViewModels.Windows
                 foreach (IBudgetRecord rec in dataProvider.CopyRecords(monthToCopyFrom, yearToCopyFrom, SelectedMonth, SelectedYear))
                 {
                     Records.Add(new RecordItem(rec));
-                    // TODO event
+                    eventAggregator.GetEvent<BudgetRecordAdded>().Publish(new RecordItem(rec));
                 }
             }
         }
@@ -103,7 +106,7 @@ namespace ViewModels.Windows
         {
             dataProvider.DeleteRecord(recordItem.record);
             Records.Remove(recordItem);
-            // TODO event
+            eventAggregator.GetEvent<BudgetRecordDeleted>().Publish(recordItem);
         }
         public void ShowRecordEditor()
         {

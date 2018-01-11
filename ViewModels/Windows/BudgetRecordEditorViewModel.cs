@@ -199,11 +199,7 @@ namespace ViewModels.Windows
             recordItem.OnDay = OnDay;
             recordItem.Month = Month;
             recordItem.Year = Year;
-            // TODO event and filter
-            //if (vm.Month != SelectedMonth || vm.Year != selectedYear)
-            //    {
-            //        Records.Remove(item);
-            //    }
+            eventAggregator.GetEvent<BudgetRecordChanged>().Publish(recordItem);
         }
     }
 }

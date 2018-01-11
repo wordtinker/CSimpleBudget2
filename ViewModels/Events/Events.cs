@@ -18,4 +18,6 @@ namespace ViewModels.Events
     public class TransactionChanged : PubSubEvent<TransactionItem> { };
 
     public class BudgetRecordAdded : PubSubEvent<RecordItem> { };
+    public class BudgetRecordDeleted : PubSubEvent<RecordItem> { };
+    public class BudgetRecordChanged : PubSubEvent<RecordItem> { };
 }
