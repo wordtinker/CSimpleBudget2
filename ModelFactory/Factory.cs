@@ -1,4 +1,6 @@
-﻿using Models;
+﻿using Data;
+using Data.Interfaces;
+using Models;
 using Models.Interfaces;
 using Unity;
 
@@ -16,7 +18,8 @@ namespace ModelFactory
         {
             // Bind everything within container.
             Container = new UnityContainer();
-            StubFileHandler fileHandler = new StubFileHandler();
+            Container.RegisterType<IStorage, StubStorage>();
+            FileHandler fileHandler = new FileHandler((fileName) => Container.Resolve<IStorage>());
             Container.RegisterInstance<IFileHandler>(fileHandler);
             Container.RegisterInstance<IDataProvider>(new StubDataProvider(fileHandler));
         }

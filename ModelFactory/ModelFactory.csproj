@@ -69,6 +69,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Data.Interfaces\Data.Interfaces.csproj">
+      <Project>{1145b3da-cab4-4234-8b77-5329abb3ef43}</Project>
+      <Name>Data.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Data\Data.csproj">
+      <Project>{57ecc9ee-677e-46ce-a51c-4b534e5f7b97}</Project>
+      <Name>Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Models.Interfaces\Models.Interfaces.csproj">
       <Project>{fb260354-0219-499d-ba91-7911e3cae1f1}</Project>
       <Name>Models.Interfaces</Name>

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Data.Interfaces;
 using Models.Interfaces;
 
 namespace Models
@@ -52,27 +51,6 @@ namespace Models
         public string Name { get; set; }
         public ICategory Parent { get; set; }
         public IEnumerable<ICategory> Children { get; set; }
-    }
-
-    // TODO !!!
-    public class StubFileHandler : IFileHandler, IStorageProvider
-    {
-        public string Extension => ".sbdb";
-
-        public IStorage Storage { get; private set; }
-        public void CloseFile()
-        {
-            //
-        }
-
-        public bool InitializeFile(string fileName)
-        {
-            return true;
-        }
-        public bool LoadFile(string fileName)
-        {
-            return true;
-        }
     }
     public class StubDataProvider : IDataProvider
     {

@@ -1,7 +1,10 @@
-﻿namespace Data.Interfaces
+﻿using System;
+
+namespace Data.Interfaces
 {
-    public interface IStorage
+    // TODO
+    public interface IStorage : IDisposable
     {
-        // TODO
+        bool Initialize();
     }
 }
