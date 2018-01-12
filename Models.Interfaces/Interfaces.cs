@@ -1,4 +1,5 @@
 ﻿
+using Data.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -13,7 +14,7 @@ namespace Models.Interfaces
     }
     public interface IStorageProvider
     {
-        // TODO IStorage
+        IStorage Storage { get; }
     }
     public interface IDataProvider
     {

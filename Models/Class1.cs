@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Data.Interfaces;
 using Models.Interfaces;
 
 namespace Models
@@ -53,11 +54,13 @@ namespace Models
         public IEnumerable<ICategory> Children { get; set; }
     }
 
+    // TODO !!!
     public class StubFileHandler : IFileHandler, IStorageProvider
     {
         // TODO format?
         public string Extension => "Budget files (*.sbdb)|*.sbdb";
 
+        public IStorage Storage { get; private set; }
         public void CloseFile()
         {
             //
