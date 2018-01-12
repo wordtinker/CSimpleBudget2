@@ -138,7 +138,6 @@ namespace ViewModels.Windows
                 ri => RefreshBars(), ThreadOption.PublisherThread, false,
                 ri => ri.Month == CurrentMonth && ri.Year == CurrentYear);
         }
-        // TODO
         private void CleanUpData()
         {
             AccTypes.Clear();
@@ -146,7 +145,6 @@ namespace ViewModels.Windows
             Categories.Clear();
             Bars.Clear();
         }
-        // TODO
         private void LoadUpData()
         {
             foreach (var item in dataProvider.GetAccountTypes())
