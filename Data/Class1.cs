@@ -6,6 +6,16 @@ namespace Data
 {
     public class StubStorage : IStorage
     {
+        public bool AddAccountType(string name)
+        {
+            return true;
+        }
+
+        public bool DeleteAccountType(string name)
+        {
+            return true;
+        }
+
         public void Dispose()
         {
             // TODO using pattern

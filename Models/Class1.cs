@@ -68,6 +68,14 @@ namespace Models
                 yield return accType;
             }
         }
+        public bool AddAccountType(string accountType)
+        {
+            return storageProvider.Storage?.AddAccountType(accountType) ?? false;
+        }
+        public bool DeleteAccountType(string accountType)
+        {
+            return storageProvider.Storage?.DeleteAccountType(accountType) ?? false;
+        }
     }
 
     public class StubDataProvider
@@ -75,11 +83,6 @@ namespace Models
         public bool AddAccount(string accType, string accName, out IAccount newAccount)
         {
             newAccount = new StubAccount { Balance = 0, Closed = false, Name = accName, Type = accType };
-            return true;
-        }
-
-        public bool AddAccountType(string accountType)
-        {
             return true;
         }
 
@@ -117,10 +120,7 @@ namespace Models
             return true;
         }
 
-        public bool DeleteAccountType(string accountType)
-        {
-            return true;
-        }
+        
 
         public bool DeleteCategory(ICategory category)
         {

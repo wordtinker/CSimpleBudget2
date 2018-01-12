@@ -9,5 +9,9 @@ namespace Data.Interfaces
         bool Initialize();
 
         IEnumerable<string> SelectAccTypes();
+        bool AddAccountType(string name);
+        bool DeleteAccountType(string name);
+
+
     }
 }
