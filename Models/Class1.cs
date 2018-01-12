@@ -4,6 +4,22 @@ using Models.Interfaces;
 
 namespace Models
 {
+    /// <summary>
+    /// Object that contains sum of all transaction
+    /// and sum of all budget records for a given
+    /// period(month and year) and category.
+    /// </summary>
+    public class Spending : ISpending
+    {
+        // Category of the spending
+        public ICategory Category { get; internal set; }
+        // Sum of the planned budget records.
+        public decimal Budget { get; internal set; }
+        // Sum of the transactions.
+        public decimal Value { get; internal set; }
+        // Month of the spending
+        public int Month { get; internal set; }
+    }
     public class StubBudgetRecord : IBudgetRecord
     {
         public decimal Amount { get; set; }
@@ -193,6 +209,19 @@ namespace Models
                 Year = 2018
             };
             yield return br;
+        }
+
+        public IEnumerable<ISpending> GetSpendings(int year, int month)
+        {
+            List<ICategory> categories = new List<ICategory>(GetCategories());
+            var subCats = new List<ICategory>(categories[0].Children);
+            yield return new Spending
+            {
+                Budget = 25m,
+                Category = subCats[0],
+                Month = 1,
+                Value = 20m
+            };
         }
 
         public IEnumerable<ITransaction> GetTransactions(IAccount account)

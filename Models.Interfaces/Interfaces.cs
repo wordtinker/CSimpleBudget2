@@ -41,6 +41,8 @@ namespace Models.Interfaces
         void DeleteRecord(IBudgetRecord record);
         IBudgetRecord AddBudgetRecord(decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year);
         void UpdateRecord(IBudgetRecord record, decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year);
+
+        IEnumerable<ISpending> GetSpendings(int year, int month);
     }
     public interface IAccount
     {
@@ -55,6 +57,17 @@ namespace Models.Interfaces
         string Name { get; }
         ICategory Parent { get; }
         IEnumerable<ICategory> Children { get; }
+    }
+    public interface ISpending
+    {
+        // Category of the spending
+        ICategory Category { get; }
+        // Sum of the planned budget records.
+        decimal Budget { get; }
+        // Sum of the transactions.
+        decimal Value { get; }
+        // Month of the spending
+        int Month { get; }
     }
     public interface ITransaction
     {

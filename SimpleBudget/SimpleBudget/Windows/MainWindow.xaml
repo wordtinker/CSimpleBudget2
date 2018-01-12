@@ -79,8 +79,6 @@
                             <Setter Property="Background" Value="Transparent"/>
                         </Style>
                     </chart:Chart.PlotAreaStyle>
-                    
-                    
                     <chart:Chart.Series>
                         <chart:Stacked100BarSeries>
                             <chart:SeriesDefinition ItemsSource="{Binding Bars}"

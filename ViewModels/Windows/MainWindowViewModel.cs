@@ -2,6 +2,7 @@
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -38,10 +39,13 @@ namespace ViewModels.Windows
         /// Property showing that we have enough
         /// info for reports and budgeting.
         /// </summary>
-        public bool IsFullyReady => (from c in Categories where c.Items.Count >0 select c).Any();
+        public bool IsFullyReady => (from c in Categories where c.Items.Count > 0 select c).Any();
         public ObservableCollection<IAccountItem> Accounts { get; }
         public ObservableCollection<AccTypeItem> AccTypes { get; }
         public ObservableCollection<CategoryNode> Categories { get; }
+        public ObservableCollection<BudgetBar> Bars { get; }
+        public int CurrentMonth { get; }
+        public int CurrentYear { get; }
         // Commands
         public ICommand CreateFile { get; private set; }
         public ICommand OpenFile { get; private set; }
@@ -68,6 +72,9 @@ namespace ViewModels.Windows
             AccTypes.CollectionChanged += (sender, e) => RaisePropertyChanged(nameof(IsReadyToSetAccounts));
             Categories = new ObservableCollection<CategoryNode>();
             Categories.CollectionChanged += (sender, e) => RaisePropertyChanged(nameof(IsFullyReady));
+            Bars = new ObservableCollection<BudgetBar>();
+            CurrentMonth = DateTime.Now.Month;
+            CurrentYear = DateTime.Now.Year;
 
             CreateCommands();
             ConnectEvents();
@@ -107,8 +114,29 @@ namespace ViewModels.Windows
             eventAggregator.GetEvent<AccountChanged>().Subscribe(a => RefreshAccounts());
             eventAggregator.GetEvent<CategoryAdded>().Subscribe(cn => RefreshCategories());
             eventAggregator.GetEvent<CategoryDeleted>().Subscribe(cn => RefreshCategories());
-            // TODO connect transaction creation, deletion, change
-            // TODO connect and filter budget record creation, deletion, change
+            // Connect transaction creation, deletion, change
+            eventAggregator.GetEvent<TransactionAdded>().Subscribe(tri => RefreshAccounts());
+            eventAggregator.GetEvent<TransactionDeleted>().Subscribe(tri => RefreshAccounts());
+            eventAggregator.GetEvent<TransactionChanged>().Subscribe(tri => RefreshAccounts());
+            eventAggregator.GetEvent<TransactionAdded>().Subscribe(
+                tri => RefreshBars(), ThreadOption.PublisherThread, false,
+                tri => tri.Date.Month == CurrentMonth && tri.Date.Year == CurrentYear);
+            eventAggregator.GetEvent<TransactionDeleted>().Subscribe(
+                tri => RefreshBars(), ThreadOption.PublisherThread, false,
+                tri => tri.Date.Month == CurrentMonth && tri.Date.Year == CurrentYear);
+            eventAggregator.GetEvent<TransactionChanged>().Subscribe(
+                tri => RefreshBars(), ThreadOption.PublisherThread, false,
+                tri => tri.Date.Month == CurrentMonth && tri.Date.Year == CurrentYear);
+            // Сonnect budget record creation, deletion, change
+            eventAggregator.GetEvent<BudgetRecordAdded>().Subscribe(
+                ri => RefreshBars(), ThreadOption.PublisherThread, false,
+                ri => ri.Month == CurrentMonth && ri.Year == CurrentYear);
+            eventAggregator.GetEvent<BudgetRecordDeleted>().Subscribe(
+                ri => RefreshBars(), ThreadOption.PublisherThread, false,
+                ri => ri.Month == CurrentMonth && ri.Year == CurrentYear);
+            eventAggregator.GetEvent<BudgetRecordChanged>().Subscribe(
+                ri => RefreshBars(), ThreadOption.PublisherThread, false,
+                ri => ri.Month == CurrentMonth && ri.Year == CurrentYear);
         }
         // TODO
         private void CleanUpData()
@@ -116,6 +144,7 @@ namespace ViewModels.Windows
             AccTypes.Clear();
             Accounts.Clear();
             Categories.Clear();
+            Bars.Clear();
         }
         // TODO
         private void LoadUpData()
@@ -126,6 +155,7 @@ namespace ViewModels.Windows
             }
             RefreshAccounts();
             RefreshCategories();
+            RefreshBars();
         }
         private void RefreshAccounts()
         {
@@ -154,6 +184,14 @@ namespace ViewModels.Windows
             foreach (var item in dataProvider.GetCategories())
             {
                 Categories.Add(new CategoryNode(item));
+            }
+        }
+        private void RefreshBars()
+        {
+            Bars.Clear();
+            foreach (var spending in dataProvider.GetSpendings(CurrentYear, CurrentMonth))
+            {
+                Bars.Add(new BudgetBar(spending));
             }
         }
         private void _CreateFile()
