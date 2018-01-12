@@ -27,8 +27,10 @@ namespace ViewModels.Elements
             set
             {
                 account.Type = value;
-                dataProvider.UpdateAccount(account);
-                eventAggregator.GetEvent<AccountChanged>().Publish(this);
+                if (dataProvider.UpdateAccount(account))
+                {
+                    eventAggregator.GetEvent<AccountChanged>().Publish(this);
+                }
             }
         }
         public bool Closed
@@ -37,8 +39,10 @@ namespace ViewModels.Elements
             set
             {
                 account.Closed = value;
-                dataProvider.UpdateAccount(account);
-                eventAggregator.GetEvent<AccountChanged>().Publish(this);
+                if (dataProvider.UpdateAccount(account))
+                {
+                    eventAggregator.GetEvent<AccountChanged>().Publish(this);
+                }
             }
         }
         public bool Excluded
@@ -47,8 +51,10 @@ namespace ViewModels.Elements
             set
             {
                 account.Excluded = value;
-                dataProvider.UpdateAccount(account);
-                eventAggregator.GetEvent<AccountChanged>().Publish(this);
+                if (dataProvider.UpdateAccount(account))
+                {
+                    eventAggregator.GetEvent<AccountChanged>().Publish(this);
+                }
             }
         }
         public AccountItem(IAccount acc, IDataProvider dataProvider, IEventAggregator eventAggregator)
@@ -62,15 +68,13 @@ namespace ViewModels.Elements
         {
             if (obj is AccountItem other)
             {
-                // TODO Later see model-DB restrictions Name or Name-Type
-                return this.Name.Equals(other.Name);
+                return this.account.Id.Equals(other.account.Id);
             }
             return false;
         }
         public override int GetHashCode()
         {
-            // TODO Later see model-DB restrictions Name or Name-Type
-            return this.Name.GetHashCode();
+            return this.account.Id.GetHashCode();
         }
     }
     /// <summary>

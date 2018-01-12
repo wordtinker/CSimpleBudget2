@@ -25,7 +25,7 @@ namespace Models.Interfaces
         IEnumerable<IAccount> GetAccounts();
         bool AddAccount(string accTyp, string accName, out IAccount newAccount);
         bool DeleteAccount(IAccount account);
-        void UpdateAccount(IAccount account);
+        bool UpdateAccount(IAccount account);
 
         IEnumerable<ICategory> GetCategories();
         bool AddCategory(string name, ICategory parent, out ICategory newCategory);
@@ -47,11 +47,37 @@ namespace Models.Interfaces
     }
     public interface IAccount
     {
+        /// <summary>
+        /// Account name. Name in NOT unique. 
+        /// </summary>
         string Name { get; set; }
+        /// <summary>
+        /// Corresponding account type reference. 
+        /// </summary>
         string Type { get; set; }
+        /// <summary>
+        /// Total sum of all transactions. 
+        /// </summary>
         decimal Balance { get; set; }
+        /// <summary>
+        /// Flag "Closed"
+        /// Defines if the account is closed. Closed accounts do
+        /// not contibute to totals. Closed accounts are considered
+        /// in budgeting.
+        /// True - Account is closed.
+        /// False - Account is opened. 
+        /// </summary>
         bool Closed { get; set; }
+        /// <summary>
+        /// Flag "Out of Budget"
+        /// Defines if the account is considered in budgeting.
+        /// False - Transactions from that account are included in all budget
+        /// reports and forecasts.
+        /// True - Transactions from that account are excluded from all budget
+        /// reports and forecasts.
+        /// </summary>
         bool Excluded { get; set; }
+        int Id { get; }
     }
     public interface ICategory
     {

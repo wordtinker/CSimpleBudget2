@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Models.Elements;
 using Models.Interfaces;
 
 namespace Models
@@ -37,15 +38,7 @@ namespace Models
         public ICategory Category { get; set; }
         public IAccount Account { get; set; }
     }
-
-    public class StubAccount : IAccount
-    {
-        public string Name { get; set; }
-        public decimal Balance { get; set; }
-        public bool Closed { get; set; }
-        public string Type { get; set; }
-        public bool Excluded { get; set; }
-    }
+    
     public class StubCategory : ICategory
     {
         public string Name { get; set; }
@@ -76,15 +69,59 @@ namespace Models
         {
             return storageProvider.Storage?.DeleteAccountType(accountType) ?? false;
         }
+        public IEnumerable<IAccount> GetAccounts()
+        {
+            foreach (var (name, type, balance, closed, excluded, id)
+                in storageProvider.Storage?.SelectAccounts())
+            {
+                yield return new Account
+                {
+                    Name = name,
+                    Type = type,
+                    Balance = balance,
+                    Closed = closed,
+                    Excluded = excluded,
+                    Id = id
+                };
+            }
+        }
+        public bool AddAccount(string accType, string accName, out IAccount newAccount)
+        {
+            int id = -1;
+            if(storageProvider.Storage?.AddAccount(accName, accType, out id) ?? false)
+            {
+                newAccount = new Account
+                {
+                    Name = accName,
+                    Type = accType,
+                    Balance = 0m,
+                    Closed = false,
+                    Excluded = false,
+                    // id won't be -1 here, AddAccount returns valid id on successful run
+                    Id = id
+                };
+                return true;
+            }
+            else
+            {
+                newAccount = null;
+                return false;
+            }
+        }
+        public bool UpdateAccount(IAccount account)
+        {
+            return storageProvider.Storage?
+                .UpdateAccount(account.Id, account.Type, account.Balance, account.Closed, account.Excluded ) ?? false;
+        }
+        public bool DeleteAccount(IAccount account)
+        {
+            return storageProvider.Storage?.DeleteAccount(account.Id) ?? false;
+        }
     }
 
     public class StubDataProvider
     {
-        public bool AddAccount(string accType, string accName, out IAccount newAccount)
-        {
-            newAccount = new StubAccount { Balance = 0, Closed = false, Name = accName, Type = accType };
-            return true;
-        }
+        
 
         public IBudgetRecord AddBudgetRecord(decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year)
         {
@@ -115,11 +152,6 @@ namespace Models
             return GetRecords(fromMonth, fromYear);
         }
 
-        public bool DeleteAccount(IAccount account)
-        {
-            return true;
-        }
-
         
 
         public bool DeleteCategory(ICategory category)
@@ -137,33 +169,6 @@ namespace Models
             // do nothing
         }
 
-        public IEnumerable<IAccount> GetAccounts()
-        {
-            yield return new StubAccount
-            {
-                Balance = 1254m,
-                Closed = false,
-                Name = "1254",
-                Excluded = false,
-                Type = "one"
-            };
-            yield return new StubAccount
-            {
-                Balance = 1254m,
-                Closed = true,
-                Name = "1254",
-                Excluded = true,
-                Type = "two"
-            };
-            yield return new StubAccount
-            {
-                Balance = 8745m,
-                Closed = false,
-                Name = "8745",
-                Excluded = false,
-                Type ="one"
-            };
-        }
 
         public (int minYear, int maxYear) GetActiveBudgetYears()
         {
@@ -217,7 +222,7 @@ namespace Models
             var subCats = new List<ICategory>(categories[0].Children);
             yield return new StubTransaction
             {
-                Account = new StubAccount { Name = "One" },
+                Account = new Account { Name = "One" },
                 Amount = 25.14m,
                 Category = subCats[1],
                 Date = DateTime.Now,
@@ -225,10 +230,7 @@ namespace Models
             };
         }
 
-        public void UpdateAccount(IAccount account)
-        {
-            // do nothing
-        }
+        
 
         public void UpdateRecord(IBudgetRecord record, decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year)
         {
