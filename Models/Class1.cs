@@ -57,8 +57,7 @@ namespace Models
     // TODO !!!
     public class StubFileHandler : IFileHandler, IStorageProvider
     {
-        // TODO format?
-        public string Extension => "Budget files (*.sbdb)|*.sbdb";
+        public string Extension => ".sbdb";
 
         public IStorage Storage { get; private set; }
         public void CloseFile()

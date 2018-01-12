@@ -28,9 +28,10 @@ namespace SimpleBudget.Services
         }
         public string SaveFileDialog(string fileExtension)
         {
+            string text = string.Format("Budget files (*{0})|*{0}", fileExtension);
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = fileExtension
+                Filter = text
             };
             if (saveFileDialog.ShowDialog() == true)
             {
@@ -43,9 +44,10 @@ namespace SimpleBudget.Services
         }
         public string OpenFileDialog(string fileExtension)
         {
+            string text = string.Format("Budget files (*{0})|*{0}", fileExtension);
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = fileExtension
+                Filter = text
             };
             if (openFileDialog.ShowDialog() == true)
             {
