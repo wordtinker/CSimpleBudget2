@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Data.Interfaces
 {
@@ -6,5 +7,7 @@ namespace Data.Interfaces
     public interface IStorage : IDisposable
     {
         bool Initialize();
+
+        IEnumerable<string> SelectAccTypes();
     }
 }

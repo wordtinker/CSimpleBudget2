@@ -52,13 +52,26 @@ namespace Models
         public ICategory Parent { get; set; }
         public IEnumerable<ICategory> Children { get; set; }
     }
-    public class StubDataProvider : IDataProvider
+
+    public class DataProvider : StubDataProvider, IDataProvider
     {
-        public StubDataProvider(IStorageProvider storageProvider)
+        private IStorageProvider storageProvider;
+
+        public DataProvider(IStorageProvider storageProvider)
         {
-
+            this.storageProvider = storageProvider;
         }
+        public IEnumerable<string> GetAccountTypes()
+        {
+            foreach(string accType in storageProvider.Storage?.SelectAccTypes())
+            {
+                yield return accType;
+            }
+        }
+    }
 
+    public class StubDataProvider
+    {
         public bool AddAccount(string accType, string accName, out IAccount newAccount)
         {
             newAccount = new StubAccount { Balance = 0, Closed = false, Name = accName, Type = accType };
@@ -150,12 +163,6 @@ namespace Models
                 Excluded = false,
                 Type ="one"
             };
-        }
-
-        public IEnumerable<string> GetAccountTypes()
-        {
-            yield return "one";
-            yield return "two";
         }
 
         public (int minYear, int maxYear) GetActiveBudgetYears()

@@ -21,7 +21,7 @@ namespace ModelFactory
             Container.RegisterType<IStorage, StubStorage>();
             FileHandler fileHandler = new FileHandler((fileName) => Container.Resolve<IStorage>());
             Container.RegisterInstance<IFileHandler>(fileHandler);
-            Container.RegisterInstance<IDataProvider>(new StubDataProvider(fileHandler));
+            Container.RegisterInstance<IDataProvider>(new DataProvider(fileHandler));
         }
     }
 }
