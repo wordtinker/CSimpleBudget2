@@ -77,12 +77,18 @@ namespace Data
         public IEnumerable<(string name, int id)> SelectSubCategories(int parentId)
         {
             yield return ("one", 1);
-            yield return ("two", 1);
+            yield return ("two", 2);
         }
 
         public IEnumerable<(string name, int id)> SelectTopCategories()
         {
             yield return ("Top one", 1);
+        }
+
+        public IEnumerable<(DateTime date, decimal amount, string info, int categoryId, int id)>
+            SelectTransactions(int accountId)
+        {
+            yield return (DateTime.Now, 25.14m, "Test", 2, 1);
         }
 
         public bool UpdateAccount(int id, string type, decimal balance, bool closed, bool excluded)

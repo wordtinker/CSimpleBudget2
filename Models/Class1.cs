@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Models.Elements;
 using Models.Interfaces;
 
@@ -29,14 +30,6 @@ namespace Models
         public int OnDay { get; set; }
         public int Year { get; set; }
         public int Month { get; set; }
-    }
-    public class StubTransaction : ITransaction
-    {
-        public DateTime Date { get; set; }
-        public decimal Amount { get; set; }
-        public string Info { get; set; }
-        public ICategory Category { get; set; }
-        public IAccount Account { get; set; }
     }
 
     public class DataProvider : StubDataProvider, IDataProvider
@@ -173,8 +166,25 @@ namespace Models
         }
         public bool DeleteCategory(ICategory category)
         {
-            // TODO !!!
+            // TODO
             return true;
+        }
+        public IEnumerable<ITransaction> GetTransactions(IAccount account)
+        {
+            List<ICategory> categories = new List<ICategory>(GetCategories());
+            foreach (var (date, amount, info, categoryId, id) in storageProvider.Storage?.SelectTransactions(account.Id))
+            {
+                yield return new Transaction
+                {
+                    Account = account,
+                    Amount = amount,
+                    Category = (from topCat in categories
+                                from cat in topCat.Children
+                                where cat.Id == categoryId select cat).First(),
+                    Date = date,
+                    Info = info
+                };
+            }
         }
     }
 
@@ -199,7 +209,7 @@ namespace Models
 
         public ITransaction AddTransaction(IAccount account, DateTime date, decimal amount, string info, ICategory category)
         {
-            return new StubTransaction {Account = account, Date = date, Amount = amount, Info = info, Category = category };
+            return new Transaction {Account = account, Date = date, Amount = amount, Info = info, Category = category };
         }
 
         public IEnumerable<IBudgetRecord> CopyRecords(int fromMonth, int fromYear, int toMonth, int toYear)
@@ -258,19 +268,7 @@ namespace Models
             };
         }
 
-        public IEnumerable<ITransaction> GetTransactions(IAccount account)
-        {
-            List<ICategory> categories = new List<ICategory>(GetCategories());
-            var subCats = new List<ICategory>(categories[0].Children);
-            yield return new StubTransaction
-            {
-                Account = new Account { Name = "One" },
-                Amount = 25.14m,
-                Category = subCats[1],
-                Date = DateTime.Now,
-                Info = "Test"
-            };
-        }
+        
 
         
 
