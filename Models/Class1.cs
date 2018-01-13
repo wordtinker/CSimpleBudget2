@@ -38,13 +38,6 @@ namespace Models
         public ICategory Category { get; set; }
         public IAccount Account { get; set; }
     }
-    
-    public class StubCategory : ICategory
-    {
-        public string Name { get; set; }
-        public ICategory Parent { get; set; }
-        public IEnumerable<ICategory> Children { get; set; }
-    }
 
     public class DataProvider : StubDataProvider, IDataProvider
     {
@@ -117,11 +110,77 @@ namespace Models
         {
             return storageProvider.Storage?.DeleteAccount(account.Id) ?? false;
         }
+        // Top tier with structure
+        // TODO drop override
+        public override IEnumerable<ICategory> GetCategories()
+        {
+            foreach(var (name, id) in storageProvider.Storage?.SelectTopCategories())
+            {
+                Category topCat = new Category
+                {
+                    Id = id,
+                    Name = name,
+                    Parent = null
+                };
+                foreach(var cat in storageProvider.Storage?.SelectSubCategories(id))
+                {
+                    Category subCat = new Category
+                    {
+                        Id = cat.id,
+                        Name = cat.name,
+                        Parent = topCat
+                    };
+                    topCat.AddChild(subCat);
+                }
+                yield return topCat;
+            }
+        }
+        public bool AddCategory(string name, ICategory parent, out ICategory newCategory)
+        {
+            int id = -1;
+            if (parent == null)
+            {
+                if (storageProvider.Storage?.AddTopCategory(name, out id) ?? false)
+                {
+                    newCategory = new Category
+                    {
+                        // id won't be -1 here, AddTopCategory will return valid id
+                        Id = id,
+                        Name = name,
+                        Parent = null
+                    };
+                    return true;
+                }
+                newCategory = null;
+                return false;
+            }
+            else
+            {
+                if (storageProvider.Storage?.AddSubCategory(name, parent.Id, out id) ?? false)
+                {
+                    newCategory = new Category
+                    {
+                        // id won't be -1 here, AddSubCategory will return valid id
+                        Id = id,
+                        Name = name,
+                        Parent = parent
+                    };
+                    return true;
+                }
+                newCategory = null;
+                return false;
+            }
+        }
+        public bool DeleteCategory(ICategory category)
+        {
+            // TODO !!!
+            return true;
+        }
     }
 
-    public class StubDataProvider
+    public abstract class StubDataProvider
     {
-        
+        public abstract IEnumerable<ICategory> GetCategories();
 
         public IBudgetRecord AddBudgetRecord(decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year)
         {
@@ -136,11 +195,7 @@ namespace Models
             };
         }
 
-        public bool AddCategory(string name, ICategory parent, out ICategory newCategory)
-        {
-            newCategory = new StubCategory { Name = name, Parent = parent, Children = new List<ICategory>() };
-            return true;
-        }
+        
 
         public ITransaction AddTransaction(IAccount account, DateTime date, decimal amount, string info, ICategory category)
         {
@@ -154,10 +209,7 @@ namespace Models
 
         
 
-        public bool DeleteCategory(ICategory category)
-        {
-            return true;
-        }
+        
 
         public void DeleteRecord(IBudgetRecord record)
         {
@@ -175,17 +227,7 @@ namespace Models
             return (2013, 2018);
         }
 
-        // Top tier with structure
-        public IEnumerable<ICategory> GetCategories()
-        {
-            StubCategory one = new StubCategory { Name = "one", Parent = null, Children = new List<ICategory>() };
-            StubCategory two = new StubCategory { Name = "two", Parent = null, Children = new List<ICategory>() };
-            StubCategory topOne = new StubCategory { Name = "Top one", Parent = null,
-                Children = new List<ICategory>() { one, two } };
-            one.Parent = topOne;
-            two.Parent = topOne;
-            yield return topOne;
-        }
+        
 
         public IEnumerable<IBudgetRecord> GetRecords(int year, int month)
         {

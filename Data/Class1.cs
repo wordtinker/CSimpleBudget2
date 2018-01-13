@@ -18,12 +18,34 @@ namespace Data
             return true;
         }
 
+        public bool AddSubCategory(string name, int parentId, out int id)
+        {
+            id = 2;
+            return true;
+        }
+
+        public bool AddTopCategory(string name, out int id)
+        {
+            id = 2;
+            return true;
+        }
+
         public bool DeleteAccount(int id)
         {
             return true;
         }
 
         public bool DeleteAccountType(string name)
+        {
+            return true;
+        }
+
+        public bool DeleteSubCategory(int id, int parentId)
+        {
+            return true;
+        }
+
+        public bool DeleteTopCategory(int id)
         {
             return true;
         }
@@ -50,6 +72,17 @@ namespace Data
             yield return "one";
             yield return "two";
             yield return "2222";
+        }
+
+        public IEnumerable<(string name, int id)> SelectSubCategories(int parentId)
+        {
+            yield return ("one", 1);
+            yield return ("two", 1);
+        }
+
+        public IEnumerable<(string name, int id)> SelectTopCategories()
+        {
+            yield return ("Top one", 1);
         }
 
         public bool UpdateAccount(int id, string type, decimal balance, bool closed, bool excluded)

@@ -77,13 +77,27 @@ namespace Models.Interfaces
         /// reports and forecasts.
         /// </summary>
         bool Excluded { get; set; }
+        /// <summary>
+        /// Unique id.
+        /// </summary>
         int Id { get; }
     }
     public interface ICategory
     {
+        /// <summary>
+        /// Name of the category.
+        /// </summary>
         string Name { get; }
+        /// <summary>
+        /// Parent category. If category is top tier, parent is Null.
+        /// </summary>
         ICategory Parent { get; }
+        /// <summary>
+        /// Child categories. For bottom tier categories this list is empty.
+        /// </summary>
         IEnumerable<ICategory> Children { get; }
+        // Unique category ID.
+        int Id { get; }
     }
     public interface ISpending
     {

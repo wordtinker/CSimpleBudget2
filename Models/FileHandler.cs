@@ -9,6 +9,7 @@ namespace Models
     {
         private Func<string, IStorage> getStorage;
 
+        // TODO does it know it?
         public string Extension => ".sbdb";
         public IStorage Storage { get; private set; }
         public bool InitializeFile(string fileName)

@@ -17,5 +17,11 @@ namespace Data.Interfaces
         bool UpdateAccount(int id, string type, decimal balance, bool closed, bool excluded);
         bool DeleteAccount(int id);
 
+        IEnumerable<(string name, int id)> SelectTopCategories();
+        IEnumerable<(string name, int id)> SelectSubCategories(int parentId);
+        bool AddTopCategory(string name, out int id);
+        bool AddSubCategory(string name, int parentId, out int id);
+        bool DeleteTopCategory(int id);
+        bool DeleteSubCategory(int id, int parentId);
     }
 }
