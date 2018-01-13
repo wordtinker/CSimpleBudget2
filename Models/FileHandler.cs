@@ -9,6 +9,9 @@ namespace Models
     {
         private Func<string, IStorage> getStorage;
 
+        public event EventHandler On;
+        public event EventHandler Off;
+
         // TODO does it know it?
         public string Extension => ".sbdb";
         public IStorage Storage { get; private set; }
@@ -41,6 +44,7 @@ namespace Models
                 CloseFile();
                 // Get new storage connection
                 Storage = getStorage(fileName);
+                On?.Invoke(this, null);
                 return true;
             }
             catch (Exception)
@@ -52,6 +56,7 @@ namespace Models
         {
             Storage?.Dispose();
             Storage = null;
+            Off?.Invoke(this, null);
         }
         public FileHandler(Func<string, IStorage> getStorage)
         {

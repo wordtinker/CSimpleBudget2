@@ -2,6 +2,7 @@
 using Data.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Models.Interfaces
 {
@@ -14,11 +15,13 @@ namespace Models.Interfaces
     }
     public interface IStorageProvider
     {
+        event EventHandler On;
+        event EventHandler Off;
         IStorage Storage { get; }
     }
     public interface IDataProvider
     {
-        IEnumerable<string> GetAccountTypes();
+        ObservableCollection<string> AccountTypes { get; }
         bool AddAccountType(string accountType);
         bool DeleteAccountType(string accountType);
 

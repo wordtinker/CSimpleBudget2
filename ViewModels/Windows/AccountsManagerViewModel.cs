@@ -1,6 +1,8 @@
 ﻿using Models.Interfaces;
 using Prism.Events;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using ViewModels.Elements;
 using ViewModels.Events;
 using ViewModels.Interfaces;
@@ -15,7 +17,7 @@ namespace ViewModels.Windows
         private IEventAggregator eventAggregator;
 
         public ObservableCollection<AccountItem> Accounts { get; }
-        public ObservableCollection<string> AccTypes { get; }
+        public IEnumerable<string> AccTypes => from t in dataProvider.AccountTypes select t;
 
         public AccountsManagerViewModel(IUIBaseService serviceProvider, IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
@@ -23,19 +25,15 @@ namespace ViewModels.Windows
             this.dataProvider = dataProvider;
             this.eventAggregator = eventAggregator;
             Accounts = new ObservableCollection<AccountItem>();
-            AccTypes = new ObservableCollection<string>();
             foreach (var item in dataProvider.GetAccounts())
             {
                 Accounts.Add(new AccountItem(item, dataProvider, eventAggregator));
             }
-            foreach (var item in dataProvider.GetAccountTypes())
-            {
-                AccTypes.Add(item);
-            }
         }
         public void AddAccount(string accName)
         {
-            if (dataProvider.AddAccount(AccTypes[0], accName, out IAccount newAccount))
+            // TODO change dp interface drop accType
+            if (dataProvider.AddAccount(AccTypes.First(), accName, out IAccount newAccount))
             {
                 AccountItem newAccVM = new AccountItem(newAccount, dataProvider, eventAggregator);
                 Accounts.Add(newAccVM);

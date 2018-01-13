@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Models.Elements;
 using Models.Interfaces;
@@ -36,24 +37,41 @@ namespace Models
     {
         private IStorageProvider storageProvider;
 
+        public ObservableCollection<string> AccountTypes { get; }
+
         public DataProvider(IStorageProvider storageProvider)
         {
             this.storageProvider = storageProvider;
-        }
-        public IEnumerable<string> GetAccountTypes()
-        {
-            foreach(string accType in storageProvider.Storage?.SelectAccTypes())
+            AccountTypes = new ObservableCollection<string>();
+            storageProvider.On += (sender, e) =>
             {
-                yield return accType;
-            }
+                foreach (string accType in storageProvider.Storage?.SelectAccTypes())
+                {
+                    AccountTypes.Add(accType);
+                }
+            };
+            storageProvider.Off += (sender, e) =>
+            {
+                AccountTypes.Clear();
+            };
         }
         public bool AddAccountType(string accountType)
         {
-            return storageProvider.Storage?.AddAccountType(accountType) ?? false;
+            if (storageProvider.Storage?.AddAccountType(accountType) ?? false)
+            {
+                AccountTypes.Add(accountType);
+                return true;
+            }
+            return false;
         }
         public bool DeleteAccountType(string accountType)
         {
-            return storageProvider.Storage?.DeleteAccountType(accountType) ?? false;
+            if (storageProvider.Storage?.DeleteAccountType(accountType) ?? false)
+            {
+                AccountTypes.Remove(accountType);
+                return true;
+            }
+            return false;
         }
         public IEnumerable<IAccount> GetAccounts()
         {

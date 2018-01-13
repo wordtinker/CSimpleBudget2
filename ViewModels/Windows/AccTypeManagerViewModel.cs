@@ -1,6 +1,8 @@
 ﻿using Models.Interfaces;
 using Prism.Events;
-using System.Collections.ObjectModel;
+using Prism.Mvvm;
+using System.Collections.Generic;
+using System.Linq;
 using ViewModels.Elements;
 using ViewModels.Events;
 using ViewModels.Interfaces;
@@ -8,32 +10,26 @@ using ViewModels.Interfaces;
 namespace ViewModels.Windows
 {
     // TODO Later add validation
-    public class AccTypeManagerViewModel
+    public class AccTypeManagerViewModel : BindableBase
     {
         private IUIBaseService serviceProvider;
         private IDataProvider dataProvider;
         private IEventAggregator eventAggregator;
 
-        public ObservableCollection<AccTypeItem> AccTypes { get; }
+        public IEnumerable<AccTypeItem> AccTypes => from t in dataProvider.AccountTypes select new AccTypeItem(t);
 
         public AccTypeManagerViewModel(IUIBaseService serviceProvider, IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
             this.serviceProvider = serviceProvider;
             this.dataProvider = dataProvider;
             this.eventAggregator = eventAggregator;
-            AccTypes = new ObservableCollection<AccTypeItem>();
-            foreach (var item in dataProvider.GetAccountTypes())
-            {
-                AccTypes.Add(new AccTypeItem(item));
-            }
         }
         public void AddAccType(string accTypeName)
         {
             if (dataProvider.AddAccountType(accTypeName))
             {
                 AccTypeItem newAccType = new AccTypeItem(accTypeName);
-                AccTypes.Add(newAccType);
-                eventAggregator.GetEvent<AccountTypeAdded>().Publish(newAccType);
+                RaisePropertyChanged(nameof(AccTypes));
             }
             else
             {
@@ -44,8 +40,7 @@ namespace ViewModels.Windows
         {
             if (dataProvider.DeleteAccountType(item.Name))
             {
-                AccTypes.Remove(item);
-                eventAggregator.GetEvent<AccountTypeDeleted>().Publish(item);
+                RaisePropertyChanged(nameof(AccTypes));
             }
             else
             {

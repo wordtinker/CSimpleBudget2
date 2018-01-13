@@ -3,6 +3,7 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -27,21 +28,21 @@ namespace ViewModels.Windows
             get { return openedFile; }
             set
             {
-                if(SetProperty(ref openedFile, value))
+                if (SetProperty(ref openedFile, value))
                 {
                     RaisePropertyChanged(nameof(IsFileOpened));
                 }
             }
         }
         public bool IsFileOpened => !string.IsNullOrEmpty(OpenedFile);
-        public bool IsReadyToSetAccounts => AccTypes.Count > 0;
+        public bool IsReadyToSetAccounts => AccTypes.Any();
         /// <summary>
         /// Property showing that we have enough
         /// info for reports and budgeting.
         /// </summary>
         public bool IsFullyReady => (from c in Categories where c.Items.Count > 0 select c).Any();
         public ObservableCollection<IAccountItem> Accounts { get; }
-        public ObservableCollection<AccTypeItem> AccTypes { get; }
+        public IEnumerable<AccTypeItem> AccTypes => from t in dataProvider.AccountTypes select new AccTypeItem(t);
         public ObservableCollection<CategoryNode> Categories { get; }
         public ObservableCollection<BudgetBar> Bars { get; }
         public int CurrentMonth { get; }
@@ -67,9 +68,12 @@ namespace ViewModels.Windows
             this.dataProvider = dataProvider;
             this.eventAggregator = eventAggregator;
 
+            dataProvider.AccountTypes.CollectionChanged += (sender, e) =>
+            {
+                RaisePropertyChanged(nameof(AccTypes));
+                RaisePropertyChanged(nameof(IsReadyToSetAccounts));
+            };
             Accounts = new ObservableCollection<IAccountItem>();
-            AccTypes = new ObservableCollection<AccTypeItem>();
-            AccTypes.CollectionChanged += (sender, e) => RaisePropertyChanged(nameof(IsReadyToSetAccounts));
             Categories = new ObservableCollection<CategoryNode>();
             Categories.CollectionChanged += (sender, e) => RaisePropertyChanged(nameof(IsFullyReady));
             Bars = new ObservableCollection<BudgetBar>();
@@ -106,8 +110,6 @@ namespace ViewModels.Windows
         }
         private void ConnectEvents()
         {
-            eventAggregator.GetEvent<AccountTypeAdded>().Subscribe(ati => AccTypes.Add(ati));
-            eventAggregator.GetEvent<AccountTypeDeleted>().Subscribe(ati => AccTypes.Remove(ati));
             // Those events are rare, it's easier to refresh whole collection
             eventAggregator.GetEvent<AccountAdded>().Subscribe(a => RefreshAccounts());
             eventAggregator.GetEvent<AccountDeleted>().Subscribe(a => RefreshAccounts());
@@ -140,17 +142,14 @@ namespace ViewModels.Windows
         }
         private void CleanUpData()
         {
-            AccTypes.Clear();
+            RaisePropertyChanged(nameof(AccTypes));
             Accounts.Clear();
             Categories.Clear();
             Bars.Clear();
         }
         private void LoadUpData()
         {
-            foreach (var item in dataProvider.GetAccountTypes())
-            {
-                AccTypes.Add(new AccTypeItem(item));
-            }
+            RaisePropertyChanged(nameof(AccTypes));
             RefreshAccounts();
             RefreshCategories();
             RefreshBars();
