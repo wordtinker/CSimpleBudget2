@@ -206,11 +206,21 @@ namespace Models
         {
             if (category.Parent == null)
             {
-                return storageProvider.Storage?.DeleteTopCategory(category.Id) ?? false;
+                if(storageProvider.Storage?.DeleteTopCategory(category.Id) ?? false)
+                {
+                    Categories.Remove(category);
+                    return true;
+                }
+                return false;
             }
             else
             {
-                return storageProvider.Storage?.DeleteSubCategory(category.Id) ?? false;
+                if(storageProvider.Storage?.DeleteSubCategory(category.Id) ?? false)
+                {
+                    ((Category)category.Parent).RemoveChild(category);
+                    return true;
+                }
+                return false;
             }
         }
         public IEnumerable<ITransaction> GetTransactions(IAccount account)

@@ -21,5 +21,9 @@ namespace Models.Elements
         {
             children.Add(child);
         }
+        internal void RemoveChild(ICategory child)
+        {
+            children.Remove(child);
+        }
     }
 }
