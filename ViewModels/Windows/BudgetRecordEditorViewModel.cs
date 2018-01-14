@@ -59,7 +59,10 @@ namespace ViewModels.Windows
         }
         public int Month => DateTime.ParseExact(MonthName, "MMMM", CultureInfo.CurrentCulture).Month;
         public decimal Amount { get; set; }
-        public ObservableCollection<CategoryNode> Categories { get; private set; }
+        public IEnumerable<CategoryNode> Categories =>
+            from topCat in dataProvider.Categories
+            from c in topCat.Children
+            select new CategoryNode(c); 
         public CategoryNode Category { get; set; }
         public int OnDay { get => onDay; set => SetProperty(ref onDay, value); }
         public bool Monthly
@@ -122,15 +125,7 @@ namespace ViewModels.Windows
             this.dataProvider = dataProvider;
 
             Months = DateTimeFormatInfo.CurrentInfo.MonthNames.Take(12).ToList();
-            Categories = new ObservableCollection<CategoryNode>();
-            foreach (ICategory item in dataProvider.GetCategories())
-            {
-                foreach (ICategory child in item.Children)
-                {
-                    Categories.Add(new CategoryNode(child));
-                }
-            }
-            Category = Categories[0];
+            Category = Categories.First();
         }
         public abstract void Save();
     }

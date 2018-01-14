@@ -40,7 +40,7 @@ namespace Data
             return true;
         }
 
-        public bool DeleteSubCategory(int id, int parentId)
+        public bool DeleteSubCategory(int id)
         {
             return true;
         }

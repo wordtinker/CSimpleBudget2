@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Models.Elements
 {
+    // TODO Bindable ?
     public class Category : ICategory
     {
         private List<ICategory> children;

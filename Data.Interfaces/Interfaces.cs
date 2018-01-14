@@ -22,7 +22,7 @@ namespace Data.Interfaces
         bool AddTopCategory(string name, out int id);
         bool AddSubCategory(string name, int parentId, out int id);
         bool DeleteTopCategory(int id);
-        bool DeleteSubCategory(int id, int parentId);
+        bool DeleteSubCategory(int id);
 
         IEnumerable<(DateTime date, decimal amount, string info, int categoryId, int id)> SelectTransactions(int accountId);
     }

@@ -1,7 +1,9 @@
 ﻿using Models.Interfaces;
 using Prism.Events;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using ViewModels.Elements;
 using ViewModels.Events;
 
@@ -12,7 +14,10 @@ namespace ViewModels.Windows
         protected IEventAggregator eventAggregator;
         protected IDataProvider dataProvider;
 
-        public ObservableCollection<CategoryNode> Categories { get; private set; }
+        public IEnumerable<CategoryNode> Categories =>
+            from topCat in dataProvider.Categories
+            from c in topCat.Children
+            select new CategoryNode(c);
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
         public string Info { get; set; }
@@ -22,15 +27,7 @@ namespace ViewModels.Windows
         {
             this.eventAggregator = eventAggregator;
             this.dataProvider = dataProvider;
-            Categories = new ObservableCollection<CategoryNode>();
-            foreach (ICategory item in dataProvider.GetCategories())
-            {
-                foreach (ICategory child in item.Children)
-                {
-                    Categories.Add(new CategoryNode(child));
-                }
-            }
-            Category = Categories[0];
+            Category = Categories.First();
         }
         public abstract void Save();
     }

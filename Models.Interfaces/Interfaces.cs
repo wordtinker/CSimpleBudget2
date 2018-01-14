@@ -30,7 +30,7 @@ namespace Models.Interfaces
         bool DeleteAccount(IAccount account);
         bool UpdateAccount(IAccount account);
 
-        IEnumerable<ICategory> GetCategories();
+        ObservableCollection<ICategory> Categories { get; }
         bool AddCategory(string name, ICategory parent, out ICategory newCategory);
         bool DeleteCategory(ICategory category);
 

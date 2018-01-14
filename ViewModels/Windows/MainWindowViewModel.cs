@@ -41,6 +41,7 @@ namespace ViewModels.Windows
         /// info for reports and budgeting.
         /// </summary>
         public bool IsFullyReady => (from c in Categories where c.Items.Count > 0 select c).Any();
+        // TODO DROP ?
         public IEnumerable<AccTypeItem> AccTypes => from t in dataProvider.AccountTypes select new AccTypeItem(t);
         public IEnumerable<IAccountItem> Accounts
         {
@@ -65,8 +66,8 @@ namespace ViewModels.Windows
                 }
             }
         }
-
-        public ObservableCollection<CategoryNode> Categories { get; }
+        // TODO DROP ?
+        public IEnumerable<CategoryNode> Categories => from c in dataProvider.Categories select new CategoryNode(c);
         public ObservableCollection<BudgetBar> Bars { get; }
         public int CurrentMonth { get; }
         public int CurrentYear { get; }
@@ -100,8 +101,11 @@ namespace ViewModels.Windows
             {
                 RaisePropertyChanged(nameof(Accounts));
             };
-            Categories = new ObservableCollection<CategoryNode>();
-            Categories.CollectionChanged += (sender, e) => RaisePropertyChanged(nameof(IsFullyReady));
+            dataProvider.Categories.CollectionChanged += (sender, e) =>
+            {
+                RaisePropertyChanged(nameof(Categories));
+                RaisePropertyChanged(nameof(IsFullyReady));
+            };
             Bars = new ObservableCollection<BudgetBar>();
             CurrentMonth = DateTime.Now.Month;
             CurrentYear = DateTime.Now.Year;
@@ -136,9 +140,6 @@ namespace ViewModels.Windows
         }
         private void ConnectEvents()
         {
-            // Those events are rare, it's easier to refresh whole collection
-            eventAggregator.GetEvent<CategoryAdded>().Subscribe(cn => RefreshCategories());
-            eventAggregator.GetEvent<CategoryDeleted>().Subscribe(cn => RefreshCategories());
             // Connect transaction creation, deletion, change
             eventAggregator.GetEvent<TransactionAdded>().Subscribe(tri => RaisePropertyChanged(nameof(Accounts)));
             eventAggregator.GetEvent<TransactionDeleted>().Subscribe(tri => RaisePropertyChanged(nameof(Accounts)));
@@ -167,23 +168,15 @@ namespace ViewModels.Windows
         {
             RaisePropertyChanged(nameof(AccTypes));
             RaisePropertyChanged(nameof(Accounts));
-            Categories.Clear();
+            RaisePropertyChanged(nameof(Categories));
             Bars.Clear();
         }
         private void LoadUpData()
         {
             RaisePropertyChanged(nameof(AccTypes));
             RaisePropertyChanged(nameof(Accounts));
-            RefreshCategories();
+            RaisePropertyChanged(nameof(Categories));
             RefreshBars();
-        }
-        private void RefreshCategories()
-        {
-            Categories.Clear();
-            foreach (var item in dataProvider.GetCategories())
-            {
-                Categories.Add(new CategoryNode(item));
-            }
         }
         private void RefreshBars()
         {

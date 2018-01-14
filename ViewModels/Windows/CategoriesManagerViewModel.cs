@@ -2,7 +2,6 @@
 using Prism.Events;
 using System.Collections.ObjectModel;
 using ViewModels.Elements;
-using ViewModels.Events;
 using ViewModels.Interfaces;
 
 namespace ViewModels.Windows
@@ -23,7 +22,7 @@ namespace ViewModels.Windows
             this.eventAggregator = eventAggregator;
 
             Categories = new ObservableCollection<CategoryNode>();
-            foreach (ICategory item in dataProvider.GetCategories())
+            foreach (ICategory item in dataProvider.Categories)
             {
                 Categories.Add(new CategoryNode(item));
             }
@@ -41,7 +40,6 @@ namespace ViewModels.Windows
                 {
                     parent.AddChild(node);
                 }
-                eventAggregator.GetEvent<CategoryAdded>().Publish(node);
             }
             else
             {
@@ -61,7 +59,6 @@ namespace ViewModels.Windows
                 {
                     node.Parent.RemoveChild(node);
                 }
-                eventAggregator.GetEvent<CategoryDeleted>().Publish(node);
             }
             else
             {

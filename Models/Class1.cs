@@ -39,21 +39,26 @@ namespace Models
 
         public ObservableCollection<string> AccountTypes { get; }
         public ObservableCollection<IAccount> Accounts { get; }
+        // Top tier categories with structure
+        public ObservableCollection<ICategory> Categories { get; }
 
         public DataProvider(IStorageProvider storageProvider)
         {
             this.storageProvider = storageProvider;
             AccountTypes = new ObservableCollection<string>();
             Accounts = new ObservableCollection<IAccount>();
+            Categories = new ObservableCollection<ICategory>();
             storageProvider.On += (sender, e) =>
             {
                 SetAccountTypes();
                 SetAccounts();
+                SetCategories();
             };
             storageProvider.Off += (sender, e) =>
             {
                 AccountTypes.Clear();
                 Accounts.Clear();
+                Categories.Clear();
             };
         }
         private void SetAccountTypes()
@@ -136,9 +141,7 @@ namespace Models
             }
             return false;
         }
-        // Top tier with structure
-        // TODO drop override
-        public override IEnumerable<ICategory> GetCategories()
+        private void SetCategories()
         {
             foreach(var (name, id) in storageProvider.Storage?.SelectTopCategories())
             {
@@ -158,7 +161,7 @@ namespace Models
                     };
                     topCat.AddChild(subCat);
                 }
-                yield return topCat;
+                Categories.Add(topCat);
             }
         }
         public bool AddCategory(string name, ICategory parent, out ICategory newCategory)
@@ -175,6 +178,7 @@ namespace Models
                         Name = name,
                         Parent = null
                     };
+                    Categories.Add(newCategory);
                     return true;
                 }
                 newCategory = null;
@@ -191,6 +195,7 @@ namespace Models
                         Name = name,
                         Parent = parent
                     };
+                    ((Category)parent).AddChild(newCategory);
                     return true;
                 }
                 newCategory = null;
@@ -199,25 +204,36 @@ namespace Models
         }
         public bool DeleteCategory(ICategory category)
         {
-            // TODO
-            return true;
+            if (category.Parent == null)
+            {
+                return storageProvider.Storage?.DeleteTopCategory(category.Id) ?? false;
+            }
+            else
+            {
+                return storageProvider.Storage?.DeleteSubCategory(category.Id) ?? false;
+            }
         }
         public IEnumerable<ITransaction> GetTransactions(IAccount account)
         {
-            List<ICategory> categories = new List<ICategory>(GetCategories());
             foreach (var (date, amount, info, categoryId, id) in storageProvider.Storage?.SelectTransactions(account.Id))
             {
                 yield return new Transaction
                 {
                     Account = account,
                     Amount = amount,
-                    Category = (from topCat in categories
+                    Category = (from topCat in Categories
                                 from cat in topCat.Children
                                 where cat.Id == categoryId select cat).First(),
                     Date = date,
                     Info = info
                 };
             }
+        }
+
+        // TODO Remove
+        public override IEnumerable<ICategory> GetCategories()
+        {
+            return Categories;
         }
     }
 
