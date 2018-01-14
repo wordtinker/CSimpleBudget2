@@ -1,6 +1,5 @@
 ﻿using Models.Interfaces;
 using Prism.Events;
-using ViewModels.Events;
 
 namespace ViewModels.Elements
 {
@@ -27,10 +26,7 @@ namespace ViewModels.Elements
             set
             {
                 account.Type = value;
-                if (dataProvider.UpdateAccount(account))
-                {
-                    eventAggregator.GetEvent<AccountChanged>().Publish(this);
-                }
+                dataProvider.UpdateAccount(account);
             }
         }
         public bool Closed
@@ -39,10 +35,7 @@ namespace ViewModels.Elements
             set
             {
                 account.Closed = value;
-                if (dataProvider.UpdateAccount(account))
-                {
-                    eventAggregator.GetEvent<AccountChanged>().Publish(this);
-                }
+                dataProvider.UpdateAccount(account);
             }
         }
         public bool Excluded
@@ -51,10 +44,7 @@ namespace ViewModels.Elements
             set
             {
                 account.Excluded = value;
-                if (dataProvider.UpdateAccount(account))
-                {
-                    eventAggregator.GetEvent<AccountChanged>().Publish(this);
-                }
+                dataProvider.UpdateAccount(account);
             }
         }
         public AccountItem(IAccount acc, IDataProvider dataProvider, IEventAggregator eventAggregator)

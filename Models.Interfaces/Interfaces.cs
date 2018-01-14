@@ -25,8 +25,8 @@ namespace Models.Interfaces
         bool AddAccountType(string accountType);
         bool DeleteAccountType(string accountType);
 
-        IEnumerable<IAccount> GetAccounts();
-        bool AddAccount(string accTyp, string accName, out IAccount newAccount);
+        ObservableCollection<IAccount> Accounts { get; }
+        bool AddAccount(string accName, out IAccount newAccount);
         bool DeleteAccount(IAccount account);
         bool UpdateAccount(IAccount account);
 

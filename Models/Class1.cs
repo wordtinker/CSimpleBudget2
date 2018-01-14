@@ -38,22 +38,30 @@ namespace Models
         private IStorageProvider storageProvider;
 
         public ObservableCollection<string> AccountTypes { get; }
+        public ObservableCollection<IAccount> Accounts { get; }
 
         public DataProvider(IStorageProvider storageProvider)
         {
             this.storageProvider = storageProvider;
             AccountTypes = new ObservableCollection<string>();
+            Accounts = new ObservableCollection<IAccount>();
             storageProvider.On += (sender, e) =>
             {
-                foreach (string accType in storageProvider.Storage?.SelectAccTypes())
-                {
-                    AccountTypes.Add(accType);
-                }
+                SetAccountTypes();
+                SetAccounts();
             };
             storageProvider.Off += (sender, e) =>
             {
                 AccountTypes.Clear();
+                Accounts.Clear();
             };
+        }
+        private void SetAccountTypes()
+        {
+            foreach (string accType in storageProvider.Storage?.SelectAccTypes())
+            {
+                AccountTypes.Add(accType);
+            }
         }
         public bool AddAccountType(string accountType)
         {
@@ -73,12 +81,12 @@ namespace Models
             }
             return false;
         }
-        public IEnumerable<IAccount> GetAccounts()
+        private void SetAccounts()
         {
             foreach (var (name, type, balance, closed, excluded, id)
                 in storageProvider.Storage?.SelectAccounts())
             {
-                yield return new Account
+                Accounts.Add(new Account
                 {
                     Name = name,
                     Type = type,
@@ -86,12 +94,13 @@ namespace Models
                     Closed = closed,
                     Excluded = excluded,
                     Id = id
-                };
+                });
             }
         }
-        public bool AddAccount(string accType, string accName, out IAccount newAccount)
+        public bool AddAccount(string accName, out IAccount newAccount)
         {
             int id = -1;
+            string accType = AccountTypes.First();
             if(storageProvider.Storage?.AddAccount(accName, accType, out id) ?? false)
             {
                 newAccount = new Account
@@ -104,6 +113,7 @@ namespace Models
                     // id won't be -1 here, AddAccount returns valid id on successful run
                     Id = id
                 };
+                Accounts.Add(newAccount);
                 return true;
             }
             else
@@ -119,7 +129,12 @@ namespace Models
         }
         public bool DeleteAccount(IAccount account)
         {
-            return storageProvider.Storage?.DeleteAccount(account.Id) ?? false;
+            if (storageProvider.Storage?.DeleteAccount(account.Id) ?? false)
+            {
+                Accounts.Remove(account);
+                return true;
+            }
+            return false;
         }
         // Top tier with structure
         // TODO drop override

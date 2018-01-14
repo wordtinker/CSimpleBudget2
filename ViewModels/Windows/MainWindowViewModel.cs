@@ -41,8 +41,31 @@ namespace ViewModels.Windows
         /// info for reports and budgeting.
         /// </summary>
         public bool IsFullyReady => (from c in Categories where c.Items.Count > 0 select c).Any();
-        public ObservableCollection<IAccountItem> Accounts { get; }
         public IEnumerable<AccTypeItem> AccTypes => from t in dataProvider.AccountTypes select new AccTypeItem(t);
+        public IEnumerable<IAccountItem> Accounts
+        {
+            get
+            {
+                int count = 0;
+                decimal sum = 0;
+                foreach (IAccount acc in dataProvider.Accounts.Where(acc => !acc.Closed))
+                {
+                    count++;
+                    sum += acc.Balance;
+                    yield return new AccountItem(acc, dataProvider, eventAggregator);
+                }
+                // show total
+                if (count > 0)
+                {
+                    yield return new AccountAggregate
+                    {
+                        Name = "Total",
+                        Balance = sum
+                    };
+                }
+            }
+        }
+
         public ObservableCollection<CategoryNode> Categories { get; }
         public ObservableCollection<BudgetBar> Bars { get; }
         public int CurrentMonth { get; }
@@ -73,7 +96,10 @@ namespace ViewModels.Windows
                 RaisePropertyChanged(nameof(AccTypes));
                 RaisePropertyChanged(nameof(IsReadyToSetAccounts));
             };
-            Accounts = new ObservableCollection<IAccountItem>();
+            dataProvider.Accounts.CollectionChanged += (sender, e) =>
+            {
+                RaisePropertyChanged(nameof(Accounts));
+            };
             Categories = new ObservableCollection<CategoryNode>();
             Categories.CollectionChanged += (sender, e) => RaisePropertyChanged(nameof(IsFullyReady));
             Bars = new ObservableCollection<BudgetBar>();
@@ -111,15 +137,12 @@ namespace ViewModels.Windows
         private void ConnectEvents()
         {
             // Those events are rare, it's easier to refresh whole collection
-            eventAggregator.GetEvent<AccountAdded>().Subscribe(a => RefreshAccounts());
-            eventAggregator.GetEvent<AccountDeleted>().Subscribe(a => RefreshAccounts());
-            eventAggregator.GetEvent<AccountChanged>().Subscribe(a => RefreshAccounts());
             eventAggregator.GetEvent<CategoryAdded>().Subscribe(cn => RefreshCategories());
             eventAggregator.GetEvent<CategoryDeleted>().Subscribe(cn => RefreshCategories());
             // Connect transaction creation, deletion, change
-            eventAggregator.GetEvent<TransactionAdded>().Subscribe(tri => RefreshAccounts());
-            eventAggregator.GetEvent<TransactionDeleted>().Subscribe(tri => RefreshAccounts());
-            eventAggregator.GetEvent<TransactionChanged>().Subscribe(tri => RefreshAccounts());
+            eventAggregator.GetEvent<TransactionAdded>().Subscribe(tri => RaisePropertyChanged(nameof(Accounts)));
+            eventAggregator.GetEvent<TransactionDeleted>().Subscribe(tri => RaisePropertyChanged(nameof(Accounts)));
+            eventAggregator.GetEvent<TransactionChanged>().Subscribe(tri => RaisePropertyChanged(nameof(Accounts)));
             eventAggregator.GetEvent<TransactionAdded>().Subscribe(
                 tri => RefreshBars(), ThreadOption.PublisherThread, false,
                 tri => tri.Date.Month == CurrentMonth && tri.Date.Year == CurrentYear);
@@ -143,37 +166,16 @@ namespace ViewModels.Windows
         private void CleanUpData()
         {
             RaisePropertyChanged(nameof(AccTypes));
-            Accounts.Clear();
+            RaisePropertyChanged(nameof(Accounts));
             Categories.Clear();
             Bars.Clear();
         }
         private void LoadUpData()
         {
             RaisePropertyChanged(nameof(AccTypes));
-            RefreshAccounts();
+            RaisePropertyChanged(nameof(Accounts));
             RefreshCategories();
             RefreshBars();
-        }
-        private void RefreshAccounts()
-        {
-            Accounts.Clear();
-            foreach (IAccount acc in dataProvider.GetAccounts())
-            {
-                if (!acc.Closed)
-                {
-                    Accounts.Add(new AccountItem(acc, dataProvider, eventAggregator));
-                }
-            }
-            // show total
-            if (Accounts.Count > 0)
-            {
-                AccountAggregate total = new AccountAggregate
-                {
-                    Name = "Total",
-                    Balance = Accounts.Select(acc => acc.Balance).Sum(),
-                };
-                Accounts.Add(total);
-            }
         }
         private void RefreshCategories()
         {

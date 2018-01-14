@@ -4,7 +4,6 @@ using Prism.Mvvm;
 using System.Collections.Generic;
 using System.Linq;
 using ViewModels.Elements;
-using ViewModels.Events;
 using ViewModels.Interfaces;
 
 namespace ViewModels.Windows

@@ -2,6 +2,7 @@
 
 namespace Models.Elements
 {
+    // TODO Bindable? Test
     internal class Account : IAccount
     {
         public string Name { get; set; }
