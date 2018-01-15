@@ -30,6 +30,12 @@ namespace Data
             return true;
         }
 
+        public bool AddTransaction(int accountId, DateTime date, decimal amount, string info, int categoryId, out int id)
+        {
+            id = 10;
+            return true;
+        }
+
         public bool DeleteAccount(int id)
         {
             return true;

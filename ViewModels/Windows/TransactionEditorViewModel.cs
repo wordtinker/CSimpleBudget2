@@ -46,8 +46,10 @@ namespace ViewModels.Windows
         public override void Save()
         {
             // Create new transaction.
-            ITransaction newTr = dataProvider.AddTransaction(accountItem.account, Date, Amount, Info, Category.category);
-            eventAggregator.GetEvent<TransactionAdded>().Publish(new TransactionItem(newTr));
+            if (dataProvider.AddTransaction(accountItem.account, Date, Amount, Info, Category.category, out ITransaction newTr))
+            {
+                eventAggregator.GetEvent<TransactionAdded>().Publish(new TransactionItem(newTr));
+            }
         }
     }
     public class OldTransactionEditorViewModel : AbstractTransactionEditor

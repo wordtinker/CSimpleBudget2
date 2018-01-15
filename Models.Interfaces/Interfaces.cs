@@ -36,7 +36,7 @@ namespace Models.Interfaces
 
         IEnumerable<ITransaction> GetTransactions(IAccount account);
         bool DeleteTransaction(ITransaction transaction);
-        ITransaction AddTransaction(IAccount account, DateTime date, decimal amount, string info, ICategory category);
+        bool AddTransaction(IAccount account, DateTime date, decimal amount, string info, ICategory category, out ITransaction newTransaction);
         void UpdateTransaction(ITransaction transaction, DateTime date, decimal amount, string info, ICategory category);
 
         (int minYear, int maxYear) GetActiveBudgetYears();

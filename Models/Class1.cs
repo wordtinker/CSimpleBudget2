@@ -244,6 +244,29 @@ namespace Models
         {
             return (storageProvider.Storage?.DeleteTransaction(transaction.Id) ?? false);
         }
+        public bool AddTransaction(IAccount account, DateTime date, decimal amount, string info, ICategory category, out ITransaction newTransaction)
+        {
+            int id = -1;
+            if (storageProvider.Storage?.AddTransaction(account.Id, date, amount, info, category.Id, out id) ?? false)
+            {
+                newTransaction = new Transaction
+                {
+                    // Id will be valid here
+                    Id = id,
+                    Account = account,
+                    Amount = amount,
+                    Category = category,
+                    Date = date,
+                    Info = info
+                };
+                return true;
+            }
+            else
+            {
+                newTransaction = null;
+                return false;
+            }
+        }
 
         // TODO Remove
         public override IEnumerable<ICategory> GetCategories()
@@ -267,13 +290,6 @@ namespace Models
                 Type = budgetType,
                 Year = year
             };
-        }
-
-        
-
-        public ITransaction AddTransaction(IAccount account, DateTime date, decimal amount, string info, ICategory category)
-        {
-            return new Transaction {Account = account, Date = date, Amount = amount, Info = info, Category = category };
         }
 
         public IEnumerable<IBudgetRecord> CopyRecords(int fromMonth, int fromYear, int toMonth, int toYear)
