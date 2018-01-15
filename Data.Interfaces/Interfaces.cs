@@ -30,6 +30,7 @@ namespace Data.Interfaces
         bool UpdateTransaction(int id, DateTime date, decimal amount, string info, int categoryId);
 
         IEnumerable<(decimal amount, int categoryId, string type, int onDay, int id)> SelectRecords(int year, int month);
+        bool AddRecord(decimal amount, int categoryId, string type, int onDay, int year, int month, out int id);
 
         int? GetMaximumYear();
         int? GetMinimumYear();

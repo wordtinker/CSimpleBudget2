@@ -18,6 +18,12 @@ namespace Data
             return true;
         }
 
+        public bool AddRecord(decimal amount, int categoryId, string type, int onDay, int year, int month, out int id)
+        {
+            id = 11;
+            return true;
+        }
+
         public bool AddSubCategory(string name, int parentId, out int id)
         {
             id = 2;

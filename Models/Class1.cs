@@ -38,6 +38,7 @@ namespace Models
             this.storageProvider = storageProvider;
             AccountTypes = new ObservableCollection<string>();
             Accounts = new ObservableCollection<IAccount>();
+            // TODO refactor private method to get First()
             Categories = new ObservableCollection<ICategory>();
             storageProvider.On += (sender, e) =>
             {
@@ -276,9 +277,9 @@ namespace Models
         }
         public IEnumerable<IBudgetRecord> GetRecords(int year, int month)
         {
-            foreach (var (amount, categoryId, typeId, onDay, id) in storageProvider.Storage?.SelectRecords(year, month))
+            foreach (var (amount, categoryId, type, onDay, id) in storageProvider.Storage?.SelectRecords(year, month))
             {
-                Enum.TryParse(typeId, out BudgetType type);
+                Enum.TryParse(type, out BudgetType budgetType);
                 yield return new BudgetRecord
                 {
                     Id = id,
@@ -290,11 +291,49 @@ namespace Models
                     Year = year,
                     Month = month,
                     OnDay = onDay,
-                    Type = type
+                    Type = budgetType
                 };
             }            
         }
-
+        public IEnumerable<IBudgetRecord> CopyRecords(int fromMonth, int fromYear, int toMonth, int toYear)
+        {
+            foreach (var (amount, categoryId, type, onDay, id) in storageProvider.Storage?.SelectRecords(fromYear, fromMonth))
+            {
+                var category = (from topCat in Categories
+                            from cat in topCat.Children
+                            where cat.Id == categoryId
+                            select cat).First();
+                Enum.TryParse(type, out BudgetType budgetType);
+                if (AddBudgetRecord(amount, category, budgetType, onDay, toMonth, toYear, out IBudgetRecord newRecord))
+                {
+                    yield return newRecord;
+                }
+            }
+        }
+        public bool AddBudgetRecord(decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year, out IBudgetRecord newRecord)
+        {
+            int id = -1;
+            if (storageProvider.Storage?.AddRecord(amount, category.Id, budgetType.ToString(), onDay, year, month, out id) ?? false)
+            {
+                newRecord = new BudgetRecord
+                {
+                    // Id will be valid here
+                    Id = id,
+                    Amount = amount,
+                    Category = category,
+                    Month = month,
+                    Year = year,
+                    OnDay = onDay,
+                    Type = budgetType
+                };
+                return true;
+            }
+            else
+            {
+                newRecord = null;
+                return false;
+            }
+        }
         // TODO Remove
         public override IEnumerable<ICategory> GetCategories()
         {
@@ -305,42 +344,12 @@ namespace Models
     public abstract class StubDataProvider
     {
         public abstract IEnumerable<ICategory> GetCategories();
-
-        public IBudgetRecord AddBudgetRecord(decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year)
-        {
-            return new BudgetRecord
-            {
-                Amount = amount,
-                Category = category,
-                Month = month,
-                OnDay = onDay,
-                Type = budgetType,
-                Year = year
-            };
-        }
-
-        public IEnumerable<IBudgetRecord> CopyRecords(int fromMonth, int fromYear, int toMonth, int toYear)
-        {
-            yield break;
-            //return GetRecords(fromMonth, fromYear);
-        }
-
         
-
-        
-
         public void DeleteRecord(IBudgetRecord record)
         {
             // Do nothing
         }
-
-
         
-
-        
-
-        
-
         public IEnumerable<ISpending> GetSpendings(int year, int month)
         {
             List<ICategory> categories = new List<ICategory>(GetCategories());

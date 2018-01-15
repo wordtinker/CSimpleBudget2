@@ -43,7 +43,7 @@ namespace Models.Interfaces
         IEnumerable<IBudgetRecord> CopyRecords(int fromMonth, int fromYear, int toMonth, int toYear);
         IEnumerable<IBudgetRecord> GetRecords(int year, int month);
         void DeleteRecord(IBudgetRecord record);
-        IBudgetRecord AddBudgetRecord(decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year);
+        bool AddBudgetRecord(decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year, out IBudgetRecord newRecord);
         void UpdateRecord(IBudgetRecord record, decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year);
 
         IEnumerable<ISpending> GetSpendings(int year, int month);
