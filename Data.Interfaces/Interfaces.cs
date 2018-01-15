@@ -28,5 +28,10 @@ namespace Data.Interfaces
         bool DeleteTransaction(int id);
         bool AddTransaction(int accountId, DateTime date, decimal amount, string info, int categoryId, out int id);
         bool UpdateTransaction(int id, DateTime date, decimal amount, string info, int categoryId);
+
+        int? GetMaximumYear();
+        int? GetMinimumYear();
+
+
     }
 }

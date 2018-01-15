@@ -66,6 +66,16 @@ namespace Data
             // TODO using pattern
         }
 
+        public int? GetMaximumYear()
+        {
+            return 2016;
+        }
+
+        public int? GetMinimumYear()
+        {
+            return 2013;
+        }
+
         public bool Initialize()
         {
             return true;

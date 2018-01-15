@@ -271,6 +271,18 @@ namespace Models
         {
             return storageProvider.Storage?.UpdateTransaction(transaction.Id, date, amount, info, category.Id) ?? false;
         }
+        /// Provides a pair of years during which a budget records were set.
+        /// Default is current year.
+        public (int minYear, int maxYear) GetActiveBudgetYears()
+        {
+            int currentYear = DateTime.Today.Year;
+            // Ensure that we set current year if we have no record of year in storage
+            int minYear = storageProvider.Storage?.GetMinimumYear() ?? currentYear;
+            int maxYear = storageProvider.Storage?.GetMaximumYear() ?? currentYear;
+            // Set current year if budget year is way behind
+            maxYear = Math.Max(maxYear, currentYear);
+            return (minYear, maxYear);
+        }
 
         // TODO Remove
         public override IEnumerable<ICategory> GetCategories()
@@ -311,10 +323,7 @@ namespace Models
         }
 
 
-        public (int minYear, int maxYear) GetActiveBudgetYears()
-        {
-            return (2013, 2018);
-        }
+        
 
         
 
