@@ -267,6 +267,10 @@ namespace Models
                 return false;
             }
         }
+        public bool UpdateTransaction(ITransaction transaction, DateTime date, decimal amount, string info, ICategory category)
+        {
+            return storageProvider.Storage?.UpdateTransaction(transaction.Id, date, amount, info, category.Id) ?? false;
+        }
 
         // TODO Remove
         public override IEnumerable<ICategory> GetCategories()
@@ -343,16 +347,7 @@ namespace Models
             };
         }
 
-        
-
-        
-
         public void UpdateRecord(IBudgetRecord record, decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year)
-        {
-            // do nothing
-        }
-
-        public void UpdateTransaction(ITransaction transaction, DateTime date, decimal amount, string info, ICategory category)
         {
             // do nothing
         }

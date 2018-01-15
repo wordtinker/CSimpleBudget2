@@ -69,13 +69,15 @@ namespace ViewModels.Windows
         public override void Save()
         {
             // Update transaction in the model
-            dataProvider.UpdateTransaction(transactionItem.transaction, Date, Amount, Info, Category.category);
-            // And in the viewModel
-            transactionItem.Date = Date;
-            transactionItem.Amount = Amount;
-            transactionItem.Info = Info;
-            transactionItem.Category = Category;
-            eventAggregator.GetEvent<TransactionChanged>().Publish(transactionItem);
+            if (dataProvider.UpdateTransaction(transactionItem.transaction, Date, Amount, Info, Category.category))
+            {
+                // And in the viewModel
+                transactionItem.Date = Date;
+                transactionItem.Amount = Amount;
+                transactionItem.Info = Info;
+                transactionItem.Category = Category;
+                eventAggregator.GetEvent<TransactionChanged>().Publish(transactionItem);
+            }
         }
     }
 }

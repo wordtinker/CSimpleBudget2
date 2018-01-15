@@ -106,6 +106,11 @@ namespace Data
         {
             return true;
         }
+
+        public bool UpdateTransaction(int id, DateTime date, decimal amount, string info, int categoryId)
+        {
+            return true;
+        }
         // TODO ctor might throw exception
     }
 }

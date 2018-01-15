@@ -150,6 +150,7 @@ namespace ViewModels.Windows
             eventAggregator.GetEvent<TransactionDeleted>().Subscribe(
                 tri => RefreshBars(), ThreadOption.PublisherThread, false,
                 tri => tri.Date.Month == CurrentMonth && tri.Date.Year == CurrentYear);
+            // TODO or old date.Year == currentYear && date.Month == currentMonth
             eventAggregator.GetEvent<TransactionChanged>().Subscribe(
                 tri => RefreshBars(), ThreadOption.PublisherThread, false,
                 tri => tri.Date.Month == CurrentMonth && tri.Date.Year == CurrentYear);
