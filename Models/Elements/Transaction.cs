@@ -10,5 +10,6 @@ namespace Models.Elements
         public string Info { get; set; }
         public ICategory Category { get; set; }
         public IAccount Account { get; set; }
+        public int Id { get; internal set; }
     }
 }

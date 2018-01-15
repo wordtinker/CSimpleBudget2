@@ -235,9 +235,14 @@ namespace Models
                                 from cat in topCat.Children
                                 where cat.Id == categoryId select cat).First(),
                     Date = date,
-                    Info = info
+                    Info = info,
+                    Id = id
                 };
             }
+        }
+        public bool DeleteTransaction(ITransaction transaction)
+        {
+            return (storageProvider.Storage?.DeleteTransaction(transaction.Id) ?? false);
         }
 
         // TODO Remove
@@ -283,11 +288,6 @@ namespace Models
         public void DeleteRecord(IBudgetRecord record)
         {
             // Do nothing
-        }
-
-        public void DeleteTransaction(ITransaction transaction)
-        {
-            // do nothing
         }
 
 

@@ -50,6 +50,11 @@ namespace Data
             return true;
         }
 
+        public bool DeleteTransaction(int id)
+        {
+            return true;
+        }
+
         public void Dispose()
         {
             // TODO using pattern

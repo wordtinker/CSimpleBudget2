@@ -25,5 +25,6 @@ namespace Data.Interfaces
         bool DeleteSubCategory(int id);
 
         IEnumerable<(DateTime date, decimal amount, string info, int categoryId, int id)> SelectTransactions(int accountId);
+        bool DeleteTransaction(int id);
     }
 }

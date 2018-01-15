@@ -33,9 +33,11 @@ namespace ViewModels.Windows
 
         public void DeleteTransaction(TransactionItem item)
         {
-            dataProvider.DeleteTransaction(item.transaction);
-            Transactions.Remove(item);
-            eventAggregator.GetEvent<TransactionDeleted>().Publish(item);
+            if (dataProvider.DeleteTransaction(item.transaction))
+            {
+                Transactions.Remove(item);
+                eventAggregator.GetEvent<TransactionDeleted>().Publish(item);
+            }
         }
         public void ShowTransactionEditor()
         {
