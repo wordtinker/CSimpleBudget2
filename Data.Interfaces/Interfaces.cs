@@ -29,9 +29,9 @@ namespace Data.Interfaces
         bool AddTransaction(int accountId, DateTime date, decimal amount, string info, int categoryId, out int id);
         bool UpdateTransaction(int id, DateTime date, decimal amount, string info, int categoryId);
 
+        IEnumerable<(decimal amount, int categoryId, string type, int onDay, int id)> SelectRecords(int year, int month);
+
         int? GetMaximumYear();
         int? GetMinimumYear();
-
-
     }
 }

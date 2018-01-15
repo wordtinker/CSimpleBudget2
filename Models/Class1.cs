@@ -23,15 +23,6 @@ namespace Models
         // Month of the spending
         public int Month { get; internal set; }
     }
-    public class StubBudgetRecord : IBudgetRecord
-    {
-        public decimal Amount { get; set; }
-        public ICategory Category { get; set; }
-        public BudgetType Type { get; set; }
-        public int OnDay { get; set; }
-        public int Year { get; set; }
-        public int Month { get; set; }
-    }
 
     public class DataProvider : StubDataProvider, IDataProvider
     {
@@ -283,6 +274,26 @@ namespace Models
             maxYear = Math.Max(maxYear, currentYear);
             return (minYear, maxYear);
         }
+        public IEnumerable<IBudgetRecord> GetRecords(int year, int month)
+        {
+            foreach (var (amount, categoryId, typeId, onDay, id) in storageProvider.Storage?.SelectRecords(year, month))
+            {
+                Enum.TryParse(typeId, out BudgetType type);
+                yield return new BudgetRecord
+                {
+                    Id = id,
+                    Amount = amount,
+                    Category = (from topCat in Categories
+                                from cat in topCat.Children
+                                where cat.Id == categoryId
+                                select cat).First(),
+                    Year = year,
+                    Month = month,
+                    OnDay = onDay,
+                    Type = type
+                };
+            }            
+        }
 
         // TODO Remove
         public override IEnumerable<ICategory> GetCategories()
@@ -297,7 +308,7 @@ namespace Models
 
         public IBudgetRecord AddBudgetRecord(decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year)
         {
-            return new StubBudgetRecord
+            return new BudgetRecord
             {
                 Amount = amount,
                 Category = category,
@@ -310,7 +321,8 @@ namespace Models
 
         public IEnumerable<IBudgetRecord> CopyRecords(int fromMonth, int fromYear, int toMonth, int toYear)
         {
-            return GetRecords(fromMonth, fromYear);
+            yield break;
+            //return GetRecords(fromMonth, fromYear);
         }
 
         
@@ -327,21 +339,7 @@ namespace Models
 
         
 
-        public IEnumerable<IBudgetRecord> GetRecords(int year, int month)
-        {
-            List<ICategory> categories = new List<ICategory>(GetCategories());
-            var subCats = new List<ICategory>(categories[0].Children);
-            var br = new StubBudgetRecord
-            {
-                Amount = 100,
-                Category = subCats[0],
-                OnDay = 1,
-                Type = BudgetType.Point,
-                Month = 1,
-                Year = 2018
-            };
-            yield return br;
-        }
+        
 
         public IEnumerable<ISpending> GetSpendings(int year, int month)
         {

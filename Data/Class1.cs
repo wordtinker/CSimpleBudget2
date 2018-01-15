@@ -95,6 +95,11 @@ namespace Data
             yield return "2222";
         }
 
+        public IEnumerable<(decimal amount, int categoryId, string type, int onDay, int id)> SelectRecords(int year, int month)
+        {
+            yield return (100, 1, "Point", 1, 10);
+        }
+
         public IEnumerable<(string name, int id)> SelectSubCategories(int parentId)
         {
             yield return ("one", 1);

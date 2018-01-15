@@ -131,6 +131,7 @@ namespace Models.Interfaces
         // TODO model, month must be natural based
         int Month { get; }
         int OnDay { get; }
+        int Id { get; }
     }
     /// <summary>
     /// Every budget record has a type that defines

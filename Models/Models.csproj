@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="Elements\Account.cs" />
+    <Compile Include="Elements\BudgetRecord.cs" />
     <Compile Include="Elements\Category.cs" />
     <Compile Include="Elements\Transaction.cs" />
     <Compile Include="FileHandler.cs" />
