@@ -52,6 +52,11 @@ namespace Data
             return true;
         }
 
+        public bool DeleteRecord(int id)
+        {
+            return true;
+        }
+
         public bool DeleteSubCategory(int id)
         {
             return true;

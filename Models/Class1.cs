@@ -334,6 +334,10 @@ namespace Models
                 return false;
             }
         }
+        public bool DeleteRecord(IBudgetRecord record)
+        {
+            return storageProvider.Storage?.DeleteRecord(record.Id) ?? false;
+        }
         // TODO Remove
         public override IEnumerable<ICategory> GetCategories()
         {
@@ -345,10 +349,7 @@ namespace Models
     {
         public abstract IEnumerable<ICategory> GetCategories();
         
-        public void DeleteRecord(IBudgetRecord record)
-        {
-            // Do nothing
-        }
+        
         
         public IEnumerable<ISpending> GetSpendings(int year, int month)
         {

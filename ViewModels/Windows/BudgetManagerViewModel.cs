@@ -92,9 +92,11 @@ namespace ViewModels.Windows
         }
         public void DeleteRecord(RecordItem recordItem)
         {
-            dataProvider.DeleteRecord(recordItem.record);
-            Records.Remove(recordItem);
-            eventAggregator.GetEvent<BudgetRecordDeleted>().Publish(recordItem);
+            if (dataProvider.DeleteRecord(recordItem.record))
+            {
+                Records.Remove(recordItem);
+                eventAggregator.GetEvent<BudgetRecordDeleted>().Publish(recordItem);
+            }
         }
         public void ShowRecordEditor()
         {

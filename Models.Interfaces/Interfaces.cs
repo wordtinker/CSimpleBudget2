@@ -42,7 +42,7 @@ namespace Models.Interfaces
         (int minYear, int maxYear) GetActiveBudgetYears();
         IEnumerable<IBudgetRecord> CopyRecords(int fromMonth, int fromYear, int toMonth, int toYear);
         IEnumerable<IBudgetRecord> GetRecords(int year, int month);
-        void DeleteRecord(IBudgetRecord record);
+        bool DeleteRecord(IBudgetRecord record);
         bool AddBudgetRecord(decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year, out IBudgetRecord newRecord);
         void UpdateRecord(IBudgetRecord record, decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year);
 
