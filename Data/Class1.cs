@@ -12,11 +12,6 @@ namespace Data
             return true;
         }
 
-        public bool AddAccountType(string name)
-        {
-            return true;
-        }
-
         public bool AddRecord(decimal amount, int categoryId, string type, int onDay, int year, int month, out int id)
         {
             id = 11;
@@ -42,11 +37,6 @@ namespace Data
         }
 
         public bool DeleteAccount(int id)
-        {
-            return true;
-        }
-
-        public bool DeleteAccountType(string name)
         {
             return true;
         }
@@ -86,13 +76,6 @@ namespace Data
             yield return ("1254", "one", 1254m, false, false, 1);
             yield return ("1254", "two", 1254m, true, true, 2);
             yield return ("8745", "one", 8745m, false, false, 3);
-        }
-
-        public IEnumerable<string> SelectAccTypes()
-        {
-            yield return "one";
-            yield return "two";
-            yield return "2222";
         }
 
         public IEnumerable<(decimal amount, int categoryId, string type, int onDay, int id)> SelectRecords(int year, int month)

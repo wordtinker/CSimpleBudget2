@@ -1,5 +1,6 @@
 ﻿using Data.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Data.SQLite;
 
 namespace Data
@@ -92,6 +93,86 @@ namespace Data
                 return true;
             }
             catch (Exception)
+            {
+                return false;
+            }
+        }
+        /************** Acc Types ****************/
+
+        /// <summary>
+        /// Selects account types.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> SelectAccountTypes()
+        {
+            string sql = "SELECT * FROM AccountTypes";
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+            {
+                SQLiteDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    yield return dr.GetString(0);
+                }
+                dr.Close();
+            }
+        }
+        /// <summary>
+        /// Adds new account type to DB.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool AddAccountType(string name)
+        {
+            // Can't add empty account type name
+            if (name == string.Empty)
+            {
+                return false;
+            }
+
+            string sql = "INSERT INTO AccountTypes VALUES(@name)";
+            try
+            {
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                {
+                    cmd.Parameters.Add(new SQLiteParameter()
+                    {
+                        ParameterName = "@name",
+                        DbType = System.Data.DbType.String,
+                        Value = name
+                    });
+                    cmd.ExecuteNonQuery();
+                }
+                return true;
+            }
+            catch (SQLiteException)
+            {
+                return false;
+            }
+        }
+        /// <summary>
+        /// Deletes account type from DB.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool DeleteAccountType(string name)
+        {
+            // TODO account foreign key check
+            string sql = "DELETE FROM AccountTypes WHERE name=@name";
+            try
+            {
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                {
+                    cmd.Parameters.Add(new SQLiteParameter()
+                    {
+                        ParameterName = "@name",
+                        DbType = System.Data.DbType.String,
+                        Value = name
+                    });
+                    cmd.ExecuteNonQuery();
+                }
+                return true;
+            }
+            catch (SQLiteException)
             {
                 return false;
             }

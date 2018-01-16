@@ -38,7 +38,7 @@ namespace Models
         }
         private void SetAccountTypes()
         {
-            foreach (string accType in storageProvider.Storage?.SelectAccTypes())
+            foreach (string accType in storageProvider.Storage?.SelectAccountTypes())
             {
                 AccountTypes.Add(accType);
             }
