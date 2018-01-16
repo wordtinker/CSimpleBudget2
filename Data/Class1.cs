@@ -111,6 +111,11 @@ namespace Data
             yield return (100, 1, "Point", 1, 10);
         }
 
+        public decimal SelectRecordsCombined(int year, int month, int categoryId)
+        {
+            return 25m;
+        }
+
         public IEnumerable<(string name, int id)> SelectSubCategories(int parentId)
         {
             yield return ("one", 1);
@@ -126,6 +131,11 @@ namespace Data
             SelectTransactions(int accountId)
         {
             yield return (DateTime.Now, 25.14m, "Test", 2, 1);
+        }
+
+        public decimal SelectTransactionsCombined(int year, int month, int categoryId)
+        {
+            return 20m;
         }
 
         public bool UpdateAccount(int id, string type, decimal balance, bool closed, bool excluded)

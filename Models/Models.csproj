@@ -41,10 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="DataProvider.cs" />
     <Compile Include="Elements\Account.cs" />
     <Compile Include="Elements\BudgetRecord.cs" />
     <Compile Include="Elements\Category.cs" />
+    <Compile Include="Elements\Spending.cs" />
     <Compile Include="Elements\Transaction.cs" />
     <Compile Include="FileHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

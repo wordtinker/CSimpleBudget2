@@ -7,24 +7,7 @@ using Models.Interfaces;
 
 namespace Models
 {
-    /// <summary>
-    /// Object that contains sum of all transaction
-    /// and sum of all budget records for a given
-    /// period(month and year) and category.
-    /// </summary>
-    public class Spending : ISpending
-    {
-        // Category of the spending
-        public ICategory Category { get; internal set; }
-        // Sum of the planned budget records.
-        public decimal Budget { get; internal set; }
-        // Sum of the transactions.
-        public decimal Value { get; internal set; }
-        // Month of the spending
-        public int Month { get; internal set; }
-    }
-
-    public class DataProvider : StubDataProvider, IDataProvider
+    public class DataProvider : IDataProvider
     {
         private IStorageProvider storageProvider;
 
@@ -342,30 +325,27 @@ namespace Models
         {
             return storageProvider.Storage?.UpdateRecord(record.Id, amount, category.Id, budgetType.ToString(), onDay, year, month) ?? false;
         }
-        // TODO Remove
-        public override IEnumerable<ICategory> GetCategories()
-        {
-            return Categories;
-        }
-    }
-
-    public abstract class StubDataProvider
-    {
-        public abstract IEnumerable<ICategory> GetCategories();
-        
-        
-        
         public IEnumerable<ISpending> GetSpendings(int year, int month)
         {
-            List<ICategory> categories = new List<ICategory>(GetCategories());
-            var subCats = new List<ICategory>(categories[0].Children);
-            yield return new Spending
+            var subcats = from cat in Categories from c in cat.Children select c;
+            foreach (ICategory cat in subcats)
             {
-                Budget = 25m,
-                Category = subCats[0],
-                Month = 1,
-                Value = 20m
-            };
+                // should be positive
+                decimal budget = Math.Abs(storageProvider.Storage?.SelectRecordsCombined(year, month, cat.Id) ?? decimal.Zero);
+                decimal spent = Math.Abs(storageProvider.Storage?.SelectTransactionsCombined(year, month, cat.Id) ?? decimal.Zero);
+                // TODO Test
+                if (budget == decimal.Zero && spent == decimal.Zero)
+                {
+                    continue;
+                }
+                yield return new Spending
+                {
+                    Category = cat,
+                    Month = month,
+                    Budget = budget,
+                    Value = spent
+                };
+            }
         }
     }
 }

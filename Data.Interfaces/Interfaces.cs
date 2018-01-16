@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace Data.Interfaces
 {
-    // TODO
     public interface IStorage : IDisposable
     {
         bool Initialize();
@@ -28,11 +27,13 @@ namespace Data.Interfaces
         bool DeleteTransaction(int id);
         bool AddTransaction(int accountId, DateTime date, decimal amount, string info, int categoryId, out int id);
         bool UpdateTransaction(int id, DateTime date, decimal amount, string info, int categoryId);
+        decimal SelectTransactionsCombined(int year, int month, int categoryId);
 
         IEnumerable<(decimal amount, int categoryId, string type, int onDay, int id)> SelectRecords(int year, int month);
         bool AddRecord(decimal amount, int categoryId, string type, int onDay, int year, int month, out int id);
         bool DeleteRecord(int id);
         bool UpdateRecord(int id, decimal amount, int categoryId, string type, int onDay, int year, int month);
+        decimal SelectRecordsCombined(int year, int month, int categoryId);
 
         int? GetMaximumYear();
         int? GetMinimumYear();
