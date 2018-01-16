@@ -19,7 +19,6 @@ namespace Models.Interfaces
         event EventHandler Off;
         IStorage Storage { get; }
     }
-    // TODO year, month
     public interface IDataProvider
     {
         ObservableCollection<string> AccountTypes { get; }
@@ -44,7 +43,7 @@ namespace Models.Interfaces
         IEnumerable<IBudgetRecord> CopyRecords(int fromMonth, int fromYear, int toMonth, int toYear);
         IEnumerable<IBudgetRecord> GetRecords(int year, int month);
         bool DeleteRecord(IBudgetRecord record);
-        bool AddBudgetRecord(decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year, out IBudgetRecord newRecord);
+        bool AddBudgetRecord(decimal amount, ICategory category, BudgetType budgetType, int onDay, int year, int month, out IBudgetRecord newRecord);
         bool UpdateRecord(IBudgetRecord record, decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year);
 
         IEnumerable<ISpending> GetSpendings(int year, int month);

@@ -142,7 +142,7 @@ namespace ViewModels.Windows
 
         public override void Save()
         {
-            if (dataProvider.AddBudgetRecord(Amount, Category.category, BudgetType, OnDay, Month, Year, out IBudgetRecord newRecord))
+            if (dataProvider.AddBudgetRecord(Amount, Category.category, BudgetType, OnDay, Year, Month, out IBudgetRecord newRecord))
             {
                 eventAggregator.GetEvent<BudgetRecordAdded>().Publish(new RecordItem(newRecord));
             }

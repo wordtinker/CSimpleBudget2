@@ -287,13 +287,13 @@ namespace Models
                             where cat.Id == categoryId
                             select cat).First();
                 Enum.TryParse(type, out BudgetType budgetType);
-                if (AddBudgetRecord(amount, category, budgetType, onDay, toMonth, toYear, out IBudgetRecord newRecord))
+                if (AddBudgetRecord(amount, category, budgetType, onDay, toYear, toMonth, out IBudgetRecord newRecord))
                 {
                     yield return newRecord;
                 }
             }
         }
-        public bool AddBudgetRecord(decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year, out IBudgetRecord newRecord)
+        public bool AddBudgetRecord(decimal amount, ICategory category, BudgetType budgetType, int onDay, int year, int month, out IBudgetRecord newRecord)
         {
             int id = -1;
             if (storageProvider.Storage?.AddRecord(amount, category.Id, budgetType.ToString(), onDay, year, month, out id) ?? false)
