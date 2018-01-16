@@ -19,6 +19,7 @@ namespace Models.Interfaces
         event EventHandler Off;
         IStorage Storage { get; }
     }
+    // TODO year, month
     public interface IDataProvider
     {
         ObservableCollection<string> AccountTypes { get; }
