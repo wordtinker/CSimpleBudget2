@@ -187,15 +187,17 @@ namespace ViewModels.Windows
         public override void Save()
         {
             // update budget record in the model
-            dataProvider.UpdateRecord(recordItem.record, Amount, Category.category, BudgetType, OnDay, Month, Year);
-            // and in the view model
-            recordItem.Amount = Amount;
-            recordItem.Category = Category;
-            recordItem.Type = BudgetType;
-            recordItem.OnDay = OnDay;
-            recordItem.Month = Month;
-            recordItem.Year = Year;
-            eventAggregator.GetEvent<BudgetRecordChanged>().Publish(recordItem);
+            if (dataProvider.UpdateRecord(recordItem.record, Amount, Category.category, BudgetType, OnDay, Month, Year))
+            {
+                // and in the view model
+                recordItem.Amount = Amount;
+                recordItem.Category = Category;
+                recordItem.Type = BudgetType;
+                recordItem.OnDay = OnDay;
+                recordItem.Month = Month;
+                recordItem.Year = Year;
+                eventAggregator.GetEvent<BudgetRecordChanged>().Publish(recordItem);
+            }
         }
     }
 }

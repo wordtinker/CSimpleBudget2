@@ -338,6 +338,10 @@ namespace Models
         {
             return storageProvider.Storage?.DeleteRecord(record.Id) ?? false;
         }
+        public bool UpdateRecord(IBudgetRecord record, decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year)
+        {
+            return storageProvider.Storage?.UpdateRecord(record.Id, amount, category.Id, budgetType.ToString(), onDay, year, month) ?? false;
+        }
         // TODO Remove
         public override IEnumerable<ICategory> GetCategories()
         {
@@ -362,11 +366,6 @@ namespace Models
                 Month = 1,
                 Value = 20m
             };
-        }
-
-        public void UpdateRecord(IBudgetRecord record, decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year)
-        {
-            // do nothing
         }
     }
 }

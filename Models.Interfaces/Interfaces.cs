@@ -44,7 +44,7 @@ namespace Models.Interfaces
         IEnumerable<IBudgetRecord> GetRecords(int year, int month);
         bool DeleteRecord(IBudgetRecord record);
         bool AddBudgetRecord(decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year, out IBudgetRecord newRecord);
-        void UpdateRecord(IBudgetRecord record, decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year);
+        bool UpdateRecord(IBudgetRecord record, decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year);
 
         IEnumerable<ISpending> GetSpendings(int year, int month);
     }

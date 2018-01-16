@@ -133,6 +133,11 @@ namespace Data
             return true;
         }
 
+        public bool UpdateRecord(int id, decimal amount, int categoryId, string type, int onDay, int year, int month)
+        {
+            return true;
+        }
+
         public bool UpdateTransaction(int id, DateTime date, decimal amount, string info, int categoryId)
         {
             return true;

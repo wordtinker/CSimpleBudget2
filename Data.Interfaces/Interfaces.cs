@@ -32,6 +32,7 @@ namespace Data.Interfaces
         IEnumerable<(decimal amount, int categoryId, string type, int onDay, int id)> SelectRecords(int year, int month);
         bool AddRecord(decimal amount, int categoryId, string type, int onDay, int year, int month, out int id);
         bool DeleteRecord(int id);
+        bool UpdateRecord(int id, decimal amount, int categoryId, string type, int onDay, int year, int month);
 
         int? GetMaximumYear();
         int? GetMinimumYear();

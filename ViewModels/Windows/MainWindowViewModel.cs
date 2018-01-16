@@ -161,6 +161,7 @@ namespace ViewModels.Windows
             eventAggregator.GetEvent<BudgetRecordDeleted>().Subscribe(
                 ri => RefreshBars(), ThreadOption.PublisherThread, false,
                 ri => ri.Month == CurrentMonth && ri.Year == CurrentYear);
+            // TODO or old date.Year == currentYear && date.Month == currentMonth
             eventAggregator.GetEvent<BudgetRecordChanged>().Subscribe(
                 ri => RefreshBars(), ThreadOption.PublisherThread, false,
                 ri => ri.Month == CurrentMonth && ri.Year == CurrentYear);
