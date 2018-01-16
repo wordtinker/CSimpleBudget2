@@ -12,7 +12,6 @@ namespace Models
         public event EventHandler On;
         public event EventHandler Off;
 
-        // TODO does it know it?
         public string Extension => ".sbdb";
         public IStorage Storage { get; private set; }
         public bool InitializeFile(string fileName)

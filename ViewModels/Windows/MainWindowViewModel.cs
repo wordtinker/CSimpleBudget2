@@ -35,14 +35,12 @@ namespace ViewModels.Windows
             }
         }
         public bool IsFileOpened => !string.IsNullOrEmpty(OpenedFile);
-        public bool IsReadyToSetAccounts => AccTypes.Any();
+        public bool IsReadyToSetAccounts => dataProvider.AccountTypes.Any();
         /// <summary>
         /// Property showing that we have enough
         /// info for reports and budgeting.
         /// </summary>
-        public bool IsFullyReady => (from c in Categories where c.Items.Count > 0 select c).Any();
-        // TODO DROP ?
-        public IEnumerable<AccTypeItem> AccTypes => from t in dataProvider.AccountTypes select new AccTypeItem(t);
+        public bool IsFullyReady => (from c in dataProvider.Categories where c.Children.Any() select c).Any();
         public IEnumerable<IAccountItem> Accounts
         {
             get
@@ -66,8 +64,6 @@ namespace ViewModels.Windows
                 }
             }
         }
-        // TODO DROP ?
-        public IEnumerable<CategoryNode> Categories => from c in dataProvider.Categories select new CategoryNode(c);
         public ObservableCollection<BudgetBar> Bars { get; }
         public int CurrentMonth { get; }
         public int CurrentYear { get; }
@@ -94,7 +90,6 @@ namespace ViewModels.Windows
 
             dataProvider.AccountTypes.CollectionChanged += (sender, e) =>
             {
-                RaisePropertyChanged(nameof(AccTypes));
                 RaisePropertyChanged(nameof(IsReadyToSetAccounts));
             };
             dataProvider.Accounts.CollectionChanged += (sender, e) =>
@@ -103,7 +98,6 @@ namespace ViewModels.Windows
             };
             dataProvider.Categories.CollectionChanged += (sender, e) =>
             {
-                RaisePropertyChanged(nameof(Categories));
                 RaisePropertyChanged(nameof(IsFullyReady));
             };
             Bars = new ObservableCollection<BudgetBar>();
@@ -168,16 +162,12 @@ namespace ViewModels.Windows
         }
         private void CleanUpData()
         {
-            RaisePropertyChanged(nameof(AccTypes));
             RaisePropertyChanged(nameof(Accounts));
-            RaisePropertyChanged(nameof(Categories));
             Bars.Clear();
         }
         private void LoadUpData()
         {
-            RaisePropertyChanged(nameof(AccTypes));
             RaisePropertyChanged(nameof(Accounts));
-            RaisePropertyChanged(nameof(Categories));
             RefreshBars();
         }
         private void RefreshBars()
