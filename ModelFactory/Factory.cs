@@ -3,6 +3,7 @@ using Data.Interfaces;
 using Models;
 using Models.Interfaces;
 using Unity;
+using Unity.Resolution;
 
 namespace ModelFactory
 {
@@ -18,8 +19,11 @@ namespace ModelFactory
         {
             // Bind everything within container.
             Container = new UnityContainer();
-            Container.RegisterType<IStorage, StubStorage>();
-            FileHandler fileHandler = new FileHandler((fileName) => Container.Resolve<IStorage>());
+            Container.RegisterType<IStorage, Storage>();
+            FileHandler fileHandler = new FileHandler(
+                fileName => Container.Resolve<IStorage>(
+                    new ParameterOverride("fileName", fileName)
+                    ));
             Container.RegisterInstance<IFileHandler>(fileHandler);
             Container.RegisterInstance<IDataProvider>(new DataProvider(fileHandler));
         }

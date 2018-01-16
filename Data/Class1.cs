@@ -5,7 +5,7 @@ using Data.Interfaces;
 
 namespace Data
 {
-    public class StubStorage : IStorage
+    public abstract class StubStorage
     {
         public bool AddAccount(string name, string type, out int id)
         {
@@ -70,11 +70,6 @@ namespace Data
         public bool DeleteTransaction(int id)
         {
             return true;
-        }
-
-        public void Dispose()
-        {
-            // TODO using pattern
         }
 
         public int? GetMaximumYear()
