@@ -1,4 +1,5 @@
 ﻿using Data.Interfaces;
+using System;
 using System.Data.SQLite;
 
 namespace Data
@@ -38,6 +39,62 @@ namespace Data
             Dispose(true);
         }
         #endregion
+        /************** File *****************/
+        /// <summary>
+        /// Initializes new empty file with proper DB structure.
+        /// </summary>
+        /// <returns></returns>
+        public bool Initialize()
+        {
+            try
+            {
+                string sql = "CREATE TABLE IF NOT EXISTS AccountTypes(name TEXT NOT NULL UNIQUE)";
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                // TODO !!! !
 
+                //sql = "CREATE TABLE IF NOT EXISTS Accounts(name TEXT, " +
+                //    "type TEXT, balance INTEGER, closed INTEGER, exbudget INTEGER)";
+                //using (SQLiteCommand cmd = new SQLiteCommand(sql, dbConn))
+                //{
+                //    cmd.ExecuteNonQuery();
+                //}
+
+                //sql = "CREATE TABLE IF NOT EXISTS Transactions(date DATE, " +
+                //    "amount INTEGER, info TEXT, acc_id INTEGER, category_id INTEGER)";
+                //using (SQLiteCommand cmd = new SQLiteCommand(sql, dbConn))
+                //{
+                //    cmd.ExecuteNonQuery();
+                //}
+
+                //sql = "CREATE TABLE IF NOT EXISTS Categories(name TEXT UNIQUE)";
+                //using (SQLiteCommand cmd = new SQLiteCommand(sql, dbConn))
+                //{
+                //    cmd.ExecuteNonQuery();
+                //}
+
+                //sql = "CREATE TABLE IF NOT EXISTS Subcategories(name TEXT, parent TEXT, UNIQUE(name, parent))";
+                //using (SQLiteCommand cmd = new SQLiteCommand(sql, dbConn))
+                //{
+                //    cmd.ExecuteNonQuery();
+                //}
+
+                //sql = "CREATE TABLE IF NOT EXISTS Budget(amount INTEGER, " +
+                //    "category_id INTEGER, type TEXT, day INTEGER, year INTEGER, month INTEGER)";
+                //using (SQLiteCommand cmd = new SQLiteCommand(sql, dbConn))
+                //{
+                //    cmd.ExecuteNonQuery();
+                //}
+
+                //dbConn.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }

@@ -1,7 +1,6 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using Data.Interfaces;
 
 namespace Data
 {
@@ -80,11 +79,6 @@ namespace Data
         public int? GetMinimumYear()
         {
             return 2013;
-        }
-
-        public bool Initialize()
-        {
-            return true;
         }
 
         public IEnumerable<(string name, string type, decimal balance, bool closed, bool excluded, int id)> SelectAccounts()
