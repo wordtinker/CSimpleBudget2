@@ -4,8 +4,7 @@ using System.Collections.Generic;
 namespace Models.Elements
 {
     // TODO Bindable ?
-    // TODO internal
-    public class Category : ICategory
+    internal class Category : ICategory
     {
         private List<ICategory> children;
 

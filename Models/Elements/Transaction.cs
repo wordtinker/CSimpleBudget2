@@ -3,8 +3,7 @@ using System;
 
 namespace Models.Elements
 {
-    // TODO internal
-    public class Transaction : ITransaction
+    internal class Transaction : ITransaction
     {
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
