@@ -2,7 +2,9 @@
 using Prism.Logging;
 using SimpleBudget.Services;
 using SimpleBudget.Windows;
+using System;
 using System.Globalization;
+using System.IO;
 using System.Windows;
 using Unity;
 using Unity.Resolution;
@@ -25,6 +27,28 @@ namespace SimpleBudget
         private void ApplicationStartup(object sender, StartupEventArgs e)
         {
             SetupCulture();
+            // Get app name from config file
+            string appName = Tools.Settings.Read("appName");
+            if (string.IsNullOrWhiteSpace(appName))
+            {
+                MessageBox.Show("Error reading app settings.\nApp can't start.");
+                App.Current.Shutdown();
+                return;
+            }
+            // Get app directory
+            string appDir;
+            try
+            {
+                appDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                appDir = Path.Combine(appDir, appName);
+                Directory.CreateDirectory(appDir);
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(string.Format("App can't start.\n{0}", err.Message));
+                App.Current.Shutdown();
+                return;
+            }
 
             // Configure and start model
             var modelFactory = new ModelFactory.Factory();
@@ -34,12 +58,13 @@ namespace SimpleBudget
             Container.RegisterInstance<IEventAggregator>(new EventAggregator());
             // Register base service provider
             Container.RegisterInstance<IUIBaseService>(new BaseWindowService());
-            // TODO
             // Register logging class
-            // TODO
-            //Container.RegisterInstance<ILoggerFacade>(new SimpleLogger(appDir));
+            Container.RegisterInstance<ILoggerFacade>(new SimpleLogger(appDir));
             // Start main window
-            MainWindow = new MainWindow();
+            MainWindow = new MainWindow
+            {
+                Title = appName
+            };
             // Inject dependencies and properties
             IUIMainWindowService service = new MainWindowService(MainWindow);
             MainWindow.DataContext = Container.Resolve<MainWindowViewModel>(new ParameterOverride("windowService", service));
