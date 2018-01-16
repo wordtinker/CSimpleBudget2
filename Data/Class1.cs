@@ -6,11 +6,7 @@ namespace Data
 {
     public abstract class StubStorage
     {
-        public bool AddAccount(string name, string type, out int id)
-        {
-            id = DateTime.Now.Millisecond;
-            return true;
-        }
+        
 
         public bool AddRecord(decimal amount, int categoryId, string type, int onDay, int year, int month, out int id)
         {
@@ -33,11 +29,6 @@ namespace Data
         public bool AddTransaction(int accountId, DateTime date, decimal amount, string info, int categoryId, out int id)
         {
             id = 10;
-            return true;
-        }
-
-        public bool DeleteAccount(int id)
-        {
             return true;
         }
 
@@ -69,13 +60,6 @@ namespace Data
         public int? GetMinimumYear()
         {
             return 2013;
-        }
-
-        public IEnumerable<(string name, string type, decimal balance, bool closed, bool excluded, int id)> SelectAccounts()
-        {
-            yield return ("1254", "one", 1254m, false, false, 1);
-            yield return ("1254", "two", 1254m, true, true, 2);
-            yield return ("8745", "one", 8745m, false, false, 3);
         }
 
         public IEnumerable<(decimal amount, int categoryId, string type, int onDay, int id)> SelectRecords(int year, int month)
@@ -110,10 +94,7 @@ namespace Data
             return 20m;
         }
 
-        public bool UpdateAccount(int id, string type, decimal balance, bool closed, bool excluded)
-        {
-            return true;
-        }
+        
 
         public bool UpdateRecord(int id, decimal amount, int categoryId, string type, int onDay, int year, int month)
         {

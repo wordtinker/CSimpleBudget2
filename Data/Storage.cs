@@ -40,6 +40,34 @@ namespace Data
             Dispose(true);
         }
         #endregion
+        /************** Utils ********************/
+
+        /// <summary>
+        /// Converts object to decimal value.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        private static decimal FromDBValToDecimal(object obj)
+        {
+            if (obj == null || obj == DBNull.Value)
+            {
+                return default(decimal);
+            }
+            else
+            {
+                return Convert.ToDecimal(obj) / 100;
+            }
+        }
+
+        /// <summary>
+        /// Converts decimal value to int value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static int FromDecimaltoDBInt(decimal value)
+        {
+            return decimal.ToInt32(value * 100);
+        }
         /************** File *****************/
         /// <summary>
         /// Initializes new empty file with proper DB structure.
@@ -54,14 +82,15 @@ namespace Data
                 {
                     cmd.ExecuteNonQuery();
                 }
-                // TODO !!! !
 
-                //sql = "CREATE TABLE IF NOT EXISTS Accounts(name TEXT, " +
-                //    "type TEXT, balance INTEGER, closed INTEGER, exbudget INTEGER)";
-                //using (SQLiteCommand cmd = new SQLiteCommand(sql, dbConn))
-                //{
-                //    cmd.ExecuteNonQuery();
-                //}
+                sql = "CREATE TABLE IF NOT EXISTS Accounts(name TEXT, " +
+                    "type TEXT, balance INTEGER, closed INTEGER, exbudget INTEGER, " +
+                    "FOREIGN KEY(type) REFERENCES AccountTypes(name) ON DELETE RESTRICT)";
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                // TODO !!! !
 
                 //sql = "CREATE TABLE IF NOT EXISTS Transactions(date DATE, " +
                 //    "amount INTEGER, info TEXT, acc_id INTEGER, category_id INTEGER)";
@@ -156,7 +185,6 @@ namespace Data
         /// <returns></returns>
         public bool DeleteAccountType(string name)
         {
-            // TODO account foreign key check
             string sql = "DELETE FROM AccountTypes WHERE name=@name";
             try
             {
@@ -167,6 +195,147 @@ namespace Data
                         ParameterName = "@name",
                         DbType = System.Data.DbType.String,
                         Value = name
+                    });
+                    cmd.ExecuteNonQuery();
+                }
+                return true;
+            }
+            catch (SQLiteException)
+            {
+                return false;
+            }
+        }
+
+        /************** Accounts *****************/
+        /// <summary>
+        /// Selects every account from DB.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<(string name, string type, decimal balance, bool closed, bool excluded, int id)> SelectAccounts()
+        {
+            string sql = "SELECT *, rowid FROM Accounts";
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+            {
+                SQLiteDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    yield return (dr.GetString(0), dr.GetString(1), FromDBValToDecimal(dr.GetDecimal(2)),
+                        Convert.ToBoolean(dr.GetInt32(3)), Convert.ToBoolean(dr.GetInt32(4)), dr.GetInt32(5));
+                }
+                dr.Close();
+            }
+        }
+        /// <summary>
+        /// Adds new account to DB. Method will not restrict non-unique account names.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public bool AddAccount(string name, string type, out int id)
+        {
+            // Can't add empty account name
+            if (name == string.Empty)
+            {
+                id = -1;
+                return false;
+            }
+
+            string sql = "INSERT INTO Accounts VALUES(@name, @type, 0, 0, 0)";
+            try
+            {
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                {
+                    cmd.Parameters.Add(new SQLiteParameter()
+                    {
+                        ParameterName = "@name",
+                        DbType = System.Data.DbType.String,
+                        Value = name
+                    });
+                    cmd.Parameters.Add(new SQLiteParameter()
+                    {
+                        ParameterName = "@type",
+                        DbType = System.Data.DbType.String,
+                        Value = type
+                    });
+                    cmd.ExecuteNonQuery();
+                }
+                id = Convert.ToInt32(connection.LastInsertRowId);
+                return true;
+            }
+            catch (SQLiteException)
+            {
+                id = -1;
+                return false;
+            }
+        }
+        /// <summary>
+        /// Writes account changes to DB.
+        /// </summary>
+        public bool UpdateAccount(int id, string type, decimal balance, bool closed, bool excluded)
+        {
+            string sql = "UPDATE Accounts SET type=@type, balance=@balance, closed=@closed, " +
+                "exbudget=@excluded WHERE rowid=@rowid";
+            try
+            {
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                {
+                    cmd.Parameters.Add(new SQLiteParameter()
+                    {
+                        ParameterName = "@type",
+                        DbType = System.Data.DbType.String,
+                        Value = type
+                    });
+                    cmd.Parameters.Add(new SQLiteParameter()
+                    {
+                        ParameterName = "@balance",
+                        DbType = System.Data.DbType.Int32,
+                        Value = FromDecimaltoDBInt(balance)
+                    });
+                    cmd.Parameters.Add(new SQLiteParameter()
+                    {
+                        ParameterName = "@closed",
+                        DbType = System.Data.DbType.Int32,
+                        Value = Convert.ToInt32(closed)
+                    });
+                    cmd.Parameters.Add(new SQLiteParameter()
+                    {
+                        ParameterName = "@excluded",
+                        DbType = System.Data.DbType.Int32,
+                        Value = Convert.ToInt32(excluded)
+                    });
+                    cmd.Parameters.Add(new SQLiteParameter()
+                    {
+                        ParameterName = "@rowid",
+                        DbType = System.Data.DbType.Int32,
+                        Value = id
+                    });
+                    cmd.ExecuteNonQuery();
+                }
+                return true;
+            }
+            catch (SQLiteException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Deletes account from DB.
+        /// </summary>
+        /// <returns></returns>
+        public bool DeleteAccount(int id)
+        {
+            // TODO Check foreign key transaction
+            string sql = "DELETE FROM Accounts WHERE rowid=@rowid";
+            try
+            {
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                {
+                    cmd.Parameters.Add(new SQLiteParameter()
+                    {
+                        ParameterName = "@rowid",
+                        DbType = System.Data.DbType.Int32,
+                        Value = id
                     });
                     cmd.ExecuteNonQuery();
                 }
