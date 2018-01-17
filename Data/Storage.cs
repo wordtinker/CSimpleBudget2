@@ -117,22 +117,15 @@ namespace Data
                   CREATE TABLE IF NOT EXISTS Categories(name TEXT NOT NULL UNIQUE);
                   CREATE TABLE IF NOT EXISTS Subcategories(id INTEGER PRIMARY KEY, name TEXT,
                   parent TEXT, UNIQUE(name, parent), FOREIGN KEY(parent)
-                  REFERENCES Categories(name) ON DELETE RESTRICT);";
+                  REFERENCES Categories(name) ON DELETE RESTRICT);
+                  CREATE TABLE IF NOT EXISTS Transactions(date DATE, amount INTEGER,
+                  info TEXT, accId INTEGER, categoryId INTEGER,
+                  FOREIGN KEY(accId) REFERENCES Accounts(id) ON DELETE RESTRICT,
+                  FOREIGN KEY(categoryId) REFERENCES Subcategories(id) ON DELETE RESTRICT);";
             return ExecuteNonQuery(query);
             // TODO
-            //sql = "CREATE TABLE IF NOT EXISTS Transactions(date DATE, " +
-            //    "amount INTEGER, info TEXT, acc_id INTEGER, category_id INTEGER)";
-            //using (SQLiteCommand cmd = new SQLiteCommand(sql, dbConn))
-            //{
-            //    cmd.ExecuteNonQuery();
-            //}
-
             //sql = "CREATE TABLE IF NOT EXISTS Budget(amount INTEGER, " +
             //    "category_id INTEGER, type TEXT, day INTEGER, year INTEGER, month INTEGER)";
-            //using (SQLiteCommand cmd = new SQLiteCommand(sql, dbConn))
-            //{
-            //    cmd.ExecuteNonQuery();
-            //}
         }
         /************** Acc Types ****************/
 
@@ -297,7 +290,6 @@ namespace Data
         /// <returns></returns>
         public bool DeleteAccount(int id)
         {
-            // TODO Check foreign key transaction
             string sql = "DELETE FROM Accounts WHERE id=@id";
             var param = new SQLiteParameter()
             {
@@ -306,6 +298,36 @@ namespace Data
                 Value = id
             };
             return ExecuteNonQuery(sql, param);
+        }
+
+        private int GetAccountIdForTransaction(int transactionId)
+        {
+            string sql = "SELECT accId FROM Transactions WHERE rowid=@id";
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+            {
+                cmd.Parameters.Add(new SQLiteParameter()
+                {
+                    ParameterName = "@id",
+                    DbType = System.Data.DbType.Int32,
+                    Value = transactionId
+                });
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            }
+        }
+        /// <summary>
+        /// Recalculates total for a given account. 
+        /// </summary>
+        private void UpdateTotal(int accountId)
+        {
+            string sql =
+                @"UPDATE Accounts SET balance=(SELECT SUM(amount)
+                  FROM Transactions WHERE accId=@id) WHERE id=@id";
+            ExecuteNonQuery(sql, new SQLiteParameter()
+            {
+                ParameterName = "@id",
+                DbType = System.Data.DbType.Int32,
+                Value = accountId
+            });
         }
         /************** Categories *****************/
         public IEnumerable<(string name, int id)> SelectTopCategories()
@@ -413,7 +435,7 @@ namespace Data
 
         public bool DeleteSubCategory(int id)
         {
-            // TODO check foreign key transaction and budget record
+            // TODO check foreign key budget record
             string sql = " DELETE FROM Subcategories WHERE id=@id";
             var param = new SQLiteParameter()
             {
@@ -422,6 +444,196 @@ namespace Data
                 Value = id
             };
             return ExecuteNonQuery(sql, param);
+        }
+        /************** Transactions *****************/
+        /// <summary>
+        /// Selects all transactions for a given account.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<(DateTime date, decimal amount, string info, int categoryId, int id)>
+            SelectTransactions(int accountId)
+        {
+            string sql = "SELECT date, amount, info, categoryId, rowid FROM Transactions " +
+                         "WHERE accId=@id ORDER BY date DESC";
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+            {
+                cmd.Parameters.Add(new SQLiteParameter()
+                {
+                    ParameterName = "@id",
+                    DbType = System.Data.DbType.Int32,
+                    Value = accountId
+                });
+                SQLiteDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    yield return (dr.GetDateTime(0), FromDBValToDecimal(dr.GetDecimal(1)),
+                        dr.GetString(2), dr.GetInt32(3), dr.GetInt32(4));
+                }
+                dr.Close();
+            }
+        }
+        /// <summary>
+        /// Deletes specified transaction from DB.
+        /// </summary>
+        /// <returns></returns>
+        public bool DeleteTransaction(int id)
+        {
+            string sql = "DELETE FROM Transactions WHERE rowid=@id";
+            int accountId = GetAccountIdForTransaction(id);
+            var param = new SQLiteParameter()
+            {
+                ParameterName = "@id",
+                DbType = System.Data.DbType.Int32,
+                Value = id
+            };
+            if (ExecuteNonQuery(sql, param))
+            {
+                UpdateTotal(accountId);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public bool AddTransaction(int accountId, DateTime date, decimal amount, string info, int categoryId, out int id)
+        {
+            string sql = "INSERT INTO Transactions VALUES(@date, @amount, @info, @accId, @catId)";
+            var parameters = new[]
+            {
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@date",
+                        DbType = System.Data.DbType.Date,
+                        Value = date.Date
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@amount",
+                        DbType = System.Data.DbType.Int32,
+                        Value = FromDecimaltoDBInt(amount)
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@info",
+                        DbType = System.Data.DbType.String,
+                        Value = info ?? string.Empty
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@accId",
+                        DbType = System.Data.DbType.Int32,
+                        Value = accountId
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@catId",
+                        DbType = System.Data.DbType.Int32,
+                        Value = categoryId
+                    }
+            };
+            if (ExecuteNonQueryInsert(out id, sql, parameters))
+            {
+                UpdateTotal(accountId);
+                return true;
+            }
+            else
+            {
+                id = -1;
+                return false;
+            }
+        }
+        public bool UpdateTransaction(int id, DateTime date, decimal amount, string info, int categoryId)
+        {
+            string sql = "UPDATE Transactions SET date=@date, amount=@amount, info=@info, categoryId=@catId WHERE rowid=@rowid";
+            var parameters = new[]
+            {
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@date",
+                        DbType = System.Data.DbType.Date,
+                        Value = date.Date
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@amount",
+                        DbType = System.Data.DbType.Int32,
+                        Value = FromDecimaltoDBInt(amount)
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@info",
+                        DbType = System.Data.DbType.String,
+                        Value = info ?? string.Empty
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@catId",
+                        DbType = System.Data.DbType.Int32,
+                        Value = categoryId
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@rowid",
+                        DbType = System.Data.DbType.Int32,
+                        Value = id
+                    }
+            };
+            if (ExecuteNonQuery(sql, parameters))
+            {
+                int accountId = GetAccountIdForTransaction(id);
+                UpdateTotal(accountId);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        /// <summary>
+        /// Returns total decimal value of all transactions for specified
+        /// year, month and category.
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <param name="categoryId"></param>
+        /// <returns></returns>
+        public decimal SelectTransactionsCombined(int year, int month, int categoryId)
+        {
+            DateTime firstDayOfMonth = new DateTime(year, month, 1);
+            DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddSeconds(-1);
+            DateTime lastDayofPrevMonth = firstDayOfMonth.AddSeconds(-1);
+
+            // BETWEEN firstDay and lastDay is glitchy
+            // have to use > and <=
+            string sql = @"SELECT sum(t.amount) FROM Transactions as t
+                           INNER JOIN Accounts as a
+                           on t.accId = a.id
+                           WHERE date>@startDate and date<=@endDate
+                           AND categoryId=@catId
+                           AND exbudget = 0";
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+            {
+                cmd.Parameters.Add(new SQLiteParameter()
+                {
+                    ParameterName = "@catId",
+                    DbType = System.Data.DbType.Int32,
+                    Value = categoryId
+                });
+                cmd.Parameters.Add(new SQLiteParameter()
+                {
+                    ParameterName = "@startDate",
+                    DbType = System.Data.DbType.Date,
+                    Value = lastDayofPrevMonth
+                });
+                cmd.Parameters.Add(new SQLiteParameter()
+                {
+                    ParameterName = "@endDate",
+                    DbType = System.Data.DbType.Date,
+                    Value = lastDayOfMonth
+                });
+                return FromDBValToDecimal(cmd.ExecuteScalar());
+            }
         }
     }
 }
