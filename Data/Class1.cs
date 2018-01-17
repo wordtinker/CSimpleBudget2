@@ -6,23 +6,9 @@ namespace Data
 {
     public abstract class StubStorage
     {
-        
-
         public bool AddRecord(decimal amount, int categoryId, string type, int onDay, int year, int month, out int id)
         {
             id = 11;
-            return true;
-        }
-
-        public bool AddSubCategory(string name, int parentId, out int id)
-        {
-            id = 2;
-            return true;
-        }
-
-        public bool AddTopCategory(string name, out int id)
-        {
-            id = 2;
             return true;
         }
 
@@ -33,16 +19,6 @@ namespace Data
         }
 
         public bool DeleteRecord(int id)
-        {
-            return true;
-        }
-
-        public bool DeleteSubCategory(int id)
-        {
-            return true;
-        }
-
-        public bool DeleteTopCategory(int id)
         {
             return true;
         }
@@ -72,17 +48,6 @@ namespace Data
             return 25m;
         }
 
-        public IEnumerable<(string name, int id)> SelectSubCategories(int parentId)
-        {
-            yield return ("one", 1);
-            yield return ("two", 2);
-        }
-
-        public IEnumerable<(string name, int id)> SelectTopCategories()
-        {
-            yield return ("Top one", 1);
-        }
-
         public IEnumerable<(DateTime date, decimal amount, string info, int categoryId, int id)>
             SelectTransactions(int accountId)
         {
@@ -94,8 +59,6 @@ namespace Data
             return 20m;
         }
 
-        
-
         public bool UpdateRecord(int id, decimal amount, int categoryId, string type, int onDay, int year, int month)
         {
             return true;
@@ -105,6 +68,5 @@ namespace Data
         {
             return true;
         }
-        // TODO ctor might throw exception
     }
 }

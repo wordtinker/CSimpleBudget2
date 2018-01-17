@@ -126,7 +126,7 @@ namespace Models
                     Name = name,
                     Parent = null
                 };
-                foreach(var cat in storageProvider.Storage?.SelectSubCategories(id))
+                foreach(var cat in storageProvider.Storage?.SelectSubCategories(name))
                 {
                     Category subCat = new Category
                     {
@@ -161,7 +161,7 @@ namespace Models
             }
             else
             {
-                if (storageProvider.Storage?.AddSubCategory(name, parent.Id, out id) ?? false)
+                if (storageProvider.Storage?.AddSubCategory(name, parent.Name, out id) ?? false)
                 {
                     newCategory = new Category
                     {
@@ -181,7 +181,7 @@ namespace Models
         {
             if (category.Parent == null)
             {
-                if(storageProvider.Storage?.DeleteTopCategory(category.Id) ?? false)
+                if(storageProvider.Storage?.DeleteTopCategory(category.Name) ?? false)
                 {
                     Categories.Remove(category);
                     return true;

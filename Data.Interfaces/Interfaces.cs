@@ -17,10 +17,10 @@ namespace Data.Interfaces
         bool DeleteAccount(int id);
 
         IEnumerable<(string name, int id)> SelectTopCategories();
-        IEnumerable<(string name, int id)> SelectSubCategories(int parentId);
+        IEnumerable<(string name, int id)> SelectSubCategories(string parent);
         bool AddTopCategory(string name, out int id);
-        bool AddSubCategory(string name, int parentId, out int id);
-        bool DeleteTopCategory(int id);
+        bool AddSubCategory(string name, string parent, out int id);
+        bool DeleteTopCategory(string name);
         bool DeleteSubCategory(int id);
 
         IEnumerable<(DateTime date, decimal amount, string info, int categoryId, int id)> SelectTransactions(int accountId);

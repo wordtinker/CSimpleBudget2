@@ -68,6 +68,41 @@ namespace Data
         {
             return decimal.ToInt32(value * 100);
         }
+        // TODO Simplify
+        private bool ExecuteNonQueryInsert(out int rowid, string sql, params SQLiteParameter[] parameters)
+        {
+            try
+            {
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                {
+                    cmd.Parameters.AddRange(parameters);
+                    cmd.ExecuteNonQuery();
+                }
+                rowid = Convert.ToInt32(connection.LastInsertRowId);
+                return true;
+            }
+            catch (SQLiteException)
+            {
+                rowid = -1;
+                return false;
+            }
+        }
+        private bool ExecuteNonQuery(string sql, params SQLiteParameter[] parameters)
+        {
+            try
+            {
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                {
+                    cmd.Parameters.AddRange(parameters);
+                    cmd.ExecuteNonQuery();
+                }
+                return true;
+            }
+            catch (SQLiteException)
+            {
+                return false;
+            }
+        }
         /************** File *****************/
         /// <summary>
         /// Initializes new empty file with proper DB structure.
@@ -90,6 +125,17 @@ namespace Data
                 {
                     cmd.ExecuteNonQuery();
                 }
+                sql = "CREATE TABLE IF NOT EXISTS Categories(name TEXT NOT NULL UNIQUE)";
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                sql = "CREATE TABLE IF NOT EXISTS Subcategories(name TEXT, parent TEXT, UNIQUE(name, parent), " +
+                    "FOREIGN KEY(parent) REFERENCES Categories(name) ON DELETE RESTRICT)";
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                {
+                    cmd.ExecuteNonQuery();
+                }
                 // TODO !!! !
 
                 //sql = "CREATE TABLE IF NOT EXISTS Transactions(date DATE, " +
@@ -99,17 +145,7 @@ namespace Data
                 //    cmd.ExecuteNonQuery();
                 //}
 
-                //sql = "CREATE TABLE IF NOT EXISTS Categories(name TEXT UNIQUE)";
-                //using (SQLiteCommand cmd = new SQLiteCommand(sql, dbConn))
-                //{
-                //    cmd.ExecuteNonQuery();
-                //}
 
-                //sql = "CREATE TABLE IF NOT EXISTS Subcategories(name TEXT, parent TEXT, UNIQUE(name, parent))";
-                //using (SQLiteCommand cmd = new SQLiteCommand(sql, dbConn))
-                //{
-                //    cmd.ExecuteNonQuery();
-                //}
 
                 //sql = "CREATE TABLE IF NOT EXISTS Budget(amount INTEGER, " +
                 //    "category_id INTEGER, type TEXT, day INTEGER, year INTEGER, month INTEGER)";
@@ -345,6 +381,127 @@ namespace Data
             {
                 return false;
             }
+        }
+        /************** Categories *****************/
+        public IEnumerable<(string name, int id)> SelectTopCategories()
+        {
+            string sql = "SELECT name, rowid FROM Categories ORDER BY name ASC";
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+            {
+                SQLiteDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    yield return (dr.GetString(0), dr.GetInt32(1));
+                }
+                dr.Close();
+            }
+        }
+
+        public IEnumerable<(string name, int id)> SelectSubCategories(string parent)
+        {
+            string sql = "SELECT name, rowid FROM Subcategories WHERE parent=@parent";
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+            {
+                cmd.Parameters.Add(new SQLiteParameter()
+                {
+                    ParameterName = "@parent",
+                    DbType = System.Data.DbType.String,
+                    Value = parent
+                });
+                SQLiteDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    yield return (dr.GetString(0), dr.GetInt32(1));
+                }
+                dr.Close();
+            }
+        }
+
+        public bool AddTopCategory(string name, out int id)
+        {
+            // Can't add empty name 
+            if (name == string.Empty)
+            {
+                id = -1;
+                return false;
+            }
+
+            string sql = "INSERT INTO Categories VALUES(@name)";
+            var param = new SQLiteParameter()
+            {
+                ParameterName = "@name",
+                DbType = System.Data.DbType.String,
+                Value = name
+            };
+            if (ExecuteNonQueryInsert(out int rowid, sql, param))
+            {
+                id = rowid;
+                return true;
+            }
+            else
+            {
+                id = -1;
+                return false;
+            }
+        }
+
+        public bool AddSubCategory(string name, string parent, out int id)
+        {
+            // Can't add empty name 
+            if (name == string.Empty)
+            {
+                id = -1;
+                return false;
+            }
+
+            string sql = "INSERT INTO Subcategories VALUES(@name, @parent)";
+            var nameParam = new SQLiteParameter()
+            {
+                ParameterName = "@name",
+                DbType = System.Data.DbType.String,
+                Value = name
+            };
+            var parentParam = new SQLiteParameter()
+            {
+                ParameterName = "@parent",
+                DbType = System.Data.DbType.String,
+                Value = parent
+            };
+            if (ExecuteNonQueryInsert(out int rowid, sql, nameParam, parentParam))
+            {
+                id = rowid;
+                return true;
+            }
+            else
+            {
+                id = -1;
+                return false;
+            }
+        }
+
+        public bool DeleteTopCategory(string name)
+        {
+            string sql = "DELETE FROM Categories WHERE name=@name";
+            var param = new SQLiteParameter()
+            {
+                ParameterName = "@name",
+                DbType = System.Data.DbType.String,
+                Value = name
+            };
+            return ExecuteNonQuery(sql, param);
+        }
+
+        public bool DeleteSubCategory(int id)
+        {
+            // TODO check foreign key transaction and budget record
+            string sql = " DELETE FROM Subcategories WHERE rowid=@rowid";
+            var param = new SQLiteParameter()
+            {
+                ParameterName = "@rowid",
+                DbType = System.Data.DbType.Int32,
+                Value = id
+            };
+            return ExecuteNonQuery(sql, param);
         }
     }
 }
