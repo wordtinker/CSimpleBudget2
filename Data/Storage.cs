@@ -68,7 +68,6 @@ namespace Data
         {
             return decimal.ToInt32(value * 100);
         }
-        // TODO Simplify
         private bool ExecuteNonQueryInsert(out int rowid, string sql, params SQLiteParameter[] parameters)
         {
             try
@@ -110,57 +109,30 @@ namespace Data
         /// <returns></returns>
         public bool Initialize()
         {
-            try
-            {
-                string sql = "CREATE TABLE IF NOT EXISTS AccountTypes(name TEXT NOT NULL UNIQUE)";
-                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.ExecuteNonQuery();
-                }
+            string query =
+                @"CREATE TABLE IF NOT EXISTS AccountTypes(name TEXT NOT NULL UNIQUE);
+                  CREATE TABLE IF NOT EXISTS Accounts(id INTEGER PRIMARY KEY, name TEXT,
+                  type TEXT, balance INTEGER, closed INTEGER, exbudget INTEGER,
+                  FOREIGN KEY(type) REFERENCES AccountTypes(name) ON DELETE RESTRICT);
+                  CREATE TABLE IF NOT EXISTS Categories(name TEXT NOT NULL UNIQUE);
+                  CREATE TABLE IF NOT EXISTS Subcategories(id INTEGER PRIMARY KEY, name TEXT,
+                  parent TEXT, UNIQUE(name, parent), FOREIGN KEY(parent)
+                  REFERENCES Categories(name) ON DELETE RESTRICT);";
+            return ExecuteNonQuery(query);
+            // TODO
+            //sql = "CREATE TABLE IF NOT EXISTS Transactions(date DATE, " +
+            //    "amount INTEGER, info TEXT, acc_id INTEGER, category_id INTEGER)";
+            //using (SQLiteCommand cmd = new SQLiteCommand(sql, dbConn))
+            //{
+            //    cmd.ExecuteNonQuery();
+            //}
 
-                sql = "CREATE TABLE IF NOT EXISTS Accounts(name TEXT, " +
-                    "type TEXT, balance INTEGER, closed INTEGER, exbudget INTEGER, " +
-                    "FOREIGN KEY(type) REFERENCES AccountTypes(name) ON DELETE RESTRICT)";
-                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.ExecuteNonQuery();
-                }
-                sql = "CREATE TABLE IF NOT EXISTS Categories(name TEXT NOT NULL UNIQUE)";
-                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.ExecuteNonQuery();
-                }
-                sql = "CREATE TABLE IF NOT EXISTS Subcategories(name TEXT, parent TEXT, UNIQUE(name, parent), " +
-                    "FOREIGN KEY(parent) REFERENCES Categories(name) ON DELETE RESTRICT)";
-                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.ExecuteNonQuery();
-                }
-                // TODO !!! !
-
-                //sql = "CREATE TABLE IF NOT EXISTS Transactions(date DATE, " +
-                //    "amount INTEGER, info TEXT, acc_id INTEGER, category_id INTEGER)";
-                //using (SQLiteCommand cmd = new SQLiteCommand(sql, dbConn))
-                //{
-                //    cmd.ExecuteNonQuery();
-                //}
-
-
-
-                //sql = "CREATE TABLE IF NOT EXISTS Budget(amount INTEGER, " +
-                //    "category_id INTEGER, type TEXT, day INTEGER, year INTEGER, month INTEGER)";
-                //using (SQLiteCommand cmd = new SQLiteCommand(sql, dbConn))
-                //{
-                //    cmd.ExecuteNonQuery();
-                //}
-
-                //dbConn.Close();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            //sql = "CREATE TABLE IF NOT EXISTS Budget(amount INTEGER, " +
+            //    "category_id INTEGER, type TEXT, day INTEGER, year INTEGER, month INTEGER)";
+            //using (SQLiteCommand cmd = new SQLiteCommand(sql, dbConn))
+            //{
+            //    cmd.ExecuteNonQuery();
+            //}
         }
         /************** Acc Types ****************/
 
@@ -195,24 +167,13 @@ namespace Data
             }
 
             string sql = "INSERT INTO AccountTypes VALUES(@name)";
-            try
+            var param = new SQLiteParameter()
             {
-                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.Parameters.Add(new SQLiteParameter()
-                    {
-                        ParameterName = "@name",
-                        DbType = System.Data.DbType.String,
-                        Value = name
-                    });
-                    cmd.ExecuteNonQuery();
-                }
-                return true;
-            }
-            catch (SQLiteException)
-            {
-                return false;
-            }
+                ParameterName = "@name",
+                DbType = System.Data.DbType.String,
+                Value = name
+            };
+            return ExecuteNonQuery(sql, param);
         }
         /// <summary>
         /// Deletes account type from DB.
@@ -222,26 +183,14 @@ namespace Data
         public bool DeleteAccountType(string name)
         {
             string sql = "DELETE FROM AccountTypes WHERE name=@name";
-            try
+            var param = new SQLiteParameter()
             {
-                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.Parameters.Add(new SQLiteParameter()
-                    {
-                        ParameterName = "@name",
-                        DbType = System.Data.DbType.String,
-                        Value = name
-                    });
-                    cmd.ExecuteNonQuery();
-                }
-                return true;
-            }
-            catch (SQLiteException)
-            {
-                return false;
-            }
+                ParameterName = "@name",
+                DbType = System.Data.DbType.String,
+                Value = name
+            };
+            return ExecuteNonQuery(sql, param);
         }
-
         /************** Accounts *****************/
         /// <summary>
         /// Selects every account from DB.
@@ -249,14 +198,14 @@ namespace Data
         /// <returns></returns>
         public IEnumerable<(string name, string type, decimal balance, bool closed, bool excluded, int id)> SelectAccounts()
         {
-            string sql = "SELECT *, rowid FROM Accounts";
+            string sql = "SELECT * FROM Accounts";
             using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
             {
                 SQLiteDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    yield return (dr.GetString(0), dr.GetString(1), FromDBValToDecimal(dr.GetDecimal(2)),
-                        Convert.ToBoolean(dr.GetInt32(3)), Convert.ToBoolean(dr.GetInt32(4)), dr.GetInt32(5));
+                    yield return (dr.GetString(1), dr.GetString(2), FromDBValToDecimal(dr.GetDecimal(3)),
+                        Convert.ToBoolean(dr.GetInt32(4)), Convert.ToBoolean(dr.GetInt32(5)), dr.GetInt32(0));
                 }
                 dr.Close();
             }
@@ -276,29 +225,24 @@ namespace Data
                 return false;
             }
 
-            string sql = "INSERT INTO Accounts VALUES(@name, @type, 0, 0, 0)";
-            try
+            string sql = "INSERT INTO Accounts(name, type, balance, closed, exbudget) VALUES(@name, @type, 0, 0, 0)";
+            var nameParam = new SQLiteParameter()
             {
-                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.Parameters.Add(new SQLiteParameter()
-                    {
-                        ParameterName = "@name",
-                        DbType = System.Data.DbType.String,
-                        Value = name
-                    });
-                    cmd.Parameters.Add(new SQLiteParameter()
-                    {
-                        ParameterName = "@type",
-                        DbType = System.Data.DbType.String,
-                        Value = type
-                    });
-                    cmd.ExecuteNonQuery();
-                }
-                id = Convert.ToInt32(connection.LastInsertRowId);
+                ParameterName = "@name",
+                DbType = System.Data.DbType.String,
+                Value = name
+            };
+            var typeParam = new SQLiteParameter()
+            {
+                ParameterName = "@type",
+                DbType = System.Data.DbType.String,
+                Value = type
+            };
+            if (ExecuteNonQueryInsert(out id, sql, nameParam, typeParam))
+            {
                 return true;
             }
-            catch (SQLiteException)
+            else
             {
                 id = -1;
                 return false;
@@ -310,49 +254,41 @@ namespace Data
         public bool UpdateAccount(int id, string type, decimal balance, bool closed, bool excluded)
         {
             string sql = "UPDATE Accounts SET type=@type, balance=@balance, closed=@closed, " +
-                "exbudget=@excluded WHERE rowid=@rowid";
-            try
+                "exbudget=@excluded WHERE id=@id";
+            var parameters = new[]
             {
-                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.Parameters.Add(new SQLiteParameter()
+                new SQLiteParameter()
                     {
                         ParameterName = "@type",
                         DbType = System.Data.DbType.String,
                         Value = type
-                    });
-                    cmd.Parameters.Add(new SQLiteParameter()
+                    },
+                new SQLiteParameter()
                     {
                         ParameterName = "@balance",
                         DbType = System.Data.DbType.Int32,
                         Value = FromDecimaltoDBInt(balance)
-                    });
-                    cmd.Parameters.Add(new SQLiteParameter()
+                    },
+                new SQLiteParameter()
                     {
                         ParameterName = "@closed",
                         DbType = System.Data.DbType.Int32,
                         Value = Convert.ToInt32(closed)
-                    });
-                    cmd.Parameters.Add(new SQLiteParameter()
+                    },
+                new SQLiteParameter()
                     {
                         ParameterName = "@excluded",
                         DbType = System.Data.DbType.Int32,
                         Value = Convert.ToInt32(excluded)
-                    });
-                    cmd.Parameters.Add(new SQLiteParameter()
+                    },
+                new SQLiteParameter()
                     {
-                        ParameterName = "@rowid",
+                        ParameterName = "@id",
                         DbType = System.Data.DbType.Int32,
                         Value = id
-                    });
-                    cmd.ExecuteNonQuery();
-                }
-                return true;
-            }
-            catch (SQLiteException)
-            {
-                return false;
-            }
+                    }
+            };
+            return ExecuteNonQuery(sql, parameters);
         }
 
         /// <summary>
@@ -362,25 +298,14 @@ namespace Data
         public bool DeleteAccount(int id)
         {
             // TODO Check foreign key transaction
-            string sql = "DELETE FROM Accounts WHERE rowid=@rowid";
-            try
+            string sql = "DELETE FROM Accounts WHERE id=@id";
+            var param = new SQLiteParameter()
             {
-                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
-                {
-                    cmd.Parameters.Add(new SQLiteParameter()
-                    {
-                        ParameterName = "@rowid",
-                        DbType = System.Data.DbType.Int32,
-                        Value = id
-                    });
-                    cmd.ExecuteNonQuery();
-                }
-                return true;
-            }
-            catch (SQLiteException)
-            {
-                return false;
-            }
+                ParameterName = "@id",
+                DbType = System.Data.DbType.Int32,
+                Value = id
+            };
+            return ExecuteNonQuery(sql, param);
         }
         /************** Categories *****************/
         public IEnumerable<(string name, int id)> SelectTopCategories()
@@ -396,10 +321,9 @@ namespace Data
                 dr.Close();
             }
         }
-
         public IEnumerable<(string name, int id)> SelectSubCategories(string parent)
         {
-            string sql = "SELECT name, rowid FROM Subcategories WHERE parent=@parent";
+            string sql = "SELECT name, id FROM Subcategories WHERE parent=@parent";
             using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
             {
                 cmd.Parameters.Add(new SQLiteParameter()
@@ -416,7 +340,6 @@ namespace Data
                 dr.Close();
             }
         }
-
         public bool AddTopCategory(string name, out int id)
         {
             // Can't add empty name 
@@ -444,7 +367,6 @@ namespace Data
                 return false;
             }
         }
-
         public bool AddSubCategory(string name, string parent, out int id)
         {
             // Can't add empty name 
@@ -454,7 +376,7 @@ namespace Data
                 return false;
             }
 
-            string sql = "INSERT INTO Subcategories VALUES(@name, @parent)";
+            string sql = "INSERT INTO Subcategories(name, parent) VALUES(@name, @parent)";
             var nameParam = new SQLiteParameter()
             {
                 ParameterName = "@name",
@@ -467,9 +389,8 @@ namespace Data
                 DbType = System.Data.DbType.String,
                 Value = parent
             };
-            if (ExecuteNonQueryInsert(out int rowid, sql, nameParam, parentParam))
+            if (ExecuteNonQueryInsert(out id, sql, nameParam, parentParam))
             {
-                id = rowid;
                 return true;
             }
             else
@@ -478,7 +399,6 @@ namespace Data
                 return false;
             }
         }
-
         public bool DeleteTopCategory(string name)
         {
             string sql = "DELETE FROM Categories WHERE name=@name";
@@ -494,10 +414,10 @@ namespace Data
         public bool DeleteSubCategory(int id)
         {
             // TODO check foreign key transaction and budget record
-            string sql = " DELETE FROM Subcategories WHERE rowid=@rowid";
+            string sql = " DELETE FROM Subcategories WHERE id=@id";
             var param = new SQLiteParameter()
             {
-                ParameterName = "@rowid",
+                ParameterName = "@id",
                 DbType = System.Data.DbType.Int32,
                 Value = id
             };
