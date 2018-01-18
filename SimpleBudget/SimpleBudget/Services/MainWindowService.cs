@@ -1,13 +1,15 @@
 ﻿using Microsoft.Win32;
-using System.Windows;
-using ViewModels.Interfaces;
-using ViewModels.Windows;
-using Unity;
-using ViewModels.Elements;
-using Unity.Resolution;
+using SimpleBudget.Reports;
 using SimpleBudget.Windows;
 using System;
 using System.Reflection;
+using System.Windows;
+using Unity;
+using Unity.Resolution;
+using ViewModels.Elements;
+using ViewModels.Interfaces;
+using ViewModels.Reports;
+using ViewModels.Windows;
 
 namespace SimpleBudget.Services
 {
@@ -129,7 +131,12 @@ namespace SimpleBudget.Services
 
         public void ShowBudgetReport()
         {
-            // TODO
+            BudgetReport window = new BudgetReport
+            {
+                Owner = mainWindow,
+                DataContext = App.Container.Resolve<BudgetReportViewModel>()
+            };
+            window.ShowDialog();
         }
 
         public void ShowBalanceReport()

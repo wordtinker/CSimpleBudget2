@@ -113,6 +113,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Logger.cs" />
+    <Compile Include="Reports\BudgetReport.xaml.cs">
+      <DependentUpon>BudgetReport.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Services\BudgetManagerService.cs" />
     <Compile Include="Services\TransactionRollService.cs" />
     <Compile Include="Tools.cs" />
@@ -148,6 +151,10 @@
     <Compile Include="Windows\TransactionRoll.xaml.cs">
       <DependentUpon>TransactionRoll.xaml</DependentUpon>
     </Compile>
+    <Page Include="Reports\BudgetReport.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\AccountsManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -212,9 +219,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Reports\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\ModelFactory\ModelFactory.csproj">
       <Project>{d768c676-5aaf-4409-9ac0-4f2b6062d260}</Project>
