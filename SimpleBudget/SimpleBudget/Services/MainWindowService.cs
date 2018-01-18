@@ -151,7 +151,12 @@ namespace SimpleBudget.Services
 
         public void ShowCategoriesReport()
         {
-            // TODO
+            CategoriesReport window = new CategoriesReport
+            {
+                Owner = mainWindow,
+                DataContext = App.Container.Resolve<CategoriesReportViewModel>()
+            };
+            window.ShowDialog();
         }
 
         public void ShowHelp()

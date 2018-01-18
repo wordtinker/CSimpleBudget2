@@ -119,6 +119,9 @@
     <Compile Include="Reports\BudgetReport.xaml.cs">
       <DependentUpon>BudgetReport.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Reports\CategoriesReport.xaml.cs">
+      <DependentUpon>CategoriesReport.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Services\BudgetManagerService.cs" />
     <Compile Include="Services\TransactionRollService.cs" />
     <Compile Include="Tools.cs" />
@@ -159,6 +162,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Reports\BudgetReport.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Reports\CategoriesReport.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
