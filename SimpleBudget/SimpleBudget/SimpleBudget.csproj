@@ -113,6 +113,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Logger.cs" />
+    <Compile Include="Reports\BalanceReport.xaml.cs">
+      <DependentUpon>BalanceReport.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Reports\BudgetReport.xaml.cs">
       <DependentUpon>BudgetReport.xaml</DependentUpon>
     </Compile>
@@ -151,6 +154,10 @@
     <Compile Include="Windows\TransactionRoll.xaml.cs">
       <DependentUpon>TransactionRoll.xaml</DependentUpon>
     </Compile>
+    <Page Include="Reports\BalanceReport.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Reports\BudgetReport.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -141,7 +141,12 @@ namespace SimpleBudget.Services
 
         public void ShowBalanceReport()
         {
-            // TODO
+            BalanceReport window = new BalanceReport
+            {
+                Owner = mainWindow,
+                DataContext = App.Container.Resolve<BalanceReportViewModel>()
+            };
+            window.ShowDialog();
         }
 
         public void ShowCategoriesReport()
