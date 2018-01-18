@@ -333,7 +333,6 @@ namespace Models
                 // should be positive
                 decimal budget = Math.Abs(storageProvider.Storage?.SelectRecordsCombined(year, month, cat.Id) ?? decimal.Zero);
                 decimal spent = Math.Abs(storageProvider.Storage?.SelectTransactionsCombined(year, month, cat.Id) ?? decimal.Zero);
-                // TODO Test
                 if (budget == decimal.Zero && spent == decimal.Zero)
                 {
                     continue;

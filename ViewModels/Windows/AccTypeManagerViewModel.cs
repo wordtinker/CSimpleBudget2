@@ -8,7 +8,6 @@ using ViewModels.Interfaces;
 
 namespace ViewModels.Windows
 {
-    // TODO Later add validation
     public class AccTypeManagerViewModel : BindableBase
     {
         private IUIBaseService serviceProvider;

@@ -6,7 +6,6 @@ using ViewModels.Interfaces;
 
 namespace ViewModels.Windows
 {
-    // TODO Later validation
     public class CategoriesManagerViewModel
     {
         private IUIBaseService serviceProvider;
