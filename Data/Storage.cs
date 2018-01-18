@@ -231,15 +231,7 @@ namespace Data
                 DbType = System.Data.DbType.String,
                 Value = type
             };
-            if (ExecuteNonQueryInsert(out id, sql, nameParam, typeParam))
-            {
-                return true;
-            }
-            else
-            {
-                id = -1;
-                return false;
-            }
+            return ExecuteNonQueryInsert(out id, sql, nameParam, typeParam);
         }
         /// <summary>
         /// Writes account changes to DB.
@@ -378,16 +370,7 @@ namespace Data
                 DbType = System.Data.DbType.String,
                 Value = name
             };
-            if (ExecuteNonQueryInsert(out int rowid, sql, param))
-            {
-                id = rowid;
-                return true;
-            }
-            else
-            {
-                id = -1;
-                return false;
-            }
+            return ExecuteNonQueryInsert(out id, sql, param);
         }
         public bool AddSubCategory(string name, string parent, out int id)
         {
@@ -411,15 +394,7 @@ namespace Data
                 DbType = System.Data.DbType.String,
                 Value = parent
             };
-            if (ExecuteNonQueryInsert(out id, sql, nameParam, parentParam))
-            {
-                return true;
-            }
-            else
-            {
-                id = -1;
-                return false;
-            }
+            return ExecuteNonQueryInsert(out id, sql, nameParam, parentParam);
         }
         public bool DeleteTopCategory(string name)
         {
@@ -722,15 +697,7 @@ namespace Data
                         Value = year
                     }
             };
-            if (ExecuteNonQueryInsert(out id, sql, parameters))
-            {
-                return true;
-            }
-            else
-            {
-                id = -1;
-                return false;
-            }
+            return ExecuteNonQueryInsert(out id, sql, parameters);
         }
         /// <summary>
         /// Deletes budget record from DB.
