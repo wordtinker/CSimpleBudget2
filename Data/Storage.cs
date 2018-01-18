@@ -121,11 +121,11 @@ namespace Data
                   CREATE TABLE IF NOT EXISTS Transactions(date DATE, amount INTEGER,
                   info TEXT, accId INTEGER, categoryId INTEGER,
                   FOREIGN KEY(accId) REFERENCES Accounts(id) ON DELETE RESTRICT,
-                  FOREIGN KEY(categoryId) REFERENCES Subcategories(id) ON DELETE RESTRICT);";
+                  FOREIGN KEY(categoryId) REFERENCES Subcategories(id) ON DELETE RESTRICT);
+                  CREATE TABLE IF NOT EXISTS Budget(amount INTEGER, categoryId INTEGER,
+                  type TEXT, day INTEGER, year INTEGER, month INTEGER,
+                  FOREIGN KEY(categoryId) REFERENCES Subcategories(id) ON DELETE RESTRICT)";
             return ExecuteNonQuery(query);
-            // TODO
-            //sql = "CREATE TABLE IF NOT EXISTS Budget(amount INTEGER, " +
-            //    "category_id INTEGER, type TEXT, day INTEGER, year INTEGER, month INTEGER)";
         }
         /************** Acc Types ****************/
 
@@ -632,6 +632,217 @@ namespace Data
                     DbType = System.Data.DbType.Date,
                     Value = lastDayOfMonth
                 });
+                return FromDBValToDecimal(cmd.ExecuteScalar());
+            }
+        }
+        /************** Records *****************/
+        /// <summary>
+        /// Selects budget records for a given year and month.
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        public IEnumerable<(decimal amount, int categoryId, string type, int onDay, int id)> SelectRecords(int year, int month)
+        {
+            string sql = "SELECT *, rowid FROM Budget WHERE month=@month AND year=@year";
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+            {
+                cmd.Parameters.Add(new SQLiteParameter()
+                {
+                    ParameterName = "@month",
+                    DbType = System.Data.DbType.Int32,
+                    Value = month
+                });
+                cmd.Parameters.Add(new SQLiteParameter()
+                {
+                    ParameterName = "@year",
+                    DbType = System.Data.DbType.Int32,
+                    Value = year
+                });
+                SQLiteDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    yield return (FromDBValToDecimal(dr.GetDecimal(0)), dr.GetInt32(1),
+                        dr.GetString(2), dr.GetInt32(3), dr.GetInt32(6));
+                }
+                dr.Close();
+            }
+        }
+
+        /// <summary>
+        /// Adds new budget record to DB.
+        /// </summary>
+        /// <param name="amount"></param>
+        /// <param name="categoryId"></param>
+        /// <param name="type"></param>
+        /// <param name="onDay"></param>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool AddRecord(decimal amount, int categoryId, string type, int onDay, int year, int month, out int id)
+        {
+            string sql = "INSERT INTO Budget VALUES(@amount, @catId, @btype, @onDay, @year, @month)";
+            var parameters = new[]
+            {
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@amount",
+                        DbType = System.Data.DbType.Int32,
+                        Value = FromDecimaltoDBInt(amount)
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@catId",
+                        DbType = System.Data.DbType.Int32,
+                        Value = categoryId
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@btype",
+                        DbType = System.Data.DbType.String,
+                        Value = type
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@onDay",
+                        DbType = System.Data.DbType.Int32,
+                        Value = onDay
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@month",
+                        DbType = System.Data.DbType.Int32,
+                        Value = month
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@year",
+                        DbType = System.Data.DbType.Int32,
+                        Value = year
+                    }
+            };
+            if (ExecuteNonQueryInsert(out id, sql, parameters))
+            {
+                return true;
+            }
+            else
+            {
+                id = -1;
+                return false;
+            }
+        }
+        /// <summary>
+        /// Deletes budget record from DB.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool DeleteRecord(int id)
+        {
+            string sql = "DELETE FROM Budget WHERE rowid=@rowid";
+            var param = new SQLiteParameter()
+            {
+                ParameterName = "@rowid",
+                DbType = System.Data.DbType.Int32,
+                Value = id
+            };
+            return ExecuteNonQuery(sql, param);
+        }
+        /// <summary>
+        /// Updates parameters of provided budget record in DB.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="amount"></param>
+        /// <param name="categoryId"></param>
+        /// <param name="type"></param>
+        /// <param name="onDay"></param>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        public bool UpdateRecord(int id, decimal amount, int categoryId, string type, int onDay, int year, int month)
+        {
+            string sql = "UPDATE Budget SET amount=@amount, categoryId=@catId, type=@btype, day=@onDay, year=@year, month=@month WHERE rowid=@rowid";
+            var parameters = new[]
+            {
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@amount",
+                        DbType = System.Data.DbType.Int32,
+                        Value = FromDecimaltoDBInt(amount)
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@catId",
+                        DbType = System.Data.DbType.Int32,
+                        Value = categoryId
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@btype",
+                        DbType = System.Data.DbType.String,
+                        Value = type
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@onDay",
+                        DbType = System.Data.DbType.Int32,
+                        Value = onDay
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@month",
+                        DbType = System.Data.DbType.Int32,
+                        Value = month
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@year",
+                        DbType = System.Data.DbType.Int32,
+                        Value = year
+                    },
+                new SQLiteParameter()
+                    {
+                        ParameterName = "@rowid",
+                        DbType = System.Data.DbType.Int32,
+                        Value = id
+                    }
+            };
+            return ExecuteNonQuery(sql, parameters);
+        }
+        /// <summary>
+        /// Calculates decimal value of all budget records for a given year, month and category.
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <param name="categoryId"></param>
+        /// <returns></returns>
+        public decimal SelectRecordsCombined(int year, int month, int categoryId)
+        {
+            string sql = "SELECT sum(amount) FROM Budget WHERE month=@month AND year=@year AND categoryId=@catId";
+            var parameters = new[]
+            {
+                new SQLiteParameter()
+                {
+                    ParameterName = "@catId",
+                    DbType = System.Data.DbType.Int32,
+                    Value = categoryId
+                },
+                new SQLiteParameter()
+                {
+                    ParameterName = "@month",
+                    DbType = System.Data.DbType.Int32,
+                    Value = month
+                },
+                new SQLiteParameter()
+                {
+                    ParameterName = "@year",
+                    DbType = System.Data.DbType.Int32,
+                    Value = year
+                }
+            };
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+            {
+                cmd.Parameters.AddRange(parameters);
                 return FromDBValToDecimal(cmd.ExecuteScalar());
             }
         }
