@@ -5,7 +5,7 @@ using System.Data.SQLite;
 
 namespace Data
 {
-    public class Storage : StubStorage, IStorage
+    public class Storage : IStorage
     {
         private SQLiteConnection connection;
         private string connString = "Data Source={0};Version=3;foreign keys=True;";
@@ -845,6 +845,84 @@ namespace Data
                 cmd.Parameters.AddRange(parameters);
                 return FromDBValToDecimal(cmd.ExecuteScalar());
             }
+        }
+        /************** Misc *****************/
+        /// <summary>
+        /// Returns the last year of the available budget records.
+        /// </summary>
+        /// <returns></returns>
+        public int? GetMaximumYear()
+        {
+            int? maxYearBudget;
+            string sql = "SELECT MAX(year) FROM Budget";
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+            {
+                object toConvert = cmd.ExecuteScalar();
+                if (Convert.IsDBNull(toConvert))
+                {
+                    maxYearBudget = null;
+                }
+                else
+                {
+                    maxYearBudget = Convert.ToInt32(toConvert);
+                }
+            }
+
+            int? maxYearTransaction;
+            sql = "SELECT MAX(Date) FROM Transactions";
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+            {
+                object toConvert = cmd.ExecuteScalar();
+                if (Convert.IsDBNull(toConvert))
+                {
+                    maxYearTransaction = null;
+                }
+                else
+                {
+                    maxYearTransaction = Convert.ToDateTime(toConvert).Year;
+                }
+            }
+
+            return maxYearBudget > maxYearTransaction ? maxYearBudget : maxYearTransaction;
+        }
+        /// <summary>
+        /// Returns the earliest year of the available budget records
+        /// or transactions.
+        /// </summary>
+        /// <returns></returns>
+        public int? GetMinimumYear()
+        {
+            int? minYearBudget;
+            string sql = "SELECT MIN(year) FROM Budget";
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+            {
+                object toConvert = cmd.ExecuteScalar();
+                if (Convert.IsDBNull(toConvert))
+                {
+                    minYearBudget = null;
+                }
+                else
+                {
+                    minYearBudget = Convert.ToInt32(toConvert);
+                }
+            }
+
+            int? minYearTransaction;
+            sql = "SELECT MIN(Date) FROM Transactions";
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+            {
+                object toConvert = cmd.ExecuteScalar();
+                if (Convert.IsDBNull(toConvert))
+                {
+                    minYearTransaction = null;
+                }
+                else
+                {
+                    minYearTransaction = Convert.ToDateTime(toConvert).Year;
+                }
+            }
+
+            return minYearTransaction < minYearBudget ? minYearTransaction : minYearBudget;
         }
     }
 }
