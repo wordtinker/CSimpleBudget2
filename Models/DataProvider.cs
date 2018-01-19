@@ -217,8 +217,21 @@ namespace Models
         }
         public IEnumerable<ITransaction> GetTransactions(int year, int month, ICategory category)
         {
-            //TODO !!! !
-            yield break;
+            foreach (var (date, amount, info, categoryId, accountId, id) in storageProvider.Storage?.SelectTransactions(year, month, category.Id))
+            {
+                yield return new Transaction
+                {
+                    Account = Accounts.Where(acc => acc.Id == accountId).First(),
+                    Amount = amount,
+                    Category = (from topCat in Categories
+                                from cat in topCat.Children
+                                where cat.Id == categoryId
+                                select cat).First(),
+                    Date = date,
+                    Info = info,
+                    Id = id
+                };
+            }
         }
         public bool DeleteTransaction(ITransaction transaction)
         {
