@@ -21,7 +21,6 @@ namespace Models
             this.storageProvider = storageProvider;
             AccountTypes = new ObservableCollection<string>();
             Accounts = new ObservableCollection<IAccount>();
-            // TODO refactor private method to get First()
             Categories = new ObservableCollection<ICategory>();
             storageProvider.On += (sender, e) =>
             {
@@ -35,6 +34,13 @@ namespace Models
                 Accounts.Clear();
                 Categories.Clear();
             };
+        }
+        private ICategory GetCategoryById(int categoryId)
+        {
+            return (from topCat in Categories
+                    from cat in topCat.Children
+                    where cat.Id == categoryId
+                    select cat).First();
         }
         private void SetAccountTypes()
         {
@@ -211,9 +217,7 @@ namespace Models
                 {
                     Account = account,
                     Amount = amount,
-                    Category = (from topCat in Categories
-                                from cat in topCat.Children
-                                where cat.Id == categoryId select cat).First(),
+                    Category = GetCategoryById(categoryId),
                     Date = date,
                     Info = info,
                     Id = id
@@ -228,10 +232,7 @@ namespace Models
                 {
                     Account = Accounts.Where(acc => acc.Id == accountId).First(),
                     Amount = amount,
-                    Category = (from topCat in Categories
-                                from cat in topCat.Children
-                                where cat.Id == categoryId
-                                select cat).First(),
+                    Category = GetCategoryById(categoryId),
                     Date = date,
                     Info = info,
                     Id = id
@@ -290,10 +291,7 @@ namespace Models
                 {
                     Id = id,
                     Amount = amount,
-                    Category = (from topCat in Categories
-                                from cat in topCat.Children
-                                where cat.Id == categoryId
-                                select cat).First(),
+                    Category = GetCategoryById(categoryId),
                     Year = year,
                     Month = month,
                     OnDay = onDay,
@@ -305,10 +303,7 @@ namespace Models
         {
             foreach (var (amount, categoryId, type, onDay, id) in storageProvider.Storage?.SelectRecords(fromYear, fromMonth))
             {
-                var category = (from topCat in Categories
-                            from cat in topCat.Children
-                            where cat.Id == categoryId
-                            select cat).First();
+                var category = GetCategoryById(categoryId);
                 Enum.TryParse(type, out BudgetType budgetType);
                 if (AddBudgetRecord(amount, category, budgetType, onDay, toYear, toMonth, out IBudgetRecord newRecord))
                 {

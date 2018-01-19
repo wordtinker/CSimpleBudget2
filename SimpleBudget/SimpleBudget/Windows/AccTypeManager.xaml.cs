@@ -16,7 +16,7 @@ namespace SimpleBudget.Windows
         }
         private void DeleteAccountType_Click(object sender, RoutedEventArgs e)
         {
-            // TODO Later redo as command
+            // TODO Later command
             MenuItem mi = (MenuItem)sender;
             AccTypeItem item = (AccTypeItem)mi.DataContext;
             ((AccTypeManagerViewModel)this.DataContext).DeleteAccType(item);
@@ -24,7 +24,7 @@ namespace SimpleBudget.Windows
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO Later redo as command
+            // TODO Later command
             string accTypeName = AccTypeName.Text;
             ((AccTypeManagerViewModel)this.DataContext).AddAccType(accTypeName);
         }
