@@ -410,7 +410,6 @@ namespace Data
 
         public bool DeleteSubCategory(int id)
         {
-            // TODO check foreign key budget record
             string sql = " DELETE FROM Subcategories WHERE id=@id";
             var param = new SQLiteParameter()
             {

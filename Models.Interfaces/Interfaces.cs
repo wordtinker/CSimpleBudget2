@@ -129,7 +129,6 @@ namespace Models.Interfaces
         ICategory Category { get; }
         BudgetType Type { get; }
         int Year { get; }
-        // TODO Later model, month must be natural based
         int Month { get; }
         int OnDay { get; }
         int Id { get; }

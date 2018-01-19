@@ -104,8 +104,13 @@ namespace Models
         }
         public bool UpdateAccount(IAccount account)
         {
-            return storageProvider.Storage?
-                .UpdateAccount(account.Id, account.Type, account.Balance, account.Closed, account.Excluded ) ?? false;
+            if (storageProvider.Storage?
+                .UpdateAccount(account.Id, account.Type, account.Balance, account.Closed, account.Excluded ) ?? false)
+            {
+                Accounts.Clear();
+                SetAccounts();
+            }
+            return false;
         }
         public bool DeleteAccount(IAccount account)
         {
