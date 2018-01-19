@@ -5,12 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.DataVisualization.Charting;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ViewModels.Elements;
+using ViewModels.Reports;
 
 namespace SimpleBudget.Reports
 {
@@ -23,12 +26,12 @@ namespace SimpleBudget.Reports
         {
             InitializeComponent();
         }
+        // TODO Later command
         private void Bar_Click(object sender, MouseButtonEventArgs e)
         {
-            // TODO
-            //BarDataPoint bdp = (BarDataPoint)sender;
-            //BudgetBar bar = (BudgetBar)bdp.DataContext;
-            //((CategoriesReportViewModel)DataContext).UpdateTransactions(bar);
+            BarDataPoint bdp = (BarDataPoint)sender;
+            BudgetBar bar = (BudgetBar)bdp.DataContext;
+            ((CategoriesReportViewModel)DataContext).UpdateTransactions(bar);
         }
     }
 }

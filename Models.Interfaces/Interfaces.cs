@@ -35,6 +35,7 @@ namespace Models.Interfaces
         bool DeleteCategory(ICategory category);
 
         IEnumerable<ITransaction> GetTransactions(IAccount account);
+        IEnumerable<ITransaction> GetTransactions(int year, int month, ICategory category);
         bool DeleteTransaction(ITransaction transaction);
         bool AddTransaction(IAccount account, DateTime date, decimal amount, string info, ICategory category, out ITransaction newTransaction);
         bool UpdateTransaction(ITransaction transaction, DateTime date, decimal amount, string info, ICategory category);

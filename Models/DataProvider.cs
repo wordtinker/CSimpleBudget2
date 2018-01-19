@@ -215,6 +215,11 @@ namespace Models
                 };
             }
         }
+        public IEnumerable<ITransaction> GetTransactions(int year, int month, ICategory category)
+        {
+            //TODO !!! !
+            yield break;
+        }
         public bool DeleteTransaction(ITransaction transaction)
         {
             return (storageProvider.Storage?.DeleteTransaction(transaction.Id) ?? false);

@@ -825,7 +825,7 @@ namespace Data
                 @"SELECT MAX(MaxYear) FROM 
                     (SELECT MAX(year) as MaxYear FROM Budget
                      UNION ALL
-                     SELECT MAX(Date) as MaxYear FROM Transactions
+                     SELECT MAX(strftime('%Y', date)) as MaxYear FROM Transactions
                     )";
             using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
             {
@@ -853,7 +853,7 @@ namespace Data
                 @"SELECT MIN(MinYear) FROM
                     (SELECT MIN(year) as MinYear FROM Budget
                      UNION ALL
-                     SELECT MIN(Date) as MinYear FROM Transactions
+                     SELECT MIN(strftime('%Y', date)) as MinYear FROM Transactions
                     )";
             using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
             {

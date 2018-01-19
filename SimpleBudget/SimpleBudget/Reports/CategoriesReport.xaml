@@ -14,7 +14,7 @@
             <ComboBox ItemsSource="{Binding Categories}" DisplayMemberPath="FullName" SelectedItem="{Binding SelectedCategory}"
                       Width="95"/>
             <Label Content="Year" Margin="10,0,10,0"/>
-            <ComboBox ItemsSource="{Binding Years}" SelectedValue="{Binding SelectedYear}"
+            <ComboBox ItemsSource="{Binding Selector.Years}" SelectedValue="{Binding Selector.SelectedYear}"
                       Width="60"/>
         </StackPanel>
         <DataGrid DockPanel.Dock="Right" Width="300"
@@ -28,7 +28,7 @@
                   CanUserReorderColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Date" Width="Auto" Binding="{Binding Date, StringFormat=dd/MM/yyyy}"/>
-                <DataGridTextColumn Header="Amount" Width="Auto" Binding="{Binding Value}"/>
+                <DataGridTextColumn Header="Amount" Width="Auto" Binding="{Binding Amount, StringFormat=N2}"/>
                 <DataGridTextColumn Header="Info" Width="*" Binding="{Binding Info}"/>
                 <DataGridTextColumn Header="Account" Width="Auto" Binding="{Binding Account}"/>
             </DataGrid.Columns>
