@@ -820,37 +820,26 @@ namespace Data
         /// <returns></returns>
         public int? GetMaximumYear()
         {
-            int? maxYearBudget;
-            string sql = "SELECT MAX(year) FROM Budget";
+            int? maxYear;
+            string sql =
+                @"SELECT MAX(MaxYear) FROM 
+                    (SELECT MAX(year) as MaxYear FROM Budget
+                     UNION ALL
+                     SELECT MAX(Date) as MaxYear FROM Transactions
+                    )";
             using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
             {
                 object toConvert = cmd.ExecuteScalar();
                 if (Convert.IsDBNull(toConvert))
                 {
-                    maxYearBudget = null;
+                    maxYear = null;
                 }
                 else
                 {
-                    maxYearBudget = Convert.ToInt32(toConvert);
+                    maxYear = Convert.ToInt32(toConvert);
                 }
             }
-
-            int? maxYearTransaction;
-            sql = "SELECT MAX(Date) FROM Transactions";
-            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
-            {
-                object toConvert = cmd.ExecuteScalar();
-                if (Convert.IsDBNull(toConvert))
-                {
-                    maxYearTransaction = null;
-                }
-                else
-                {
-                    maxYearTransaction = Convert.ToDateTime(toConvert).Year;
-                }
-            }
-
-            return maxYearBudget > maxYearTransaction ? maxYearBudget : maxYearTransaction;
+            return maxYear;
         }
         /// <summary>
         /// Returns the earliest year of the available budget records
@@ -859,37 +848,26 @@ namespace Data
         /// <returns></returns>
         public int? GetMinimumYear()
         {
-            int? minYearBudget;
-            string sql = "SELECT MIN(year) FROM Budget";
+            int? minYear;
+            string sql =
+                @"SELECT MIN(MinYear) FROM
+                    (SELECT MIN(year) as MinYear FROM Budget
+                     UNION ALL
+                     SELECT MIN(Date) as MinYear FROM Transactions
+                    )";
             using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
             {
                 object toConvert = cmd.ExecuteScalar();
                 if (Convert.IsDBNull(toConvert))
                 {
-                    minYearBudget = null;
+                    minYear = null;
                 }
                 else
                 {
-                    minYearBudget = Convert.ToInt32(toConvert);
+                    minYear = Convert.ToInt32(toConvert);
                 }
             }
-
-            int? minYearTransaction;
-            sql = "SELECT MIN(Date) FROM Transactions";
-            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
-            {
-                object toConvert = cmd.ExecuteScalar();
-                if (Convert.IsDBNull(toConvert))
-                {
-                    minYearTransaction = null;
-                }
-                else
-                {
-                    minYearTransaction = Convert.ToDateTime(toConvert).Year;
-                }
-            }
-
-            return minYearTransaction < minYearBudget ? minYearTransaction : minYearBudget;
+            return minYear;
         }
     }
 }

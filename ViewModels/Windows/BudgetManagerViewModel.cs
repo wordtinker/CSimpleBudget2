@@ -2,11 +2,7 @@
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Linq;
 using System.Windows.Input;
 using ViewModels.Elements;
 using ViewModels.Events;
@@ -19,42 +15,10 @@ namespace ViewModels.Windows
         private IUIBudgetWindowService service;
         private IDataProvider dataProvider;
         private IEventAggregator eventAggregator;
-        private string selectedMonthName;
-        private int selectedYear;
 
         public ObservableCollection<RecordItem> Records { get; }
-        public List<string> Months { get; }
-        public int SelectedMonth => DateTime.ParseExact(SelectedMonthName, "MMMM", CultureInfo.CurrentCulture).Month;
-        public string SelectedMonthName
-        {
-            get => selectedMonthName;
-            set
-            {
-                if (SetProperty(ref selectedMonthName, value))
-                {
-                    UpdateRecords();
-                }
-            }
-        }
-        public IEnumerable<int> Years
-        {
-            get
-            {
-                (int minYear, int maxYear) = dataProvider.GetActiveBudgetYears();
-                return Enumerable.Range(minYear - 1, 5 + maxYear - minYear);
-            }
-        }
-        public int SelectedYear
-        {
-            get => selectedYear;
-            set
-            {
-                if (SetProperty(ref selectedYear, value))
-                {
-                    UpdateRecords();
-                }
-            }
-        }
+        public MonthYearSelector Selector { get; }
+        
         /// <summary>
         /// Raises request for managing control to retrieve month and year 
         /// amd copy all budget records to selected month and year.
@@ -67,17 +31,17 @@ namespace ViewModels.Windows
             this.service = service;
             this.dataProvider = dataProvider;
             this.eventAggregator = eventAggregator;
-            Months = DateTimeFormatInfo.CurrentInfo.MonthNames.Take(12).ToList();
-            selectedMonthName = DateTime.Now.ToString("MMMM");
-            selectedYear = DateTime.Now.Year;
+            Selector = new MonthYearSelector(dataProvider, -1, +3);
+            Selector.PropertyChanged += (sender, e) => UpdateRecords();
             Records = new ObservableCollection<RecordItem>();
 
-            RequestCopyFrom = new DelegateCommand(() => service.RequestMonthAndYear(SelectedMonth, SelectedYear));
+            RequestCopyFrom = new DelegateCommand(
+                () => service.RequestMonthAndYear(Selector.SelectedMonth, Selector.SelectedYear));
 
             UpdateRecords();
             eventAggregator.GetEvent<BudgetRecordAdded>().Subscribe(
                 ri => Records.Add(ri), ThreadOption.PublisherThread, false,
-                ri => ri.Month == SelectedMonth && ri.Year == SelectedYear);
+                ri => ri.Month == Selector.SelectedMonth && ri.Year == Selector.SelectedYear);
         }
         /// <summary>
         /// Clears list of records and loads new list for selected month and year.
@@ -85,7 +49,8 @@ namespace ViewModels.Windows
         private void UpdateRecords()
         {
             Records.Clear();
-            foreach (IBudgetRecord rec in dataProvider.GetRecords(SelectedYear, SelectedMonth))
+            foreach (IBudgetRecord rec in
+                dataProvider.GetRecords(Selector.SelectedYear, Selector.SelectedMonth))
             {
                 Records.Add(new RecordItem(rec));
             }
