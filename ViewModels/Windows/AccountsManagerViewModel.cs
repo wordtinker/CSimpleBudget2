@@ -8,7 +8,6 @@ using ViewModels.Interfaces;
 
 namespace ViewModels.Windows
 {
-    // TOTO Later Validation?
     public class AccountsManagerViewModel
     {
         private IUIBaseService serviceProvider;
