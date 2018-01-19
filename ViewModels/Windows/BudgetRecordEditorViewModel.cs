@@ -3,7 +3,6 @@ using Prism.Events;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using ViewModels.Elements;
@@ -21,43 +20,9 @@ namespace ViewModels.Windows
         private bool point;
         private bool daily;
         private bool weekly;
-        private int year;
-        private string monthName;
         private int onDay;
 
-        public IEnumerable<int> Years
-        {
-            get
-            {
-                (int minYear, int maxYear) = dataProvider.GetActiveBudgetYears();
-                return Enumerable.Range(minYear - 1, 5 + maxYear - minYear);
-            }
-        }
-        public int Year
-        {
-            get => year;
-            set
-            {
-                if (SetProperty(ref year, value))
-                {
-                    RaisePropertyChanged(nameof(Days));
-                }
-            }
-        }
-        public List<string> Months { get; }
-        public string MonthName
-        {
-            get => monthName;
-            set
-            {
-                if (SetProperty(ref monthName, value))
-                {
-                    RaisePropertyChanged(nameof(Month));
-                    RaisePropertyChanged(nameof(Days));
-                }
-            }
-        }
-        public int Month => DateTime.ParseExact(MonthName, "MMMM", CultureInfo.CurrentCulture).Month;
+        public MonthYearSelector Selector { get; }
         public decimal Amount { get; set; }
         public IEnumerable<CategoryNode> Categories =>
             from topCat in dataProvider.Categories
@@ -118,13 +83,13 @@ namespace ViewModels.Windows
             }
         }
         public IEnumerable<string> DaysOfWeek => Enum.GetNames(typeof(DayOfWeek));
-        public IEnumerable<int> Days => Enumerable.Range(1, DateTime.DaysInMonth(Year, Month));
+        public IEnumerable<int> Days => Enumerable.Range(1, DateTime.DaysInMonth(Selector.SelectedYear, Selector.SelectedMonth));
         public AbstractBudgetRecordEditorViewModel(IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
             this.eventAggregator = eventAggregator;
             this.dataProvider = dataProvider;
-
-            Months = DateTimeFormatInfo.CurrentInfo.MonthNames.Take(12).ToList();
+            Selector = new MonthYearSelector(dataProvider, -1, +3);
+            Selector.PropertyChanged += (sender, e) => RaisePropertyChanged(nameof(Days));
             Category = Categories.First();
         }
         public abstract void Save();
@@ -135,14 +100,12 @@ namespace ViewModels.Windows
         public NewBudgetRecordEditorViewModel(IDataProvider dataProvider, IEventAggregator eventAggregator)
             : base(dataProvider, eventAggregator)
         {
-            Year = DateTime.Now.Year;
-            MonthName = DateTimeFormatInfo.CurrentInfo.MonthNames[DateTime.Now.Month - 1];
             Monthly = true;
         }
 
         public override void Save()
         {
-            if (dataProvider.AddBudgetRecord(Amount, Category.category, BudgetType, OnDay, Year, Month, out IBudgetRecord newRecord))
+            if (dataProvider.AddBudgetRecord(Amount, Category.category, BudgetType, OnDay, Selector.SelectedYear, Selector.SelectedMonth, out IBudgetRecord newRecord))
             {
                 eventAggregator.GetEvent<BudgetRecordAdded>().Publish(new RecordItem(newRecord));
             }
@@ -157,8 +120,8 @@ namespace ViewModels.Windows
             : base(dataProvider, eventAggregator)
         {
             this.recordItem = recordItem;
-            Year = recordItem.Year;
-            MonthName = DateTimeFormatInfo.CurrentInfo.MonthNames[recordItem.Month - 1];
+            Selector.SelectedYear = recordItem.Year;
+            Selector.SelectedMonthName = DateTimeFormatInfo.CurrentInfo.MonthNames[recordItem.Month - 1];
 
             Amount = recordItem.Amount;
             Category = recordItem.Category;
@@ -187,15 +150,15 @@ namespace ViewModels.Windows
         public override void Save()
         {
             // update budget record in the model
-            if (dataProvider.UpdateRecord(recordItem.record, Amount, Category.category, BudgetType, OnDay, Month, Year))
+            if (dataProvider.UpdateRecord(recordItem.record, Amount, Category.category, BudgetType, OnDay, Selector.SelectedMonth, Selector.SelectedYear))
             {
                 // and in the view model
                 recordItem.Amount = Amount;
                 recordItem.Category = Category;
                 recordItem.Type = BudgetType;
                 recordItem.OnDay = OnDay;
-                recordItem.Month = Month;
-                recordItem.Year = Year;
+                recordItem.Month = Selector.SelectedMonth;
+                recordItem.Year = Selector.SelectedYear;
                 eventAggregator.GetEvent<BudgetRecordChanged>().Publish(recordItem);
             }
         }

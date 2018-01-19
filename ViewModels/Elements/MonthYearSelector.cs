@@ -19,7 +19,13 @@ namespace ViewModels.Elements
         public string SelectedMonthName
         {
             get => selectedMonthName;
-            set => SetProperty(ref selectedMonthName, value);
+            set
+            {
+                if (SetProperty(ref selectedMonthName, value))
+                {
+                    RaisePropertyChanged(nameof(SelectedMonth));
+                } 
+            }
         }
         public int SelectedMonth => DateTime.ParseExact(SelectedMonthName, "MMMM", CultureInfo.CurrentCulture).Month;
 

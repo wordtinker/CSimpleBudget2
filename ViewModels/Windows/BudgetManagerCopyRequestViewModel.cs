@@ -1,9 +1,5 @@
 ﻿using Models.Interfaces;
 using Prism.Events;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using ViewModels.Elements;
 using ViewModels.Events;
 
