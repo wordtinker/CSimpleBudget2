@@ -226,7 +226,8 @@ namespace Models
         }
         public IEnumerable<ITransaction> GetTransactions(int year, int month)
         {
-            foreach (var (date, amount, info, categoryId, accountId, id) in storageProvider.Storage?.SelectTransactions(year, month))
+            foreach (var (date, amount, info, categoryId, accountId, id)
+                in storageProvider.Storage?.SelectTransactions(year, month).Reverse())
             {
                 yield return new Transaction
                 {

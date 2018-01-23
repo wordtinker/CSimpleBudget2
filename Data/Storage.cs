@@ -448,8 +448,38 @@ namespace Data
         }
         public IEnumerable<(DateTime date, decimal amount, string info, int categoryId, int accountId, int id)> SelectTransactions(int year, int month)
         {
-            yield break;
-            // TODO !!! !
+            DateTime firstDayOfMonth = new DateTime(year, month, 1);
+            DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddSeconds(-1);
+            DateTime lastDayofPrevMonth = firstDayOfMonth.AddSeconds(-1);
+
+            string sql = @"SELECT date, amount, info, categoryId, t.rowid, t.accId FROM Transactions as t
+                           INNER JOIN Accounts as a
+                           on t.accId = a.rowid
+                           WHERE date>@startDate and date<=@endDate
+                           AND exbudget = 0
+                           ORDER BY date DESC";
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+            {
+                cmd.Parameters.Add(new SQLiteParameter()
+                {
+                    ParameterName = "@startDate",
+                    DbType = System.Data.DbType.Date,
+                    Value = lastDayofPrevMonth
+                });
+                cmd.Parameters.Add(new SQLiteParameter()
+                {
+                    ParameterName = "@endDate",
+                    DbType = System.Data.DbType.Date,
+                    Value = lastDayOfMonth
+                });
+                SQLiteDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    yield return (dr.GetDateTime(0), FromDBValToDecimal(dr.GetDecimal(1)),
+                        dr.GetString(2), dr.GetInt32(3), dr.GetInt32(5), dr.GetInt32(4));
+                }
+                dr.Close();
+            }
         }
         public IEnumerable<(DateTime date, decimal amount, string info, int categoryId, int accountId, int id)>
             SelectTransactions(int year, int month, int categoryId)
@@ -657,15 +687,63 @@ namespace Data
                 return FromDBValToDecimal(cmd.ExecuteScalar());
             }
         }
+        /// <summary>
+        /// Returns total decimal value of all transactions up to specified date.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
         public decimal SelectTransactionsCombinedUpTo(DateTime date)
         {
-            return 0;
-            // TODO !!! !
+            string sql = @"SELECT sum(t.amount) FROM Transactions as t
+                           INNER JOIN Accounts as a
+                           on t.accId = a.rowid
+                           WHERE date<=@endDate
+                           AND exbudget = 0";
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+            {
+                cmd.Parameters.Add(new SQLiteParameter()
+                {
+                    ParameterName = "@endDate",
+                    DbType = System.Data.DbType.Date,
+                    Value = date
+                });
+                return FromDBValToDecimal(cmd.ExecuteScalar());
+            }
         }
+        /// <summary>
+        /// Provides date of the last in budget account transaction prior to the specified
+        /// month and year.
+        /// </summary>
+        /// <param name="month"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
         public DateTime SelectLastTransactionDate(int year, int month)
         {
-            return DateTime.Now;
-            // TODO !!! !
+            DateTime lastDayOfMonth = new DateTime(year, month, 1).AddDays(-1);
+            string sql = @"SELECT MAX(date) FROM Transactions as t
+                           INNER JOIN Accounts as a
+                           ON t.accId = a.rowid
+                           WHERE date<=@firstDay AND exbudget = 0";
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+            {
+                cmd.Parameters.Add(new SQLiteParameter()
+                {
+                    ParameterName = "@firstDay",
+                    DbType = System.Data.DbType.Date,
+                    Value = lastDayOfMonth
+                });
+
+                object result = cmd.ExecuteScalar();
+                if (result == null || result == DBNull.Value)
+                {
+                    // previous day of the month
+                    return lastDayOfMonth;
+                }
+                else
+                {
+                    return Convert.ToDateTime(result);
+                }
+            }
         }
         /************** Records *****************/
         /// <summary>
