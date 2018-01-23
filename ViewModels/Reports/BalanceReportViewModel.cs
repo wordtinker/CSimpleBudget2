@@ -8,13 +8,15 @@ namespace ViewModels.Reports
     public class BalanceReportViewModel
     {
         private IDataProvider dataProvider;
+        private IPredictor predictor;
 
         public MonthYearSelector Selector { get; }
         public ObservableCollection<BalanceItem> BalanceRecords { get; }
 
-        public BalanceReportViewModel(IDataProvider dataProvider)
+        public BalanceReportViewModel(IDataProvider dataProvider, IPredictor predictor)
         {
             this.dataProvider = dataProvider;
+            this.predictor = predictor;
             BalanceRecords = new ObservableCollection<BalanceItem>();
             Selector = new MonthYearSelector(dataProvider, -0, +0);
             Selector.PropertyChanged += (sender, e) => UpdateBalance();
@@ -54,7 +56,26 @@ namespace ViewModels.Reports
                     });
                 }
             }
-            // TODO !!! !
+            // Add all predictors for a selected period.
+            DateTime actualDate = DateTime.Today;
+            DateTime futureDate = new DateTime(year, month, DateTime.DaysInMonth(year, month));
+            // Repeat for every month before selected
+            while (actualDate <= futureDate)
+            {
+                foreach (var (date, amount, category) in predictor.Predict(actualDate.Year, actualDate.Month))
+                {
+                    balance += amount;
+                    BalanceRecords.Add(new BalanceItem
+                    {
+                        Date = date,
+                        Change = amount,
+                        Total = balance,
+                        Origin = "Prediction",
+                        Category = (new CategoryNode(category))
+                    });
+                }
+                actualDate = actualDate.AddMonths(1);
+            }
         }
     }
 }

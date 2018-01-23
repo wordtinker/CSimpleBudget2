@@ -19,6 +19,10 @@ namespace Models.Interfaces
         event EventHandler Off;
         IStorage Storage { get; }
     }
+    public interface IPredictor
+    {
+        IEnumerable<(DateTime date, decimal amount, ICategory category)> Predict(int year, int month);
+    }
     public interface IDataProvider
     {
         ObservableCollection<string> AccountTypes { get; }

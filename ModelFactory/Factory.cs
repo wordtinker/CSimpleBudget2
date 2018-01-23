@@ -24,6 +24,7 @@ namespace ModelFactory
                 fileName => Container.Resolve<IStorage>(
                     new ParameterOverride("fileName", fileName)
                     ));
+            Container.RegisterType<IPredictor, Predictor>();
             Container.RegisterInstance<IFileHandler>(fileHandler);
             Container.RegisterInstance<IDataProvider>(new DataProvider(fileHandler));
         }
