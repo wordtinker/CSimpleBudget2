@@ -446,6 +446,11 @@ namespace Data
                 dr.Close();
             }
         }
+        public IEnumerable<(DateTime date, decimal amount, string info, int categoryId, int accountId, int id)> SelectTransactions(int year, int month)
+        {
+            yield break;
+            // TODO !!! !
+        }
         public IEnumerable<(DateTime date, decimal amount, string info, int categoryId, int accountId, int id)>
             SelectTransactions(int year, int month, int categoryId)
         {
@@ -651,6 +656,16 @@ namespace Data
                 });
                 return FromDBValToDecimal(cmd.ExecuteScalar());
             }
+        }
+        public decimal SelectTransactionsCombinedUpTo(DateTime date)
+        {
+            return 0;
+            // TODO !!! !
+        }
+        public DateTime SelectLastTransactionDate(int year, int month)
+        {
+            return DateTime.Now;
+            // TODO !!! !
         }
         /************** Records *****************/
         /// <summary>

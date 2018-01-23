@@ -35,6 +35,7 @@ namespace Models.Interfaces
         bool DeleteCategory(ICategory category);
 
         IEnumerable<ITransaction> GetTransactions(IAccount account);
+        IEnumerable<ITransaction> GetTransactions(int year, int month);
         IEnumerable<ITransaction> GetTransactions(int year, int month, ICategory category);
         bool DeleteTransaction(ITransaction transaction);
         bool AddTransaction(IAccount account, DateTime date, decimal amount, string info, ICategory category, out ITransaction newTransaction);
@@ -48,6 +49,7 @@ namespace Models.Interfaces
         bool UpdateRecord(IBudgetRecord record, decimal amount, ICategory category, BudgetType budgetType, int onDay, int month, int year);
 
         IEnumerable<ISpending> GetSpendings(int year, int month);
+        (decimal balance, DateTime date) GetBalanceToDate(int year, int month);
     }
     public interface IAccount
     {

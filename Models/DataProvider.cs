@@ -224,6 +224,21 @@ namespace Models
                 };
             }
         }
+        public IEnumerable<ITransaction> GetTransactions(int year, int month)
+        {
+            foreach (var (date, amount, info, categoryId, accountId, id) in storageProvider.Storage?.SelectTransactions(year, month))
+            {
+                yield return new Transaction
+                {
+                    Account = Accounts.Where(acc => acc.Id == accountId).First(),
+                    Amount = amount,
+                    Category = GetCategoryById(categoryId),
+                    Date = date,
+                    Info = info,
+                    Id = id
+                };
+            }
+        }
         public IEnumerable<ITransaction> GetTransactions(int year, int month, ICategory category)
         {
             foreach (var (date, amount, info, categoryId, accountId, id) in storageProvider.Storage?.SelectTransactions(year, month, category.Id))
@@ -363,6 +378,12 @@ namespace Models
                     Value = spent
                 };
             }
+        }
+
+        public (decimal balance, DateTime date) GetBalanceToDate(int year, int month)
+        {
+            DateTime lastTransactionDate = storageProvider.Storage?.SelectLastTransactionDate(year, month) ?? DateTime.Now;
+            return (storageProvider.Storage?.SelectTransactionsCombinedUpTo(lastTransactionDate) ?? Decimal.Zero, lastTransactionDate);
         }
     }
 }

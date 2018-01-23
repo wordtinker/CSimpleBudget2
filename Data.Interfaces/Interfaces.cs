@@ -24,11 +24,14 @@ namespace Data.Interfaces
         bool DeleteSubCategory(int id);
 
         IEnumerable<(DateTime date, decimal amount, string info, int categoryId, int id)> SelectTransactions(int accountId);
+        IEnumerable<(DateTime date, decimal amount, string info, int categoryId, int accountId, int id)> SelectTransactions(int year, int month);
         IEnumerable<(DateTime date, decimal amount, string info, int categoryId, int accountId, int id)> SelectTransactions(int year, int month, int categoryId);
         bool DeleteTransaction(int id);
         bool AddTransaction(int accountId, DateTime date, decimal amount, string info, int categoryId, out int id);
         bool UpdateTransaction(int id, DateTime date, decimal amount, string info, int categoryId);
         decimal SelectTransactionsCombined(int year, int month, int categoryId);
+        decimal SelectTransactionsCombinedUpTo(DateTime date);
+        DateTime SelectLastTransactionDate(int year, int month);
 
         IEnumerable<(decimal amount, int categoryId, string type, int onDay, int id)> SelectRecords(int year, int month);
         bool AddRecord(decimal amount, int categoryId, string type, int onDay, int year, int month, out int id);

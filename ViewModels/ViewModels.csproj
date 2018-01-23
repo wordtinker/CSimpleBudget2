@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Elements\AccountItem.cs" />
     <Compile Include="Elements\AccTypeItem.cs" />
+    <Compile Include="Elements\BalanceItem.cs" />
     <Compile Include="Elements\BudgetBar.cs" />
     <Compile Include="Elements\CategoryNode.cs" />
     <Compile Include="Elements\MonthYearSelector.cs" />

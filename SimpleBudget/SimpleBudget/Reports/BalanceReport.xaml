@@ -9,10 +9,10 @@
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
             <Label Content="Month" Margin="0,0,10,0"/>
-            <ComboBox ItemsSource="{Binding Months}" SelectedItem="{Binding SelectedMonthName}"
+            <ComboBox ItemsSource="{Binding Selector.Months}" SelectedItem="{Binding Selector.SelectedMonthName}"
                       Width="95"/>
             <Label Content="Year" Margin="10,0,10,0"/>
-            <ComboBox ItemsSource="{Binding Years}" SelectedValue="{Binding SelectedYear}"
+            <ComboBox ItemsSource="{Binding Selector.Years}" SelectedValue="{Binding Selector.SelectedYear}"
                       Width="60"/>
         </StackPanel>
         <DataGrid DockPanel.Dock="Bottom"
@@ -39,7 +39,7 @@
                 <DataGridTextColumn Header="Change" Width="Auto" Binding="{Binding Change, StringFormat=F}"/>
                 <DataGridTextColumn Header="Total" Width="Auto" Binding="{Binding Total, StringFormat=F}"/>
                 <DataGridTextColumn Header="Origin" Width="Auto" Binding="{Binding Origin}"/>
-                <DataGridTextColumn Header="Category" Width="*" Binding="{Binding Category}"/>
+                <DataGridTextColumn Header="Category" Width="*" Binding="{Binding Category.FullName}"/>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>
