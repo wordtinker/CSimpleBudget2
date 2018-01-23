@@ -12,7 +12,7 @@ namespace Models
         public event EventHandler On;
         public event EventHandler Off;
 
-        public string Extension => ".sbdb";
+        public string Extension => ".sbf";
         public IStorage Storage { get; private set; }
         public bool InitializeFile(string fileName)
         {

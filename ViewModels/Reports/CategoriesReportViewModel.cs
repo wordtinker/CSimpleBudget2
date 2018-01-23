@@ -50,7 +50,6 @@ namespace ViewModels.Reports
             {
                 foreach (var spending in dataProvider.GetSpendings(Selector.SelectedYear, month))
                 {
-                    // TODO Test equality
                     if (spending.Category == SelectedCategory.category)
                     {
                         Bars.Add(new BudgetBar(spending));
