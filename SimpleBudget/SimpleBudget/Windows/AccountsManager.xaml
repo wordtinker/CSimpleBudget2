@@ -20,8 +20,8 @@
     </Window.Resources>
     <DockPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="10,10,10,10">
-            <TextBox x:Name="AccName" Width="100"/>
-            <Button Content="New Account" Click="AddButton_Click"/>
+            <TextBox x:Name="AccName" Text="{Binding AccountName}" Width="100"/>
+            <Button Content="New Account" Command="{Binding AddAccount}"/>
         </StackPanel>
         <DataGrid DockPanel.Dock="Top"
                   ItemsSource="{Binding Accounts}"
