@@ -27,12 +27,5 @@ namespace SimpleBudget.Windows
             TransactionItem item = (TransactionItem)dgr.DataContext;
             ((TransactionRollViewModel)DataContext).ShowTransactionEditor(item);
         }
-        // TODO Later command
-        private void DeleteTransaction_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem mi = (MenuItem)sender;
-            TransactionItem item = (TransactionItem)mi.DataContext;
-            ((TransactionRollViewModel)this.DataContext).DeleteTransaction(item);
-        }
     }
 }

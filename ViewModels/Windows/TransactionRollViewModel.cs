@@ -1,6 +1,8 @@
 ﻿using Models.Interfaces;
+using Prism.Commands;
 using Prism.Events;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using ViewModels.Elements;
 using ViewModels.Events;
 using ViewModels.Interfaces;
@@ -15,6 +17,7 @@ namespace ViewModels.Windows
         private AccountItem accountItem;
 
         public ObservableCollection<TransactionItem> Transactions { get; }
+        public ICommand DeleteTransaction { get; }
 
         public TransactionRollViewModel(AccountItem accItem, IDataProvider dataProvider, IUITransactionRollService service, IEventAggregator eventAggregator)
         {
@@ -23,6 +26,7 @@ namespace ViewModels.Windows
             this.service = service;
             this.accountItem = accItem;
             Transactions = new ObservableCollection<TransactionItem>();
+            DeleteTransaction = new DelegateCommand<object>(_DeleteTransaction);
 
             foreach (var item in dataProvider.GetTransactions(accountItem.account))
             {
@@ -31,12 +35,15 @@ namespace ViewModels.Windows
             eventAggregator.GetEvent<TransactionAdded>().Subscribe(tri => Transactions.Add(tri));
         }
 
-        public void DeleteTransaction(TransactionItem item)
+        private void _DeleteTransaction(object parameter)
         {
-            if (dataProvider.DeleteTransaction(item.transaction))
+            if (parameter is TransactionItem item)
             {
-                Transactions.Remove(item);
-                eventAggregator.GetEvent<TransactionDeleted>().Publish(item);
+                if (dataProvider.DeleteTransaction(item.transaction))
+                {
+                    Transactions.Remove(item);
+                    eventAggregator.GetEvent<TransactionDeleted>().Publish(item);
+                }
             }
         }
         public void ShowTransactionEditor()
