@@ -70,12 +70,18 @@ namespace ViewModels.Windows
             // Update transaction in the model
             if (dataProvider.UpdateTransaction(transactionItem.transaction, Date, Amount, Info, Category.category))
             {
+                TransactionItem old = new TransactionItem(transactionItem.transaction);
                 // And in the viewModel
                 transactionItem.Date = Date;
                 transactionItem.Amount = Amount;
                 transactionItem.Info = Info;
                 transactionItem.Category = Category;
-                eventAggregator.GetEvent<TransactionChanged>().Publish(transactionItem);
+                eventAggregator.GetEvent<TransactionChanged>().Publish(
+                    new TransactionChange
+                    {
+                        Old = old,
+                        New = transactionItem
+                    });
             }
         }
     }

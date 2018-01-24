@@ -88,18 +88,6 @@ namespace ViewModels.Windows
             this.dataProvider = dataProvider;
             this.eventAggregator = eventAggregator;
 
-            dataProvider.AccountTypes.CollectionChanged += (sender, e) =>
-            {
-                RaisePropertyChanged(nameof(IsReadyToSetAccounts));
-            };
-            dataProvider.Accounts.CollectionChanged += (sender, e) =>
-            {
-                RaisePropertyChanged(nameof(Accounts));
-            };
-            dataProvider.Categories.CollectionChanged += (sender, e) =>
-            {
-                RaisePropertyChanged(nameof(IsFullyReady));
-            };
             Bars = new ObservableCollection<BudgetBar>();
             CurrentMonth = DateTime.Now.Month;
             CurrentYear = DateTime.Now.Year;
@@ -134,6 +122,18 @@ namespace ViewModels.Windows
         }
         private void ConnectEvents()
         {
+            dataProvider.AccountTypes.CollectionChanged += (sender, e) =>
+            {
+                RaisePropertyChanged(nameof(IsReadyToSetAccounts));
+            };
+            dataProvider.Accounts.CollectionChanged += (sender, e) =>
+            {
+                RaisePropertyChanged(nameof(Accounts));
+            };
+            dataProvider.Categories.CollectionChanged += (sender, e) =>
+            {
+                RaisePropertyChanged(nameof(IsFullyReady));
+            };
             // Connect transaction creation, deletion, change
             eventAggregator.GetEvent<TransactionAdded>().Subscribe(tri => RaisePropertyChanged(nameof(Accounts)));
             eventAggregator.GetEvent<TransactionDeleted>().Subscribe(tri => RaisePropertyChanged(nameof(Accounts)));
@@ -144,10 +144,10 @@ namespace ViewModels.Windows
             eventAggregator.GetEvent<TransactionDeleted>().Subscribe(
                 tri => RefreshBars(), ThreadOption.PublisherThread, false,
                 tri => tri.Date.Month == CurrentMonth && tri.Date.Year == CurrentYear);
-            // TODO or old date.Year == currentYear && date.Month == currentMonth
             eventAggregator.GetEvent<TransactionChanged>().Subscribe(
-                tri => RefreshBars(), ThreadOption.PublisherThread, false,
-                tri => tri.Date.Month == CurrentMonth && tri.Date.Year == CurrentYear);
+                trch => RefreshBars(), ThreadOption.PublisherThread, false,
+                trch => trch.New.Date.Month == CurrentMonth && trch.New.Date.Year == CurrentYear ||
+                        trch.Old.Date.Month == CurrentMonth && trch.Old.Date.Year == CurrentYear);
             // Сonnect budget record creation, deletion, change
             eventAggregator.GetEvent<BudgetRecordAdded>().Subscribe(
                 ri => RefreshBars(), ThreadOption.PublisherThread, false,
@@ -155,10 +155,10 @@ namespace ViewModels.Windows
             eventAggregator.GetEvent<BudgetRecordDeleted>().Subscribe(
                 ri => RefreshBars(), ThreadOption.PublisherThread, false,
                 ri => ri.Month == CurrentMonth && ri.Year == CurrentYear);
-            // TODO or old date.Year == currentYear && date.Month == currentMonth
             eventAggregator.GetEvent<BudgetRecordChanged>().Subscribe(
-                ri => RefreshBars(), ThreadOption.PublisherThread, false,
-                ri => ri.Month == CurrentMonth && ri.Year == CurrentYear);
+                rich => RefreshBars(), ThreadOption.PublisherThread, false,
+                rich => rich.New.Month == CurrentMonth && rich.New.Year == CurrentYear ||
+                        rich.Old.Month == CurrentMonth && rich.Old.Year == CurrentYear);
         }
         private void CleanUpData()
         {

@@ -152,6 +152,7 @@ namespace ViewModels.Windows
             // update budget record in the model
             if (dataProvider.UpdateRecord(recordItem.record, Amount, Category.category, BudgetType, OnDay, Selector.SelectedMonth, Selector.SelectedYear))
             {
+                RecordItem old = new RecordItem(recordItem.record);
                 // and in the view model
                 recordItem.Amount = Amount;
                 recordItem.Category = Category;
@@ -159,7 +160,12 @@ namespace ViewModels.Windows
                 recordItem.OnDay = OnDay;
                 recordItem.Month = Selector.SelectedMonth;
                 recordItem.Year = Selector.SelectedYear;
-                eventAggregator.GetEvent<BudgetRecordChanged>().Publish(recordItem);
+                eventAggregator.GetEvent<BudgetRecordChanged>().Publish(
+                    new BudgetRecordChange
+                    {
+                        Old = old,
+                        New = recordItem
+                    });
             }
         }
     }
