@@ -15,9 +15,16 @@ namespace ViewModels.Windows
         private IUIBaseService serviceProvider;
         private IDataProvider dataProvider;
         private IEventAggregator eventAggregator;
+        private string accountType;
 
         public IEnumerable<AccTypeItem> AccTypes => from t in dataProvider.AccountTypes select new AccTypeItem(t);
+        public string AccountType
+        {
+            get => accountType;
+            set => SetProperty(ref accountType, value);
+        }
         public ICommand DeleteAccountType { get; }
+        public ICommand AddAccountType { get; }
 
         public AccTypeManagerViewModel(IUIBaseService serviceProvider, IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
@@ -25,12 +32,14 @@ namespace ViewModels.Windows
             this.dataProvider = dataProvider;
             this.eventAggregator = eventAggregator;
             DeleteAccountType = new DelegateCommand<object>(_DeleteAccountType);
+            AddAccountType = new DelegateCommand(_AddAccountType);
         }
-        public void AddAccType(string accTypeName)
-        {
-            if (dataProvider.AddAccountType(accTypeName))
+        public void _AddAccountType()
+        {            
+            if (dataProvider.AddAccountType(AccountType))
             {
-                AccTypeItem newAccType = new AccTypeItem(accTypeName);
+                AccTypeItem newAccType = new AccTypeItem(AccountType);
+                AccountType = string.Empty;
                 RaisePropertyChanged(nameof(AccTypes));
             }
             else

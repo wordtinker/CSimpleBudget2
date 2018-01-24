@@ -14,11 +14,5 @@ namespace SimpleBudget.Windows
         {
             InitializeComponent();
         }
-        private void AddButton_Click(object sender, RoutedEventArgs e)
-        {
-            // TODO Later command
-            string accTypeName = AccTypeName.Text;
-            ((AccTypeManagerViewModel)this.DataContext).AddAccType(accTypeName);
-        }
     }
 }
