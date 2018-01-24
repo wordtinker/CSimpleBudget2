@@ -1,8 +1,10 @@
 ﻿using Models.Interfaces;
+using Prism.Commands;
 using Prism.Events;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 using ViewModels.Elements;
 using ViewModels.Interfaces;
 
@@ -16,6 +18,7 @@ namespace ViewModels.Windows
 
         public ObservableCollection<AccountItem> Accounts { get; }
         public IEnumerable<string> AccTypes => from t in dataProvider.AccountTypes select t;
+        public ICommand DeleteAccount { get; }
 
         public AccountsManagerViewModel(IUIBaseService serviceProvider, IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
@@ -23,6 +26,7 @@ namespace ViewModels.Windows
             this.dataProvider = dataProvider;
             this.eventAggregator = eventAggregator;
             Accounts = new ObservableCollection<AccountItem>();
+            DeleteAccount = new DelegateCommand<object>(_DeleteAccount);
             foreach (var item in dataProvider.Accounts)
             {
                 Accounts.Add(new AccountItem(item, dataProvider, eventAggregator));
@@ -41,15 +45,18 @@ namespace ViewModels.Windows
             }
         }
 
-        public void DeleteAccount(AccountItem item)
+        private void _DeleteAccount(object parameter)
         {
-            if (dataProvider.DeleteAccount(item.account))
+            if (parameter is AccountItem item)
             {
-                Accounts.Remove(item);
-            }
-            else
-            {
-                serviceProvider.ShowMessage("Can't delete account.");
+                if (dataProvider.DeleteAccount(item.account))
+                {
+                    Accounts.Remove(item);
+                }
+                else
+                {
+                    serviceProvider.ShowMessage("Can't delete account.");
+                }
             }
         }
     }
