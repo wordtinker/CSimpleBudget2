@@ -6,17 +6,24 @@
         xmlns:local="clr-namespace:SimpleBudget.Windows"
         mc:Ignorable="d"
         Title="Categories" Height="300" Width="400" ResizeMode="NoResize">
+    <Window.Resources>
+        <ContextMenu x:Key="ItemMenu"
+                     DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem
+                Header="Delete Category"
+                Command="{Binding DataContext.DeleteCategory, RelativeSource={RelativeSource AncestorType={x:Type TreeView}}}"
+                CommandParameter="{Binding}"/>
+        </ContextMenu>
+        <Style x:Key="DefaultItemStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="ContextMenu" Value="{StaticResource ItemMenu}" />
+        </Style>
+    </Window.Resources>
     <DockPanel>
         <TreeView DockPanel.Dock="Left" ItemsSource="{Binding Categories}" MinWidth="200" MaxWidth="200">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type MenuItem}" ItemsSource="{Binding Items}">
-                    <TextBlock Text="{Binding Title}">
-                        <TextBlock.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="Delete" Click="DeleteButton_Click"/>
-                            </ContextMenu>
-                        </TextBlock.ContextMenu>
-                    </TextBlock>
+                    <TextBlock Text="{Binding Title}"
+                               Style="{StaticResource DefaultItemStyle}"/>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

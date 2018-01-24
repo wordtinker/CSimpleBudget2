@@ -1,6 +1,8 @@
 ﻿using Models.Interfaces;
+using Prism.Commands;
 using Prism.Events;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using ViewModels.Elements;
 using ViewModels.Interfaces;
 
@@ -13,6 +15,7 @@ namespace ViewModels.Windows
         private IEventAggregator eventAggregator;
 
         public ObservableCollection<CategoryNode> Categories { get; }
+        public ICommand DeleteCategory { get; }
 
         public CategoriesManagerViewModel(IUIBaseService serviceProvider, IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
@@ -20,6 +23,7 @@ namespace ViewModels.Windows
             this.dataProvider = dataProvider;
             this.eventAggregator = eventAggregator;
 
+            DeleteCategory = new DelegateCommand<object>(_DeleteCategory);
             Categories = new ObservableCollection<CategoryNode>();
             foreach (ICategory item in dataProvider.Categories)
             {
@@ -45,23 +49,26 @@ namespace ViewModels.Windows
                 serviceProvider.ShowMessage("Can't add category.");
             }
         }
-        public void DeleteCategory(CategoryNode node)
+        private void _DeleteCategory(object parameter)
         {
-            ICategory category = node.category;
-            if (dataProvider.DeleteCategory(category))
+            if (parameter is CategoryNode node)
             {
-                if (node.Parent == null)
+                ICategory category = node.category;
+                if (dataProvider.DeleteCategory(category))
                 {
-                    Categories.Remove(node);
+                    if (node.Parent == null)
+                    {
+                        Categories.Remove(node);
+                    }
+                    else
+                    {
+                        node.Parent.RemoveChild(node);
+                    }
                 }
                 else
                 {
-                    node.Parent.RemoveChild(node);
+                    serviceProvider.ShowMessage("Can't delete category.");
                 }
-            }
-            else
-            {
-                serviceProvider.ShowMessage("Can't delete category.");
             }
         }
     }

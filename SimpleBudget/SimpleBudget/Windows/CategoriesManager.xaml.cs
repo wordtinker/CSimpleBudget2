@@ -21,12 +21,5 @@ namespace SimpleBudget.Windows
             CategoryNode parent = (CategoryNode)ParentCategory.SelectedItem;
             ((CategoriesManagerViewModel)this.DataContext).AddCategory(categoryName, parent);
         }
-        // TODO Later command
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem mi = (MenuItem)sender;
-            CategoryNode node = (CategoryNode)mi.DataContext;
-            ((CategoriesManagerViewModel)this.DataContext).DeleteCategory(node);
-        }
     }
 }
