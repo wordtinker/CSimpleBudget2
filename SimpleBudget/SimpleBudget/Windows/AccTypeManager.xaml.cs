@@ -14,14 +14,6 @@ namespace SimpleBudget.Windows
         {
             InitializeComponent();
         }
-        private void DeleteAccountType_Click(object sender, RoutedEventArgs e)
-        {
-            // TODO Later command
-            MenuItem mi = (MenuItem)sender;
-            AccTypeItem item = (AccTypeItem)mi.DataContext;
-            ((AccTypeManagerViewModel)this.DataContext).DeleteAccType(item);
-        }
-
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             // TODO Later command

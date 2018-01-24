@@ -7,8 +7,11 @@
         mc:Ignorable="d"
         Title="Account Types" Height="300" Width="200" ResizeMode="NoResize">
     <Window.Resources>
-        <ContextMenu x:Key="RowMenu">
-            <MenuItem Header="Delete Type" Click="DeleteAccountType_Click"/>
+        <ContextMenu x:Key="RowMenu"
+                     DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Delete Type"
+                      Command="{Binding DataContext.DeleteAccountType, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                      CommandParameter="{Binding}"/>
         </ContextMenu>
         <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
             <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />

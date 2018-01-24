@@ -1,8 +1,10 @@
 ﻿using Models.Interfaces;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using ViewModels.Elements;
 using ViewModels.Interfaces;
 
@@ -15,12 +17,14 @@ namespace ViewModels.Windows
         private IEventAggregator eventAggregator;
 
         public IEnumerable<AccTypeItem> AccTypes => from t in dataProvider.AccountTypes select new AccTypeItem(t);
+        public ICommand DeleteAccountType { get; }
 
         public AccTypeManagerViewModel(IUIBaseService serviceProvider, IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
             this.serviceProvider = serviceProvider;
             this.dataProvider = dataProvider;
             this.eventAggregator = eventAggregator;
+            DeleteAccountType = new DelegateCommand<object>(_DeleteAccountType);
         }
         public void AddAccType(string accTypeName)
         {
@@ -34,15 +38,18 @@ namespace ViewModels.Windows
                 serviceProvider.ShowMessage("Can't add account type.");
             }
         }
-        public void DeleteAccType(AccTypeItem item)
+        private void _DeleteAccountType(object parameter)
         {
-            if (dataProvider.DeleteAccountType(item.Name))
+            if (parameter is AccTypeItem item)
             {
-                RaisePropertyChanged(nameof(AccTypes));
-            }
-            else
-            {
-                serviceProvider.ShowMessage("Can't delete account type.");
+                if (dataProvider.DeleteAccountType(item.Name))
+                {
+                    RaisePropertyChanged(nameof(AccTypes));
+                }
+                else
+                {
+                    serviceProvider.ShowMessage("Can't delete account type.");
+                }
             }
         }
     }
