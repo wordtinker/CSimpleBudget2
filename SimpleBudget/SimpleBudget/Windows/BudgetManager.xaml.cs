@@ -23,13 +23,6 @@ namespace SimpleBudget.Windows
             ((BudgetManagerViewModel)DataContext).ShowRecordEditor(item);
         }
         // TODO Later command
-        private void DeleteRecord_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem mi = (MenuItem)sender;
-            RecordItem item = (RecordItem)mi.DataContext;
-            ((BudgetManagerViewModel)this.DataContext).DeleteRecord(item);
-        }
-        // TODO Later command
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             ((BudgetManagerViewModel)DataContext).ShowRecordEditor();

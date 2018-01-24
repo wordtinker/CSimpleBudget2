@@ -18,6 +18,7 @@ namespace ViewModels.Windows
 
         public ObservableCollection<RecordItem> Records { get; }
         public MonthYearSelector Selector { get; }
+        public ICommand DeleteRecord { get; }
         
         /// <summary>
         /// Raises request for managing control to retrieve month and year 
@@ -35,6 +36,7 @@ namespace ViewModels.Windows
             Selector.PropertyChanged += (sender, e) => UpdateRecords();
             Records = new ObservableCollection<RecordItem>();
 
+            DeleteRecord = new DelegateCommand<object>(_DeleteRecord);
             RequestCopyFrom = new DelegateCommand(
                 () => service.RequestMonthAndYear(Selector.SelectedMonth, Selector.SelectedYear));
 
@@ -55,12 +57,15 @@ namespace ViewModels.Windows
                 Records.Add(new RecordItem(rec));
             }
         }
-        public void DeleteRecord(RecordItem recordItem)
+        private void _DeleteRecord(object parameter)
         {
-            if (dataProvider.DeleteRecord(recordItem.record))
+            if (parameter is RecordItem item)
             {
-                Records.Remove(recordItem);
-                eventAggregator.GetEvent<BudgetRecordDeleted>().Publish(recordItem);
+                if (dataProvider.DeleteRecord(item.record))
+                {
+                    Records.Remove(item);
+                    eventAggregator.GetEvent<BudgetRecordDeleted>().Publish(item);
+                }
             }
         }
         public void ShowRecordEditor()
