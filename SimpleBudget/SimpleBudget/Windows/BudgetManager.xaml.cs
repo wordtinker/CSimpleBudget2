@@ -22,10 +22,5 @@ namespace SimpleBudget.Windows
             RecordItem item = (RecordItem)dgr.DataContext;
             ((BudgetManagerViewModel)DataContext).ShowRecordEditor(item);
         }
-        // TODO Later command
-        private void AddButton_Click(object sender, RoutedEventArgs e)
-        {
-            ((BudgetManagerViewModel)DataContext).ShowRecordEditor();
-        }
     }
 }
