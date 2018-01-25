@@ -1,6 +1,7 @@
 ﻿using Models.Interfaces;
 using Prism.Commands;
 using Prism.Events;
+using Prism.Mvvm;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using ViewModels.Elements;
@@ -8,14 +9,18 @@ using ViewModels.Interfaces;
 
 namespace ViewModels.Windows
 {
-    public class CategoriesManagerViewModel
+    public class CategoriesManagerViewModel : BindableBase
     {
         private IUIBaseService serviceProvider;
         private IDataProvider dataProvider;
         private IEventAggregator eventAggregator;
+        private string name;
 
         public ObservableCollection<CategoryNode> Categories { get; }
+        public CategoryNode SelectedCategory { get; set; }
         public ICommand DeleteCategory { get; }
+        public ICommand AddCategory { get; }
+        public string Name { get => name; set => SetProperty(ref name, value); }
 
         public CategoriesManagerViewModel(IUIBaseService serviceProvider, IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
@@ -24,24 +29,25 @@ namespace ViewModels.Windows
             this.eventAggregator = eventAggregator;
 
             DeleteCategory = new DelegateCommand<object>(_DeleteCategory);
+            AddCategory = new DelegateCommand(_AddCategory);
             Categories = new ObservableCollection<CategoryNode>();
             foreach (ICategory item in dataProvider.Categories)
             {
                 Categories.Add(new CategoryNode(item));
             }
         }
-        public void AddCategory(string categoryName, CategoryNode parent)
+        private void _AddCategory()
         {
-            if(dataProvider.AddCategory(categoryName, parent?.category, out ICategory newCategory))
+            if (dataProvider.AddCategory(Name, SelectedCategory?.category, out ICategory newCategory))
             {
                 var node = new CategoryNode(newCategory);
-                if (parent == null)
+                if (SelectedCategory == null)
                 {
                     Categories.Add(node);
                 }
                 else
                 {
-                    parent.AddChild(node);
+                    SelectedCategory.AddChild(node);
                 }
             }
             else

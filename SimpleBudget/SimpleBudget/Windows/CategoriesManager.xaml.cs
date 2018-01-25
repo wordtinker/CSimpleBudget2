@@ -14,12 +14,5 @@ namespace SimpleBudget.Windows
         {
             InitializeComponent();
         }
-        // TODO Later command
-        private void AddButton_Click(object sender, RoutedEventArgs e)
-        {
-            string categoryName = CategoryName.Text;
-            CategoryNode parent = (CategoryNode)ParentCategory.SelectedItem;
-            ((CategoriesManagerViewModel)this.DataContext).AddCategory(categoryName, parent);
-        }
     }
 }
