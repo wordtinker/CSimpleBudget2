@@ -12,7 +12,6 @@ namespace SimpleBudget.Windows
         {
             InitializeComponent();
         }
-        // TODO Later Command
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             ((AbstractTransactionEditor)this.DataContext).Save();
