@@ -15,7 +15,6 @@ namespace SimpleBudget.Windows
         {
             InitializeComponent();
         }
-        // TODO Later command
         private void Record_DoubleClick(object sender, MouseButtonEventArgs e)
         {
             DataGridRow dgr = (DataGridRow)sender;
