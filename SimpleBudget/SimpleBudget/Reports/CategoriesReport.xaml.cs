@@ -26,7 +26,6 @@ namespace SimpleBudget.Reports
         {
             InitializeComponent();
         }
-        // TODO Later command
         private void Bar_Click(object sender, MouseButtonEventArgs e)
         {
             BarDataPoint bdp = (BarDataPoint)sender;
