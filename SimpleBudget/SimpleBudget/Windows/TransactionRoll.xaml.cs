@@ -16,11 +16,6 @@ namespace SimpleBudget.Windows
             InitializeComponent();
         }
         // TODO Later command
-        private void AddButton_Click(object sender, RoutedEventArgs e)
-        {
-            ((TransactionRollViewModel)DataContext).ShowTransactionEditor();
-        }
-        // TODO Later command
         private void Transaction_DoubleClick(object sender, MouseButtonEventArgs e)
         {
             DataGridRow dgr = (DataGridRow)sender;

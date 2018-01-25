@@ -27,7 +27,7 @@
         </CollectionViewSource>
     </Window.Resources>
     <DockPanel>
-        <Button DockPanel.Dock="Bottom" Content="Add" Click="AddButton_Click"
+        <Button DockPanel.Dock="Bottom" Content="Add" Command="{Binding AddTransaction}"
                 Margin="0,10" Width="100" HorizontalAlignment="Center"/>
         <DataGrid DockPanel.Dock="Top"
                   ItemsSource="{Binding Source={StaticResource cvsTransactions}}"

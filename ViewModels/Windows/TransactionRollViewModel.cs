@@ -18,6 +18,7 @@ namespace ViewModels.Windows
 
         public ObservableCollection<TransactionItem> Transactions { get; }
         public ICommand DeleteTransaction { get; }
+        public ICommand AddTransaction { get; }
 
         public TransactionRollViewModel(AccountItem accItem, IDataProvider dataProvider, IUITransactionRollService service, IEventAggregator eventAggregator)
         {
@@ -27,6 +28,7 @@ namespace ViewModels.Windows
             this.accountItem = accItem;
             Transactions = new ObservableCollection<TransactionItem>();
             DeleteTransaction = new DelegateCommand<object>(_DeleteTransaction);
+            AddTransaction = new DelegateCommand(ShowTransactionEditor);
 
             foreach (var item in dataProvider.GetTransactions(accountItem.account))
             {
@@ -46,7 +48,7 @@ namespace ViewModels.Windows
                 }
             }
         }
-        public void ShowTransactionEditor()
+        private void ShowTransactionEditor()
         {
             service.ShowTransactionEditor(accountItem);
         }
