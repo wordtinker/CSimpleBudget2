@@ -257,7 +257,12 @@ namespace Models
         }
         public bool DeleteTransaction(ITransaction transaction)
         {
-            return (storageProvider.Storage?.DeleteTransaction(transaction.Id) ?? false);
+            if (storageProvider.Storage?.DeleteTransaction(transaction.Id) ?? false)
+            {
+                Accounts.Clear();
+                SetAccounts();
+            }
+            return false;
         }
         public bool AddTransaction(IAccount account, DateTime date, decimal amount, string info, ICategory category, out ITransaction newTransaction)
         {
@@ -274,6 +279,8 @@ namespace Models
                     Date = date,
                     Info = info
                 };
+                Accounts.Clear();
+                SetAccounts();
                 return true;
             }
             else
@@ -284,7 +291,12 @@ namespace Models
         }
         public bool UpdateTransaction(ITransaction transaction, DateTime date, decimal amount, string info, ICategory category)
         {
-            return storageProvider.Storage?.UpdateTransaction(transaction.Id, date, amount, info, category.Id) ?? false;
+            if (storageProvider.Storage?.UpdateTransaction(transaction.Id, date, amount, info, category.Id) ?? false)
+            {
+                Accounts.Clear();
+                SetAccounts();
+            }
+            return false;
         }
         /// Provides a pair of years during which a budget records were set.
         /// Default is current year.
