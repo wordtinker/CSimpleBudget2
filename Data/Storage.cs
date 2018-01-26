@@ -312,7 +312,7 @@ namespace Data
         private void UpdateTotal(int accountId)
         {
             string sql =
-                @"UPDATE Accounts SET balance=(SELECT SUM(amount)
+                @"UPDATE Accounts SET balance=(SELECT TOTAL(amount)
                   FROM Transactions WHERE accId=@id) WHERE id=@id";
             ExecuteNonQuery(sql, new SQLiteParameter()
             {
