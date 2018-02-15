@@ -131,11 +131,21 @@ namespace Models.Interfaces
     }
     public interface IBudgetRecord
     {
+        // Budget record value.
+        // Value is set for whole month regardless of budget type.
         decimal Amount { get; }
+        // Budget category. Every budget has a category.
         ICategory Category { get; }
+        // Type of budget behaviour.
         BudgetType Type { get; }
+        // Planned year on which transaction will occur.
         int Year { get; }
+        // Planned month on which transaction will occur.
         int Month { get; }
+        // Planned day of the transaction.
+        // 0 is default value for Daily, Monthly
+        // 1-30 range is available for Point
+        // 0-6 range is available for Weekly. See DayOfWeek enum.
         int OnDay { get; }
         int Id { get; }
     }
