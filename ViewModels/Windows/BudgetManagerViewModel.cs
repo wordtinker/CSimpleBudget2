@@ -45,6 +45,9 @@ namespace ViewModels.Windows
             eventAggregator.GetEvent<BudgetRecordAdded>().Subscribe(
                 ri => Records.Add(ri), ThreadOption.PublisherThread, false,
                 ri => ri.Month == Selector.SelectedMonth && ri.Year == Selector.SelectedYear);
+            eventAggregator.GetEvent<BudgetRecordChanged>().Subscribe(
+                brch => { Records.Remove(brch.New);}, ThreadOption.PublisherThread, false,
+                brch => brch.Old.Month != brch.New.Month || brch.Old.Year != brch.New.Year);
         }
         /// <summary>
         /// Clears list of records and loads new list for selected month and year.
