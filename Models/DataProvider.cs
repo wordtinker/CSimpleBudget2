@@ -115,6 +115,7 @@ namespace Models
             {
                 Accounts.Clear();
                 SetAccounts();
+                return true;
             }
             return false;
         }
@@ -296,6 +297,7 @@ namespace Models
             {
                 Accounts.Clear();
                 SetAccounts();
+                return true;
             }
             return false;
         }
