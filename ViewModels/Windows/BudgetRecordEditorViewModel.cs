@@ -89,7 +89,11 @@ namespace ViewModels.Windows
             this.eventAggregator = eventAggregator;
             this.dataProvider = dataProvider;
             Selector = new MonthYearSelector(dataProvider, -1, +3);
-            Selector.PropertyChanged += (sender, e) => RaisePropertyChanged(nameof(Days));
+            Selector.PropertyChanged += (sender, e) =>
+            {
+                RaisePropertyChanged(nameof(Days));
+                OnDay = 1;
+            };
             Category = Categories.First();
         }
         public abstract void Save();
