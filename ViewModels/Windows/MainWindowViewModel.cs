@@ -129,6 +129,7 @@ namespace ViewModels.Windows
             dataProvider.Accounts.CollectionChanged += (sender, e) =>
             {
                 RaisePropertyChanged(nameof(Accounts));
+                RefreshBars();
             };
             dataProvider.Categories.CollectionChanged += (sender, e) =>
             {
