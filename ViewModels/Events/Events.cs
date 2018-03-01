@@ -1,6 +1,7 @@
 ﻿using Prism.Events;
 using ViewModels.Elements;
 
+//TODO Later ?move signals one layer deeper?
 namespace ViewModels.Events
 {
     public class TransactionChange
