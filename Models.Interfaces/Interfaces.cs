@@ -3,24 +3,62 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-// TODO
 namespace Models.Interfaces
 {
+    /// <summary>
+    /// Must implememnt acess to underlying file.
+    /// </summary>
     public interface IFileHandler
     {
+        /// <summary>
+        /// File extension in ".ext" format.
+        /// </summary>
         string Extension { get; }
+        /// <summary>
+        /// Create file.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         bool InitializeFile(string fileName);
+        /// <summary>
+        /// Load existing file.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         bool LoadFile(string fileName);
+        /// <summary>
+        /// Close file.
+        /// </summary>
         void CloseFile();
     }
+    /// <summary>
+    /// Must implement access to underlying
+    /// storage.
+    /// </summary>
     public interface IStorageProvider
     {
+        /// <summary>
+        /// Access to storage was set. 
+        /// </summary>
         event EventHandler On;
+        /// <summary>
+        /// Access to storage ceased.
+        /// </summary>
         event EventHandler Off;
         IStorage Storage { get; }
     }
+    /// <summary>
+    /// Predicts future transactions.
+    /// </summary>
     public interface IPredictor
     {
+        /// <summary>
+        /// Provides a list of potential transactions that
+        /// might occur in the specidied period.
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
         IEnumerable<(DateTime date, decimal amount, ICategory category)> Predict(int year, int month);
     }
     public interface IDataProvider
@@ -55,6 +93,9 @@ namespace Models.Interfaces
         IEnumerable<ISpending> GetSpendings(int year, int month);
         (decimal balance, DateTime date) GetBalanceToDate(int year, int month);
     }
+    /// <summary>
+    /// Account.
+    /// </summary>
     public interface IAccount
     {
         /// <summary>
@@ -92,6 +133,9 @@ namespace Models.Interfaces
         /// </summary>
         int Id { get; }
     }
+    /// <summary>
+    /// Category.
+    /// </summary>
     public interface ICategory
     {
         /// <summary>
@@ -106,9 +150,14 @@ namespace Models.Interfaces
         /// Child categories. For bottom tier categories this list is empty.
         /// </summary>
         IEnumerable<ICategory> Children { get; }
-        // Unique category ID.
+        /// <summary>
+        /// Unique category ID.
+        /// </summary>
         int Id { get; }
     }
+    /// <summary>
+    /// Sum of the transactions for a specified period.
+    /// </summary>
     public interface ISpending
     {
         // Category of the spending
@@ -120,15 +169,39 @@ namespace Models.Interfaces
         // Month of the spending
         int Month { get; }
     }
+    /// <summary>
+    /// Transaction.
+    /// </summary>
     public interface ITransaction
     {
+        /// <summary>
+        /// The date of the transaction.
+        /// </summary>
         DateTime Date { get; }
+        /// <summary>
+        /// Spending or income value of the transaction.
+        /// </summary>
         decimal Amount { get; }
+        /// <summary>
+        /// Some textual information on the transaction.
+        /// </summary>
         string Info { get; }
+        /// <summary>
+        /// Related category.
+        /// </summary>
         ICategory Category { get; }
+        /// <summary>
+        /// Holding account.
+        /// </summary>
         IAccount Account { get; }
+        /// <summary>
+        /// Transaction Id.
+        /// </summary>
         int Id { get; }
     }
+    /// <summary>
+    /// Budget record.
+    /// </summary>
     public interface IBudgetRecord
     {
         // Budget record value.
