@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ViewModels.Elements;
 using ViewModels.Events;
+using ViewModels.Interfaces;
 
 namespace ViewModels.Windows
 {
@@ -13,14 +14,14 @@ namespace ViewModels.Windows
         protected IEventAggregator eventAggregator;
         protected IDataProvider dataProvider;
 
-        public IEnumerable<CategoryNode> Categories =>
+        public IEnumerable<ICategoryNode> Categories =>
             from topCat in dataProvider.Categories
             from c in topCat.Children
             select new CategoryNode(c);
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
         public string Info { get; set; }
-        public CategoryNode Category { get; set; }
+        public ICategoryNode Category { get; set; }
 
         public AbstractTransactionEditor(IDataProvider dataProvider, IEventAggregator eventAggregator)
         {
@@ -45,7 +46,7 @@ namespace ViewModels.Windows
         public override void Save()
         {
             // Create new transaction.
-            if (dataProvider.AddTransaction(accountItem.account, Date, Amount, Info, Category.category, out ITransaction newTr))
+            if (dataProvider.AddTransaction(accountItem.account, Date, Amount, Info, Category.InnerCategory, out ITransaction newTr))
             {
                 eventAggregator.GetEvent<TransactionAdded>().Publish(new TransactionItem(newTr));
             }
@@ -53,9 +54,9 @@ namespace ViewModels.Windows
     }
     public class OldTransactionEditorViewModel : AbstractTransactionEditor
     {
-        private TransactionItem transactionItem;
+        private ITransactionItem transactionItem;
 
-        public OldTransactionEditorViewModel(TransactionItem transactionItem, IDataProvider dataProvider, IEventAggregator eventAggregator)
+        public OldTransactionEditorViewModel(ITransactionItem transactionItem, IDataProvider dataProvider, IEventAggregator eventAggregator)
             : base(dataProvider, eventAggregator)
         {
             this.transactionItem = transactionItem;
@@ -68,9 +69,9 @@ namespace ViewModels.Windows
         public override void Save()
         {
             // Update transaction in the model
-            if (dataProvider.UpdateTransaction(transactionItem.transaction, Date, Amount, Info, Category.category))
+            if (dataProvider.UpdateTransaction(transactionItem.InnerTransaction, Date, Amount, Info, Category.InnerCategory))
             {
-                TransactionItem old = new TransactionItem(transactionItem.transaction);
+                TransactionItem old = new TransactionItem(transactionItem.InnerTransaction);
                 // And in the viewModel
                 transactionItem.Date = Date;
                 transactionItem.Amount = Amount;

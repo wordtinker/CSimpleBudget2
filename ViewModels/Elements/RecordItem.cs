@@ -1,21 +1,22 @@
 ﻿using Models.Interfaces;
 using Prism.Mvvm;
 using System;
+using ViewModels.Interfaces;
 
 namespace ViewModels.Elements
 {
-    public class RecordItem : BindableBase
+    public class RecordItem : BindableBase, IRecordItem
     {
-        internal IBudgetRecord record;
         private decimal amount;
-        private CategoryNode catNode;
+        private ICategoryNode catNode;
         private BudgetType type;
         private int onDay;
         private int year;
         private int month;
 
+        public IBudgetRecord InnerRecord { get; private set; }
         public decimal Amount { get => amount; set => SetProperty(ref amount, value); }
-        public CategoryNode Category { get => catNode; set => SetProperty(ref catNode, value); }
+        public ICategoryNode Category { get => catNode; set => SetProperty(ref catNode, value); }
         public BudgetType Type
         {
             get => type;
@@ -41,7 +42,7 @@ namespace ViewModels.Elements
         }
         public int Year { get => year; set => SetProperty(ref year, value); }
         public int Month { get => month; set => SetProperty(ref month, value); }
-        
+
         public string TypeName => Type.ToString();
         public string OnDayText
         {
@@ -58,9 +59,10 @@ namespace ViewModels.Elements
                 return OnDay.ToString();
             }
         }
+
         public RecordItem(IBudgetRecord record)
         {
-            this.record = record;
+            InnerRecord = record;
             Amount = record.Amount;
             Category = new CategoryNode(record.Category);
             Type = record.Type;

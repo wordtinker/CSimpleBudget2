@@ -1,17 +1,9 @@
 ﻿using Models.Interfaces;
+using ViewModels.Interfaces;
 using Prism.Events;
 
 namespace ViewModels.Elements
 {
-    public interface IAccountItem
-    {
-        string Name { get; }
-        string Type { get; set; }
-        decimal Balance { get; }
-        bool Closed { get; set; }
-        bool Excluded { get; set; }
-
-    }
     public class AccountItem : IAccountItem
     {
         private IDataProvider dataProvider;

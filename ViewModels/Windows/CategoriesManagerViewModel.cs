@@ -16,8 +16,8 @@ namespace ViewModels.Windows
         private IEventAggregator eventAggregator;
         private string name;
 
-        public ObservableCollection<CategoryNode> Categories { get; }
-        public CategoryNode SelectedCategory { get; set; }
+        public ObservableCollection<ICategoryNode> Categories { get; }
+        public ICategoryNode SelectedCategory { get; set; }
         public ICommand DeleteCategory { get; }
         public ICommand AddCategory { get; }
         public string Name { get => name; set => SetProperty(ref name, value); }
@@ -30,7 +30,7 @@ namespace ViewModels.Windows
 
             DeleteCategory = new DelegateCommand<object>(_DeleteCategory);
             AddCategory = new DelegateCommand(_AddCategory);
-            Categories = new ObservableCollection<CategoryNode>();
+            Categories = new ObservableCollection<ICategoryNode>();
             foreach (ICategory item in dataProvider.Categories)
             {
                 Categories.Add(new CategoryNode(item));
@@ -38,7 +38,7 @@ namespace ViewModels.Windows
         }
         private void _AddCategory()
         {
-            if (dataProvider.AddCategory(Name, SelectedCategory?.category, out ICategory newCategory))
+            if (dataProvider.AddCategory(Name, SelectedCategory?.InnerCategory, out ICategory newCategory))
             {
                 var node = new CategoryNode(newCategory);
                 if (SelectedCategory == null)
@@ -57,9 +57,9 @@ namespace ViewModels.Windows
         }
         private void _DeleteCategory(object parameter)
         {
-            if (parameter is CategoryNode node)
+            if (parameter is ICategoryNode node)
             {
-                ICategory category = node.category;
+                ICategory category = node.InnerCategory;
                 if (dataProvider.DeleteCategory(category))
                 {
                     if (node.Parent == null)

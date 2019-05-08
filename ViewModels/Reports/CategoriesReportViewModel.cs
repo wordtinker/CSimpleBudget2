@@ -4,20 +4,21 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using ViewModels.Elements;
+using ViewModels.Interfaces;
 
 namespace ViewModels.Reports
 {
     public class CategoriesReportViewModel : BindableBase
     {
         private IDataProvider dataProvider;
-        private CategoryNode selectedCategory;
+        private ICategoryNode selectedCategory;
 
         public MonthYearSelector Selector { get; }
-        public IEnumerable<CategoryNode> Categories =>
+        public IEnumerable<ICategoryNode> Categories =>
             from topCat in dataProvider.Categories
             from c in topCat.Children
             select new CategoryNode(c);
-        public CategoryNode SelectedCategory
+        public ICategoryNode SelectedCategory
         {
             get => selectedCategory;
             set
@@ -29,7 +30,7 @@ namespace ViewModels.Reports
             }
         }
         public ObservableCollection<BudgetBar> Bars { get; }
-        public ObservableCollection<TransactionItem> Transactions { get; } = new ObservableCollection<TransactionItem>();
+        public ObservableCollection<ITransactionItem> Transactions { get; }
         // ctor
         public CategoriesReportViewModel(IDataProvider dataProvider)
         {
@@ -37,7 +38,7 @@ namespace ViewModels.Reports
             Selector = new MonthYearSelector(dataProvider, -0, +0);
             Selector.PropertyChanged += (sender, e) => UpdateBars();
             Bars = new ObservableCollection<BudgetBar>();
-            Transactions = new ObservableCollection<TransactionItem>();
+            Transactions = new ObservableCollection<ITransactionItem>();
             SelectedCategory = Categories.First();
             UpdateBars();
         }
@@ -50,7 +51,7 @@ namespace ViewModels.Reports
             {
                 foreach (var spending in dataProvider.GetSpendings(Selector.SelectedYear, month))
                 {
-                    if (spending.Category == SelectedCategory.category)
+                    if (spending.Category == SelectedCategory.InnerCategory)
                     {
                         Bars.Add(new BudgetBar(spending));
                     }
@@ -60,7 +61,7 @@ namespace ViewModels.Reports
         public void UpdateTransactions(BudgetBar bar)
         {
             Transactions.Clear();
-            foreach (var tr in dataProvider.GetTransactions(Selector.SelectedYear, bar.Month, SelectedCategory.category))
+            foreach (var tr in dataProvider.GetTransactions(Selector.SelectedYear, bar.Month, SelectedCategory.InnerCategory))
             {
                 Transactions.Add(new TransactionItem(tr));
             }

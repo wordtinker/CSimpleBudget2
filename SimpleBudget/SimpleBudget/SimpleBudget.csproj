@@ -243,6 +243,10 @@
       <Project>{f5cc967c-60fc-43bc-80f2-9067f9f1a798}</Project>
       <Name>ViewModels</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ViewModels.Interfaces\ViewModels.Interfaces.csproj">
+      <Project>{2842d0a4-ce43-4583-a652-6bf582f6f3f5}</Project>
+      <Name>ViewModels.Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icon.ico" />

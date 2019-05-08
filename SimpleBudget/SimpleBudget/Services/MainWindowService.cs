@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Windows;
 using Unity;
 using Unity.Resolution;
-using ViewModels.Elements;
 using ViewModels.Interfaces;
 using ViewModels.Reports;
 using ViewModels.Windows;
@@ -102,7 +101,7 @@ namespace SimpleBudget.Services
             };
             window.ShowDialog();
         }
-        public void ShowTransactionRoll(AccountItem accItem)
+        public void ShowTransactionRoll(IAccountItem accItem)
         {
             TransactionRoll window = new TransactionRoll()
             {

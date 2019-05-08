@@ -2,7 +2,6 @@
 using System.Windows;
 using Unity;
 using Unity.Resolution;
-using ViewModels.Elements;
 using ViewModels.Interfaces;
 using ViewModels.Windows;
 
@@ -39,7 +38,7 @@ namespace SimpleBudget.Services
             };
             editor.ShowDialog();
         }
-        public void ShowBudgetRecordEditor(RecordItem recordItem)
+        public void ShowBudgetRecordEditor(IRecordItem recordItem)
         {
             BudgetRecordEditor editor = new BudgetRecordEditor
             {

@@ -1,25 +1,26 @@
 ﻿using Prism.Events;
 using ViewModels.Elements;
+using ViewModels.Interfaces;
 
 //TODO Later ?move signals one layer deeper?
 namespace ViewModels.Events
 {
     public class TransactionChange
     {
-        public TransactionItem Old { get; set; }
-        public TransactionItem New { get; set; }
+        public ITransactionItem Old { get; set; }
+        public ITransactionItem New { get; set; }
     }
     public class BudgetRecordChange
     {
-        public RecordItem Old { get; set; }
-        public RecordItem New { get; set; }
+        public IRecordItem Old { get; set; }
+        public IRecordItem New { get; set; }
     }
 
-    public class TransactionAdded : PubSubEvent<TransactionItem> { };
-    public class TransactionDeleted : PubSubEvent<TransactionItem> { };
+    public class TransactionAdded : PubSubEvent<ITransactionItem> { };
+    public class TransactionDeleted : PubSubEvent<ITransactionItem> { };
     public class TransactionChanged : PubSubEvent<TransactionChange> { };
 
-    public class BudgetRecordAdded : PubSubEvent<RecordItem> { };
-    public class BudgetRecordDeleted : PubSubEvent<RecordItem> { };
+    public class BudgetRecordAdded : PubSubEvent<IRecordItem> { };
+    public class BudgetRecordDeleted : PubSubEvent<IRecordItem> { };
     public class BudgetRecordChanged : PubSubEvent<BudgetRecordChange> { };
 }

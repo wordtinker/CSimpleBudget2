@@ -1,4 +1,5 @@
 ﻿using System;
+using ViewModels.Interfaces;
 
 namespace ViewModels.Elements
 {
@@ -9,6 +10,6 @@ namespace ViewModels.Elements
         public decimal Total { get; set; }
         public bool IsNegative => Total < 0;
         public string Origin { get; set; }
-        public CategoryNode Category { get; set; }
+        public ICategoryNode Category { get; set; }
     }
 }

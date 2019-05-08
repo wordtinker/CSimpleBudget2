@@ -3,7 +3,6 @@ using System.Windows;
 using Unity;
 using Unity.Resolution;
 using ViewModels.Windows;
-using ViewModels.Elements;
 using ViewModels.Interfaces;
 
 namespace SimpleBudget.Services
@@ -17,7 +16,7 @@ namespace SimpleBudget.Services
             this.rollWindow = rollWindow;
         }
 
-        public void ShowTransactionEditor(TransactionItem transactionItem)
+        public void ShowTransactionEditor(ITransactionItem transactionItem)
         {
             TransactionEditor window = new TransactionEditor
             {
@@ -28,7 +27,7 @@ namespace SimpleBudget.Services
             window.ShowDialog();
         }
 
-        public void ShowTransactionEditor(AccountItem accountItem)
+        public void ShowTransactionEditor(IAccountItem accountItem)
         {
             TransactionEditor window = new TransactionEditor
             {

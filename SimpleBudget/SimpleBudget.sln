@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleBudget", "SimpleBudget\SimpleBudget.csproj", "{D18EC176-6E5A-4855-9A2D-9A5A94F60BFB}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "..\Data\Data.csproj", "{57ECC9EE-677E-46CE-A51C-4B534E5F7B97}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Interfaces", "..\Data.Interfaces\Data.Interfaces.csproj", "{1145B3DA-CAB4-4234-8B77-5329ABB3EF43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewModels.Interfaces", "ViewModels.Interfaces\ViewModels.Interfaces.csproj", "{2842D0A4-CE43-4583-A652-6BF582F6F3F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{1145B3DA-CAB4-4234-8B77-5329ABB3EF43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1145B3DA-CAB4-4234-8B77-5329ABB3EF43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1145B3DA-CAB4-4234-8B77-5329ABB3EF43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2842D0A4-CE43-4583-A652-6BF582F6F3F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2842D0A4-CE43-4583-A652-6BF582F6F3F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2842D0A4-CE43-4583-A652-6BF582F6F3F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2842D0A4-CE43-4583-A652-6BF582F6F3F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -16,7 +16,7 @@ namespace ViewModels.Windows
         private IDataProvider dataProvider;
         private IEventAggregator eventAggregator;
 
-        public ObservableCollection<RecordItem> Records { get; }
+        public ObservableCollection<IRecordItem> Records { get; }
         public MonthYearSelector Selector { get; }
         public ICommand DeleteRecord { get; }
         public ICommand AddRecord { get; }
@@ -34,7 +34,7 @@ namespace ViewModels.Windows
             this.eventAggregator = eventAggregator;
             Selector = new MonthYearSelector(dataProvider, -1, +3);
             Selector.PropertyChanged += (sender, e) => UpdateRecords();
-            Records = new ObservableCollection<RecordItem>();
+            Records = new ObservableCollection<IRecordItem>();
 
             AddRecord = new DelegateCommand(service.ShowBudgetRecordEditor);
             DeleteRecord = new DelegateCommand<object>(_DeleteRecord);
@@ -63,16 +63,16 @@ namespace ViewModels.Windows
         }
         private void _DeleteRecord(object parameter)
         {
-            if (parameter is RecordItem item)
+            if (parameter is IRecordItem item)
             {
-                if (dataProvider.DeleteRecord(item.record))
+                if (dataProvider.DeleteRecord(item.InnerRecord))
                 {
                     Records.Remove(item);
                     eventAggregator.GetEvent<BudgetRecordDeleted>().Publish(item);
                 }
             }
         }
-        public void ShowRecordEditor(RecordItem recordItem)
+        public void ShowRecordEditor(IRecordItem recordItem)
         {
             service.ShowBudgetRecordEditor(recordItem);
         }

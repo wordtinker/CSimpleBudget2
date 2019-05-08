@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using ViewModels.Elements;
 using ViewModels.Events;
+using ViewModels.Interfaces;
 
 namespace ViewModels.Windows
 {
@@ -24,11 +25,11 @@ namespace ViewModels.Windows
 
         public MonthYearSelector Selector { get; }
         public decimal Amount { get; set; }
-        public IEnumerable<CategoryNode> Categories =>
+        public IEnumerable<ICategoryNode> Categories =>
             from topCat in dataProvider.Categories
             from c in topCat.Children
             select new CategoryNode(c); 
-        public CategoryNode Category { get; set; }
+        public ICategoryNode Category { get; set; }
         public int OnDay { get => onDay; set => SetProperty(ref onDay, value); }
         public bool Monthly
         {
@@ -109,7 +110,7 @@ namespace ViewModels.Windows
 
         public override void Save()
         {
-            if (dataProvider.AddBudgetRecord(Amount, Category.category, BudgetType, OnDay, Selector.SelectedYear, Selector.SelectedMonth, out IBudgetRecord newRecord))
+            if (dataProvider.AddBudgetRecord(Amount, Category.InnerCategory, BudgetType, OnDay, Selector.SelectedYear, Selector.SelectedMonth, out IBudgetRecord newRecord))
             {
                 eventAggregator.GetEvent<BudgetRecordAdded>().Publish(new RecordItem(newRecord));
             }
@@ -118,9 +119,9 @@ namespace ViewModels.Windows
 
     public class OldBudgetRecordEditorViewModel : AbstractBudgetRecordEditorViewModel
     {
-        private RecordItem recordItem;
+        private IRecordItem recordItem;
 
-        public OldBudgetRecordEditorViewModel(RecordItem recordItem, IDataProvider dataProvider, IEventAggregator eventAggregator)
+        public OldBudgetRecordEditorViewModel(IRecordItem recordItem, IDataProvider dataProvider, IEventAggregator eventAggregator)
             : base(dataProvider, eventAggregator)
         {
             this.recordItem = recordItem;
@@ -154,9 +155,9 @@ namespace ViewModels.Windows
         public override void Save()
         {
             // update budget record in the model
-            if (dataProvider.UpdateRecord(recordItem.record, Amount, Category.category, BudgetType, OnDay, Selector.SelectedMonth, Selector.SelectedYear))
+            if (dataProvider.UpdateRecord(recordItem.InnerRecord, Amount, Category.InnerCategory, BudgetType, OnDay, Selector.SelectedMonth, Selector.SelectedYear))
             {
-                RecordItem old = new RecordItem(recordItem.record);
+                IRecordItem old = new RecordItem(recordItem.InnerRecord);
                 // and in the view model
                 recordItem.Amount = Amount;
                 recordItem.Category = Category;

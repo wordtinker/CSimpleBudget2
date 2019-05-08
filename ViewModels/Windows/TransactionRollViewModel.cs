@@ -16,7 +16,7 @@ namespace ViewModels.Windows
         private IUITransactionRollService service;
         private AccountItem accountItem;
 
-        public ObservableCollection<TransactionItem> Transactions { get; }
+        public ObservableCollection<ITransactionItem> Transactions { get; }
         public ICommand DeleteTransaction { get; }
         public ICommand AddTransaction { get; }
 
@@ -26,7 +26,7 @@ namespace ViewModels.Windows
             this.eventAggregator = eventAggregator;
             this.service = service;
             this.accountItem = accItem;
-            Transactions = new ObservableCollection<TransactionItem>();
+            Transactions = new ObservableCollection<ITransactionItem>();
             DeleteTransaction = new DelegateCommand<object>(_DeleteTransaction);
             AddTransaction = new DelegateCommand(ShowTransactionEditor);
 
@@ -39,9 +39,9 @@ namespace ViewModels.Windows
 
         private void _DeleteTransaction(object parameter)
         {
-            if (parameter is TransactionItem item)
+            if (parameter is ITransactionItem item)
             {
-                if (dataProvider.DeleteTransaction(item.transaction))
+                if (dataProvider.DeleteTransaction(item.InnerTransaction))
                 {
                     Transactions.Remove(item);
                     eventAggregator.GetEvent<TransactionDeleted>().Publish(item);
@@ -52,7 +52,7 @@ namespace ViewModels.Windows
         {
             service.ShowTransactionEditor(accountItem);
         }
-        public void ShowTransactionEditor(TransactionItem item)
+        public void ShowTransactionEditor(ITransactionItem item)
         {
             service.ShowTransactionEditor(item);
         }

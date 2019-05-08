@@ -1,37 +1,38 @@
 ﻿using Models.Interfaces;
 using System.Collections.ObjectModel;
 using System.Linq;
+using ViewModels.Interfaces;
 
 namespace ViewModels.Elements
 {
     /// <summary>
     /// Container for Category object.
     /// </summary>
-    public class CategoryNode
+    public class CategoryNode : ICategoryNode
     {
-        private string separator = "--";
-        internal ICategory category;
+        private readonly string separator = "--";
+        public ICategory InnerCategory { get; private set; }
         // Child Category Nodes
-        public ObservableCollection<CategoryNode> Items { get; }
-        public CategoryNode Parent { get; set; }
-        public string Title => category.Name;
-        public string FullName => string.Format("{0}{1}{2}", category.Parent?.Name, separator, category.Name);
+        public ObservableCollection<ICategoryNode> Items { get; }
+        public ICategoryNode Parent { get; set; }
+        public string Title => InnerCategory.Name;
+        public string FullName => string.Format("{0}{1}{2}", InnerCategory.Parent?.Name, separator, InnerCategory.Name);
 
         public CategoryNode(ICategory category)
         {
-            this.category = category;
-            Items = new ObservableCollection<CategoryNode>();
+            InnerCategory = category;
+            Items = new ObservableCollection<ICategoryNode>();
             foreach (ICategory item in category.Children.OrderBy(c => c.Name))
             {
                 AddChild(new CategoryNode(item));
             }
         }
-        public void AddChild(CategoryNode node)
+        public void AddChild(ICategoryNode node)
         {
             node.Parent = this;
             Items.Add(node);
         }
-        public void RemoveChild(CategoryNode node)
+        public void RemoveChild(ICategoryNode node)
         {
             node.Parent = null;
             Items.Remove(node);
@@ -39,7 +40,7 @@ namespace ViewModels.Elements
         // Equals implementation
         public override bool Equals(object obj)
         {
-            if (obj is CategoryNode other)
+            if (obj is ICategoryNode other)
             {
                 return object.Equals(this.Parent, other.Parent) && this.Title.Equals(other.Title);
             }

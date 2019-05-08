@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using ViewModels.Elements;
+using ViewModels.Interfaces;
 using ViewModels.Windows;
 
 namespace SimpleBudget.Windows

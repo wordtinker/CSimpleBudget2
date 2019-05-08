@@ -1,6 +1,7 @@
 ﻿using Models.Interfaces;
 using System;
 using System.Globalization;
+using ViewModels.Interfaces;
 
 namespace ViewModels.Elements
 {
@@ -10,7 +11,7 @@ namespace ViewModels.Elements
     public class BudgetBar
     {
         private ISpending spending;
-        private CategoryNode category;
+        private ICategoryNode category;
 
         // ctor
         public BudgetBar(ISpending spending)

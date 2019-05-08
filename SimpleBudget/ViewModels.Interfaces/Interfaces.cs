@@ -1,11 +1,57 @@
-﻿using ViewModels.Elements;
-
+﻿using Models.Interfaces;
+using System;
+using System.Collections.ObjectModel;
 /// <summary>
 /// Interfaces are a part of the project, both interfaces and
 /// implementation are referenced by the same View project.
 /// </summary>
 namespace ViewModels.Interfaces
 {
+    public interface ICategoryNode
+    {
+        ICategory InnerCategory { get; }
+        string FullName { get; }
+        ObservableCollection<ICategoryNode> Items { get; }
+        ICategoryNode Parent { get; set; }
+        string Title { get; }
+
+        void AddChild(ICategoryNode node);
+        void RemoveChild(ICategoryNode node);
+    }
+
+    public interface ITransactionItem
+    {
+        ITransaction InnerTransaction { get; }
+        string Account { get; }
+        decimal Amount { get; set; }
+        ICategoryNode Category { get; set; }
+        DateTime Date { get; set; }
+        string Info { get; set; }
+    }
+
+    public interface IRecordItem
+    {
+        IBudgetRecord InnerRecord { get; }
+        decimal Amount { get; set; }
+        ICategoryNode Category { get; set; }
+        int Month { get; set; }
+        int OnDay { get; set; }
+        string OnDayText { get; }
+        BudgetType Type { get; set; }
+        string TypeName { get; }
+        int Year { get; set; }
+    }
+
+    public interface IAccountItem
+    {
+        string Name { get; }
+        string Type { get; set; }
+        decimal Balance { get; }
+        bool Closed { get; set; }
+        bool Excluded { get; set; }
+
+    }
+
     public interface IUIBaseService
     {
         /// <summary>
@@ -33,7 +79,7 @@ namespace ViewModels.Interfaces
         /// specified account.
         /// </summary>
         /// <param name="accItem">Selected account.</param>
-        void ShowTransactionRoll(AccountItem accItem);
+        void ShowTransactionRoll(IAccountItem accItem);
         /// <summary>
         /// Shows a windows that manages account types.
         /// </summary>
@@ -82,13 +128,13 @@ namespace ViewModels.Interfaces
         /// for a given account.
         /// </summary>
         /// <param name="accountItem"></param>
-        void ShowTransactionEditor(AccountItem accountItem);
+        void ShowTransactionEditor(IAccountItem accountItem);
         /// <summary>
         /// Shows a transaction editor for an existing
         /// transaction.
         /// </summary>
         /// <param name="transactionItem"></param>
-        void ShowTransactionEditor(TransactionItem transactionItem);
+        void ShowTransactionEditor(ITransactionItem transactionItem);
     }
     public interface IUIBudgetWindowService :IUIBaseService
     {
@@ -102,7 +148,7 @@ namespace ViewModels.Interfaces
         /// existing budget record.
         /// </summary>
         /// <param name="recordItem"></param>
-        void ShowBudgetRecordEditor(RecordItem recordItem);
+        void ShowBudgetRecordEditor(IRecordItem recordItem);
         /// <summary>
         /// Shows a window with selection of month and year
         /// for a budget records
